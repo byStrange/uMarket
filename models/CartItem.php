@@ -13,7 +13,6 @@ use Yii;
  * @property int $product_id
  *
  * @property Cart $cart
- * @property OrderOrderItems[] $mainOrderOrderItems
  * @property Order[] $orders
  * @property Product $product
  */
@@ -24,7 +23,7 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'main_cartitem';
+        return "main_cartitem";
     }
 
     /**
@@ -33,11 +32,23 @@ class CartItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['quantity', 'cart_id', 'product_id'], 'required'],
-            [['quantity', 'cart_id', 'product_id'], 'default', 'value' => null],
-            [['quantity', 'cart_id', 'product_id'], 'integer'],
-            [['cart_id'], 'exist', 'skipOnError' => true, 'targetClass' => Cart::class, 'targetAttribute' => ['cart_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
+            [["quantity", "cart_id", "product_id"], "required"],
+            [["quantity", "cart_id", "product_id"], "default", "value" => null],
+            [["quantity", "cart_id", "product_id"], "integer"],
+            [
+                ["cart_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => Cart::class,
+                "targetAttribute" => ["cart_id" => "id"],
+            ],
+            [
+                ["product_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => Product::class,
+                "targetAttribute" => ["product_id" => "id"],
+            ],
         ];
     }
 
@@ -47,10 +58,10 @@ class CartItem extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'quantity' => 'Quantity',
-            'cart_id' => 'Cart ID',
-            'product_id' => 'Product ID',
+            "id" => "ID",
+            "quantity" => "Quantity",
+            "cart_id" => "Cart ID",
+            "product_id" => "Product ID",
         ];
     }
 
@@ -61,7 +72,7 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getCart()
     {
-        return $this->hasOne(Cart::class, ['id' => 'cart_id']);
+        return $this->hasOne(Cart::class, ["id" => "cart_id"]);
     }
     /**
      * Gets query for [[Orders]].
@@ -70,7 +81,10 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::class, ['id' => 'order_id'])->viaTable('main_order_order_items', ['cartitem_id' => 'id']);
+        return $this->hasMany(Order::class, ["id" => "order_id"])->viaTable(
+            "main_order_order_items",
+            ["cartitem_id" => "id"]
+        );
     }
 
     /**
@@ -80,6 +94,6 @@ class CartItem extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::class, ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ["id" => "product_id"]);
     }
 }

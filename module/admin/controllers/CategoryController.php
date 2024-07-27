@@ -3,6 +3,7 @@
 namespace app\module\admin\controllers;
 
 use app\models\Category;
+use app\models\CategoryTranslation;
 use app\module\admin\models\search\CategorySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -18,17 +19,14 @@ class CategoryController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        return array_merge(parent::behaviors(), [
+            "verbs" => [
+                "class" => VerbFilter::className(),
+                "actions" => [
+                    "delete" => ["POST"],
                 ],
-            ]
-        );
+            ],
+        ]);
     }
 
     /**
@@ -41,9 +39,9 @@ class CategoryController extends Controller
         $searchModel = new CategorySearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+        return $this->render("index", [
+            "searchModel" => $searchModel,
+            "dataProvider" => $dataProvider,
         ]);
     }
 
@@ -55,8 +53,8 @@ class CategoryController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        return $this->render("view", [
+            "model" => $this->findModel($id),
         ]);
     }
 
@@ -71,14 +69,14 @@ class CategoryController extends Controller
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(["view", "id" => $model->id]);
             }
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
-            'model' => $model,
+        return $this->render("create", [
+            "model" => $model,
         ]);
     }
 
@@ -92,13 +90,22 @@ class CategoryController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $translationModel = new CategoryTranslation();
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(["view", "id" => $model->id]);
+            } elseif (
+                $translationModel->load($this->request->post()) &&
+                $translationModel->save()
+            ) {
+                return $this->redirect(["update", "id" => $model->id]);
+            }
         }
 
-        return $this->render('update', [
-            'model' => $model,
+        return $this->render("update", [
+            "model" => $model,
+            "translationModel" => $translationModel,
         ]);
     }
 
@@ -113,7 +120,7 @@ class CategoryController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(["index"]);
     }
 
     /**
@@ -125,10 +132,10 @@ class CategoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Category::findOne(['id' => $id])) !== null) {
+        if (($model = Category::findOne(["id" => $id])) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException("The requested page does not exist.");
     }
 }

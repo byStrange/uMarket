@@ -12,14 +12,14 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'code')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, "code")->textInput(["maxlength" => true]) ?>
 
-    <?= $form->field($model, 'discount_percentage')->textInput() ?>
+    <?= $form->field($model, "discount_percentage")->textInput() ?>
 
-    <?= $form->field($model, 'is_active')->checkbox() ?>
+    <?= $form->field($model, "is_active")->checkbox() ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

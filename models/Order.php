@@ -30,7 +30,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'main_order';
+        return "main_order";
     }
 
     /**
@@ -39,14 +39,45 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at', 'status', 'payment_type', 'user_id'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['coupon_id', 'user_id', 'address_id'], 'default', 'value' => null],
-            [['coupon_id', 'user_id', 'address_id'], 'integer'],
-            [['status', 'payment_type'], 'string', 'max' => 20],
-            [['coupon_id'], 'exist', 'skipOnError' => true, 'targetClass' => Coupon::class, 'targetAttribute' => ['coupon_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
-            [['address_id'], 'exist', 'skipOnError' => true, 'targetClass' => UserAddress::class, 'targetAttribute' => ['address_id' => 'id']],
+            [
+                [
+                    "created_at",
+                    "updated_at",
+                    "status",
+                    "payment_type",
+                    "user_id",
+                ],
+                "required",
+            ],
+            [["created_at", "updated_at"], "safe"],
+            [
+                ["coupon_id", "user_id", "address_id"],
+                "default",
+                "value" => null,
+            ],
+            [["coupon_id", "user_id", "address_id"], "integer"],
+            [["status", "payment_type"], "string", "max" => 20],
+            [
+                ["coupon_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => Coupon::class,
+                "targetAttribute" => ["coupon_id" => "id"],
+            ],
+            [
+                ["user_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => User::class,
+                "targetAttribute" => ["user_id" => "id"],
+            ],
+            [
+                ["address_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => UserAddress::class,
+                "targetAttribute" => ["address_id" => "id"],
+            ],
         ];
     }
 
@@ -56,26 +87,26 @@ class Order extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'status' => 'Status',
-            'payment_type' => 'Payment Type',
-            'coupon_id' => 'Coupon ID',
-            'user_id' => 'User ID',
-            'address_id' => 'Address ID',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "status" => "Status",
+            "payment_type" => "Payment Type",
+            "coupon_id" => "Coupon ID",
+            "user_id" => "User ID",
+            "address_id" => "Address ID",
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
-          [
-            'class' => TimeStampBehavior::class,
-            'value' => new Expression('now()')
-          ],
+            [
+                "class" => TimeStampBehavior::class,
+                "value" => new Expression("now()"),
+            ],
         ];
     }
-
 
     /**
      * Gets query for [[Address]].
@@ -84,7 +115,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getAddress()
     {
-        return $this->hasOne(UserAddress::class, ['id' => 'address_id']);
+        return $this->hasOne(UserAddress::class, ["id" => "address_id"]);
     }
 
     /**
@@ -94,7 +125,9 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getCartItems()
     {
-        return $this->hasMany(CartItem::class, ['id' => 'cartitem_id'])->viaTable('main_order_order_items', ['order_id' => 'id']);
+        return $this->hasMany(CartItem::class, [
+            "id" => "cartitem_id",
+        ])->viaTable("main_order_order_items", ["order_id" => "id"]);
     }
 
     /**
@@ -104,7 +137,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getCoupon()
     {
-        return $this->hasOne(Coupon::class, ['id' => 'coupon_id']);
+        return $this->hasOne(Coupon::class, ["id" => "coupon_id"]);
     }
 
     /**
@@ -114,6 +147,6 @@ class Order extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::class, ['id' => 'user_id']);
+        return $this->hasOne(User::class, ["id" => "user_id"]);
     }
 }

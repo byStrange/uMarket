@@ -17,8 +17,8 @@ class OrderSearch extends Order
     public function rules()
     {
         return [
-            [['id', 'coupon_id', 'user_id', 'address_id'], 'integer'],
-            [['created_at', 'updated_at', 'status', 'payment_type'], 'safe'],
+            [["id", "coupon_id", "user_id", "address_id"], "integer"],
+            [["created_at", "updated_at", "status", "payment_type"], "safe"],
         ];
     }
 
@@ -45,7 +45,7 @@ class OrderSearch extends Order
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -58,16 +58,17 @@ class OrderSearch extends Order
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'coupon_id' => $this->coupon_id,
-            'user_id' => $this->user_id,
-            'address_id' => $this->address_id,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "coupon_id" => $this->coupon_id,
+            "user_id" => $this->user_id,
+            "address_id" => $this->address_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'status', $this->status])
-            ->andFilterWhere(['ilike', 'payment_type', $this->payment_type]);
+        $query
+            ->andFilterWhere(["ilike", "status", $this->status])
+            ->andFilterWhere(["ilike", "payment_type", $this->payment_type]);
 
         return $dataProvider;
     }

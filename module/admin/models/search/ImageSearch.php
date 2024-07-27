@@ -17,8 +17,8 @@ class ImageSearch extends Image
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['created_at', 'updated_at', 'image', 'alt'], 'safe'],
+            [["id"], "integer"],
+            [["created_at", "updated_at", "image", "alt"], "safe"],
         ];
     }
 
@@ -45,7 +45,7 @@ class ImageSearch extends Image
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -58,13 +58,14 @@ class ImageSearch extends Image
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['ilike', 'image', $this->image])
-            ->andFilterWhere(['ilike', 'alt', $this->alt]);
+        $query
+            ->andFilterWhere(["ilike", "image", $this->image])
+            ->andFilterWhere(["ilike", "alt", $this->alt]);
 
         return $dataProvider;
     }

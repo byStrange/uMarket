@@ -86,3 +86,11 @@ a.desc:after {
 .form-group {
     margin-bottom: 1rem;
 }
+
+.form-check-input:checked + .form-check-label .card {
+  border-color: var(--bs-primary);  box-shadow: 0 0 0 2px rgba(216, 216, 216, 0.5);
+}
+
+.form-check-label {
+  cursor: pointer; 
+}

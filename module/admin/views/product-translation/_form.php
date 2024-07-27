@@ -1,5 +1,6 @@
 <?php
 
+use app\models\Product;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -12,14 +13,27 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'language_code')->textInput(['maxlength' => true]) ?>
+    <?= $form
+        ->field($model, "language_code")
+        ->textInput(["maxlength" => true]) ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, "title")->textInput(["maxlength" => true]) ?>
 
-    <?= $form->field($model, 'product_id')->textInput() ?>
+    <?= $form->field($model, "description")->textarea(["rows" => 5]) ?>
+
+<?php if (isset($product_id)) {
+    echo $form
+        ->field($model, "product_id")
+        ->hiddenInput(["value" => $product_id])
+        ->label("Product Id: $product_id");
+} else {
+    echo $form
+        ->field($model, "product_id")
+        ->dropDownList(Product::findTranslatedTitlesOrIds());
+} ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

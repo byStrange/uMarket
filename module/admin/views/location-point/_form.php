@@ -12,14 +12,16 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'lon')->textInput() ?>
+    <?= $form->field($model, "lon")->textInput() ?>
 
-    <?= $form->field($model, 'lat')->textInput() ?>
+    <?= $form->field($model, "lat")->textInput() ?>
 
-    <?= $form->field($model, 'address_label')->textInput(['maxlength' => true]) ?>
+    <?= $form
+        ->field($model, "address_label")
+        ->textInput(["maxlength" => true]) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

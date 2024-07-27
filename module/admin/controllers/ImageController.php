@@ -7,6 +7,7 @@ use app\module\admin\models\search\ImageSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * ImageController implements the CRUD actions for Image model.
@@ -18,17 +19,14 @@ class ImageController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        return array_merge(parent::behaviors(), [
+            "verbs" => [
+                "class" => VerbFilter::className(),
+                "actions" => [
+                    "delete" => ["POST"],
                 ],
-            ]
-        );
+            ],
+        ]);
     }
 
     /**
@@ -41,9 +39,9 @@ class ImageController extends Controller
         $searchModel = new ImageSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+        return $this->render("index", [
+            "searchModel" => $searchModel,
+            "dataProvider" => $dataProvider,
         ]);
     }
 
@@ -55,8 +53,8 @@ class ImageController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        return $this->render("view", [
+            "model" => $this->findModel($id),
         ]);
     }
 
@@ -70,15 +68,21 @@ class ImageController extends Controller
         $model = new Image();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                $model->image = UploadedFile::getInstance($model, "image");
+                if ($model->upload() && $model->save()) {
+                    return $this->redirect(["view", "id" => $model->id]);
+                } else {
+                    var_dump($model->errors);
+                    die();
+                }
             }
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
-            'model' => $model,
+        return $this->render("create", [
+            "model" => $model,
         ]);
     }
 
@@ -93,12 +97,16 @@ class ImageController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (
+            $this->request->isPost &&
+            $model->load($this->request->post()) &&
+            $model->save()
+        ) {
+            return $this->redirect(["view", "id" => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
+        return $this->render("update", [
+            "model" => $model,
         ]);
     }
 
@@ -113,7 +121,7 @@ class ImageController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(["index"]);
     }
 
     /**
@@ -125,10 +133,10 @@ class ImageController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Image::findOne(['id' => $id])) !== null) {
+        if (($model = Image::findOne(["id" => $id])) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException("The requested page does not exist.");
     }
 }

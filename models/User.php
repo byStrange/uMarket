@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "main_user".
@@ -32,14 +33,14 @@ use yii\behaviors\TimestampBehavior;
  * @property Product[] $products0
  * @property Image $profilePicture
  */
-class User extends \yii\db\ActiveRecord
+class User extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'main_user';
+        return "main_user";
     }
 
     /**
@@ -48,18 +49,48 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'password', 'authKey', 'accessToken', 'email', 'first_name', 'last_name', 'is_superuser', 'is_active', 'profile_picture_id'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['password'], 'string'],
-            [['is_superuser', 'is_active'], 'boolean'],
-            [['profile_picture_id'], 'default', 'value' => null],
-            [['profile_picture_id'], 'integer'],
-            [['username', 'authKey', 'accessToken', 'email', 'first_name', 'last_name'], 'string', 'max' => 255],
-            [['phone_number'], 'string', 'max' => 13],
-            [['phone_number'], 'unique'],
-            [['profile_picture_id'], 'unique'],
-            [['username'], 'unique'],
-            [['profile_picture_id'], 'exist', 'skipOnError' => true, 'targetClass' => Image::class, 'targetAttribute' => ['profile_picture_id' => 'id']],
+            [
+                [
+                    "username",
+                    "password",
+                    "authKey",
+                    "accessToken",
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "is_superuser",
+                    "is_active",
+                ],
+                "required",
+            ],
+            [["created_at", "updated_at"], "safe"],
+            [["password"], "string"],
+            [["is_superuser", "is_active"], "boolean"],
+            [["profile_picture_id"], "default", "value" => null],
+            [["profile_picture_id"], "integer"],
+            [
+                [
+                    "username",
+                    "authKey",
+                    "accessToken",
+                    "email",
+                    "first_name",
+                    "last_name",
+                ],
+                "string",
+                "max" => 255,
+            ],
+            [["phone_number"], "string", "max" => 13],
+            [["phone_number"], "unique"],
+            [["profile_picture_id"], "unique"],
+            [["username"], "unique"],
+            [
+                ["profile_picture_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => Image::class,
+                "targetAttribute" => ["profile_picture_id" => "id"],
+            ],
         ];
     }
 
@@ -69,29 +100,30 @@ class User extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'username' => 'Username',
-            'password' => 'Password',
-            'authKey' => 'Auth Key',
-            'accessToken' => 'Access Token',
-            'phone_number' => 'Phone Number',
-            'email' => 'Email',
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'is_superuser' => 'Is Superuser',
-            'is_active' => 'Is Active',
-            'profile_picture_id' => 'Profile Picture ID',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "username" => "Username",
+            "password" => "Password",
+            "authKey" => "Auth Key",
+            "accessToken" => "Access Token",
+            "phone_number" => "Phone Number",
+            "email" => "Email",
+            "first_name" => "First Name",
+            "last_name" => "Last Name",
+            "is_superuser" => "Is Superuser",
+            "is_active" => "Is Active",
+            "profile_picture_id" => "Profile Picture ID",
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
-          [
-            'class' => TimestampBehavior::class,
-            'value' => new Expression('NOW()')
-          ],
+            [
+                "class" => TimestampBehavior::class,
+                "value" => new Expression("NOW()"),
+            ],
         ];
     }
 
@@ -102,7 +134,7 @@ class User extends \yii\db\ActiveRecord
      */
     public function getCarts()
     {
-        return $this->hasMany(Cart::class, ['user_id' => 'id']);
+        return $this->hasMany(Cart::class, ["user_id" => "id"]);
     }
 
     /**
@@ -112,9 +144,8 @@ class User extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::class, ['user_id' => 'id']);
+        return $this->hasMany(Order::class, ["user_id" => "id"]);
     }
-
 
     /**
      * Gets query for [[Products]].
@@ -123,7 +154,7 @@ class User extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::class, ['created_by_id' => 'id']);
+        return $this->hasMany(Product::class, ["created_by_id" => "id"]);
     }
 
     /**
@@ -133,7 +164,7 @@ class User extends \yii\db\ActiveRecord
      */
     public function getUserAddresses()
     {
-        return $this->hasMany(UserAddress::class, ['user_id' => 'id']);
+        return $this->hasMany(UserAddress::class, ["user_id" => "id"]);
     }
 
     /**
@@ -143,7 +174,10 @@ class User extends \yii\db\ActiveRecord
      */
     public function getLikedProducts()
     {
-        return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('main_product_likes', ['user_id' => 'id']);
+        return $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
+            "main_product_likes",
+            ["user_id" => "id"]
+        );
     }
 
     /**
@@ -153,7 +187,10 @@ class User extends \yii\db\ActiveRecord
      */
     public function getViewedProducts()
     {
-        return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('main_product_viewers', ['user_id' => 'id']);
+        return $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
+            "main_product_viewers",
+            ["user_id" => "id"]
+        );
     }
 
     /**
@@ -163,9 +200,9 @@ class User extends \yii\db\ActiveRecord
      */
     public function getProfilePicture()
     {
-        return $this->hasOne(Image::class, ['id' => 'profile_picture_id']);
+        return $this->hasOne(Image::class, ["id" => "profile_picture_id"]);
     }
-    
+
     public static function findIdentity($id)
     {
         return self::findOne(["id" => $id]);
@@ -176,6 +213,11 @@ class User extends \yii\db\ActiveRecord
         return self::findOne(["accessToken" => $access]);
     }
 
+    public static function findByUsername($username)
+    {
+        return self::findOne(["username" => $username]);
+    }
+
     public function getId()
     {
         return $this->id;
@@ -183,7 +225,7 @@ class User extends \yii\db\ActiveRecord
 
     public function getAuthKey()
     {
-        return $this->authkey;
+        return $this->authKey;
     }
 
     public function validateAuthKey($authKey)
@@ -206,11 +248,10 @@ class User extends \yii\db\ActiveRecord
 
     public function setAccessToken()
     {
-        $this->accesstoken = Yii::$app->security->generateRandomString();
+        $this->accessToken = Yii::$app->security->generateRandomString();
     }
     public function setAuthKey()
     {
         $this->authKey = Yii::$app->security->generateRandomString();
     }
-
 }

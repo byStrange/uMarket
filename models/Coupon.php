@@ -6,7 +6,6 @@ use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
 
-
 /**
  * This is the model class for table "main_coupon".
  *
@@ -16,8 +15,9 @@ use yii\behaviors\TimestampBehavior;
  * @property string $code
  * @property int $discount_percentage
  * @property bool $is_active
+ * @property string $label
  *
- * @property Order[] $mainOrders
+ * @property Order[] $orders
  */
 class Coupon extends \yii\db\ActiveRecord
 {
@@ -26,7 +26,7 @@ class Coupon extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'main_coupon';
+        return "main_coupon";
     }
 
     /**
@@ -35,12 +35,22 @@ class Coupon extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at', 'code', 'discount_percentage', 'is_active'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['discount_percentage'], 'default', 'value' => null],
-            [['discount_percentage'], 'integer'],
-            [['is_active'], 'boolean'],
-            [['code'], 'string', 'max' => 10],
+            [
+                [
+                    "created_at",
+                    "updated_at",
+                    "code",
+                    "discount_percentage",
+                    "is_active",
+                ],
+                "required",
+            ],
+            [["created_at", "updated_at"], "safe"],
+            [["discount_percentage"], "default", "value" => null],
+            [["discount_percentage"], "integer"],
+            [["is_active"], "boolean"],
+            [["code"], "string", "max" => 10],
+            [["label"], "string", "max" => 255],
         ];
     }
 
@@ -50,24 +60,24 @@ class Coupon extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'code' => 'Code',
-            'discount_percentage' => 'Discount Percentage',
-            'is_active' => 'Is Active',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "code" => "Code",
+            "discount_percentage" => "Discount Percentage",
+            "is_active" => "Is Active",
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
-          [
-            'class' => TimeStampBehavior::class,
-            'value' => new Expression('now()')
-          ],
+            [
+                "class" => TimeStampBehavior::class,
+                "value" => new Expression("now()"),
+            ],
         ];
     }
-
 
     /**
      * Gets query for [[Orders]].
@@ -76,6 +86,6 @@ class Coupon extends \yii\db\ActiveRecord
      */
     public function getOrders()
     {
-        return $this->hasMany(Order::class, ['coupon_id' => 'id']);
+        return $this->hasMany(Order::class, ["coupon_id" => "id"]);
     }
 }

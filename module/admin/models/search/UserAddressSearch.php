@@ -17,8 +17,8 @@ class UserAddressSearch extends UserAddress
     public function rules()
     {
         return [
-            [['id', 'delivery_point_id', 'user_id'], 'integer'],
-            [['created_at', 'updated_at', 'label', 'city', 'zip_code'], 'safe'],
+            [["id", "delivery_point_id", "user_id"], "integer"],
+            [["created_at", "updated_at", "label", "city", "zip_code"], "safe"],
         ];
     }
 
@@ -45,7 +45,7 @@ class UserAddressSearch extends UserAddress
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -58,16 +58,17 @@ class UserAddressSearch extends UserAddress
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'delivery_point_id' => $this->delivery_point_id,
-            'user_id' => $this->user_id,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "delivery_point_id" => $this->delivery_point_id,
+            "user_id" => $this->user_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'label', $this->label])
-            ->andFilterWhere(['ilike', 'city', $this->city])
-            ->andFilterWhere(['ilike', 'zip_code', $this->zip_code]);
+        $query
+            ->andFilterWhere(["ilike", "label", $this->label])
+            ->andFilterWhere(["ilike", "city", $this->city])
+            ->andFilterWhere(["ilike", "zip_code", $this->zip_code]);
 
         return $dataProvider;
     }

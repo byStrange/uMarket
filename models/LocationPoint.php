@@ -25,7 +25,7 @@ class LocationPoint extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'main_locationpoint';
+        return "main_locationpoint";
     }
 
     /**
@@ -34,9 +34,10 @@ class LocationPoint extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at'], 'safe'],
-            [['lon', 'lat'], 'number'],
-            [['address_label'], 'string', 'max' => 255],
+            [["created_at", "updated_at"], "safe"],
+            [["lon", "lat"], "number"],
+            [["lon", "lat"], "required"],
+            [["address_label"], "string", "max" => 255],
         ];
     }
 
@@ -46,23 +47,24 @@ class LocationPoint extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'lon' => 'Lon',
-            'lat' => 'Lat',
-            'address_label' => 'Address Label',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "lon" => "Lon",
+            "lat" => "Lat",
+            "address_label" => "Address Label",
         ];
     }
 
-    public function behaviors() {
-      return [
-        [
-          'class' => TimestampBehavior::class,
-          'value' => new Expression('NOW()')
-        ],
-      ];
-    } 
+    public function behaviors()
+    {
+        return [
+            [
+                "class" => TimestampBehavior::class,
+                "value" => new Expression("NOW()"),
+            ],
+        ];
+    }
 
     /**
      * Gets query for [[DeliveryPoint]].
@@ -71,6 +73,6 @@ class LocationPoint extends \yii\db\ActiveRecord
      */
     public function getDeliveryPoint()
     {
-        return $this->hasOne(DeliveryPoint::class, ['location_id' => 'id']);
+        return $this->hasOne(DeliveryPoint::class, ["location_id" => "id"]);
     }
 }

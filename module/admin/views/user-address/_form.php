@@ -1,5 +1,7 @@
 <?php
 
+use app\models\DeliveryPoint;
+use app\models\User;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -12,22 +14,28 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
+    <?= $form->field($model, "label")->textInput(["maxlength" => true]) ?>
 
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?= $form->field($model, "city")->textInput(["maxlength" => true]) ?>
 
-    <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, "zip_code")->textInput(["maxlength" => true]) ?>
 
-    <?= $form->field($model, 'city')->textInput(['maxlength' => true]) ?>
+    <?= $form
+        ->field($model, "delivery_point_id")
+        ->dropDownList(
+            DeliveryPoint::find()->select("label")->indexBy("id")->column()
+        )
+        ->label("Delivery point") ?>
 
-    <?= $form->field($model, 'zip_code')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'delivery_point_id')->textInput() ?>
-
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?= $form
+        ->field($model, "user_id")
+        ->dropDownList(
+            User::find()->select("username")->indexBy("id")->column()
+        )
+        ->label("User") ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

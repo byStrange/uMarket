@@ -17,8 +17,8 @@ class DeliveryPointSearch extends DeliveryPoint
     public function rules()
     {
         return [
-            [['id', 'location_id'], 'integer'],
-            [['created_at', 'updated_at', 'label'], 'safe'],
+            [["id", "location_id"], "integer"],
+            [["created_at", "updated_at", "label"], "safe"],
         ];
     }
 
@@ -45,7 +45,7 @@ class DeliveryPointSearch extends DeliveryPoint
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -58,13 +58,13 @@ class DeliveryPointSearch extends DeliveryPoint
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'location_id' => $this->location_id,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "location_id" => $this->location_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'label', $this->label]);
+        $query->andFilterWhere(["ilike", "label", $this->label]);
 
         return $dataProvider;
     }

@@ -6,7 +6,6 @@ use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
 
-
 /**
  * This is the model class for table "main_categorytranslation".
  *
@@ -28,7 +27,7 @@ class CategoryTranslation extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'main_categorytranslation';
+        return "main_categorytranslation";
     }
 
     /**
@@ -37,15 +36,27 @@ class CategoryTranslation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at', 'language_code', 'name', 'category_id', 'image_id'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['category_id', 'image_id'], 'default', 'value' => null],
-            [['category_id', 'image_id'], 'integer'],
-            [['language_code'], 'string', 'max' => 10],
-            [['name'], 'string', 'max' => 255],
-            [['image_id'], 'unique'],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['category_id' => 'id']],
-            [['image_id'], 'exist', 'skipOnError' => true, 'targetClass' => Image::class, 'targetAttribute' => ['image_id' => 'id']],
+            [["language_code", "name", "category_id", "image_id"], "required"],
+            [["created_at", "updated_at"], "safe"],
+            [["category_id", "image_id"], "default", "value" => null],
+            [["category_id", "image_id"], "integer"],
+            [["language_code"], "string", "max" => 10],
+            [["name"], "string", "max" => 255],
+            [["image_id"], "unique"],
+            [
+                ["category_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => Category::class,
+                "targetAttribute" => ["category_id" => "id"],
+            ],
+            [
+                ["image_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => Image::class,
+                "targetAttribute" => ["image_id" => "id"],
+            ],
         ];
     }
 
@@ -55,33 +66,33 @@ class CategoryTranslation extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'language_code' => 'Language Code',
-            'name' => 'Name',
-            'category_id' => 'Category ID',
-            'image_id' => 'Image ID',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "language_code" => "Language Code",
+            "name" => "Name",
+            "category_id" => "Category ID",
+            "image_id" => "Image ID",
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
-          [
-            'class' => TimeStampBehavior::class,
-            'value' => new Expression('now()')
-          ],
+            [
+                "class" => TimeStampBehavior::class,
+                "value" => new Expression("now()"),
+            ],
         ];
     }
-
 
     public function getCategory()
     {
-        return $this->hasOne(Category::class, ['id' => 'category_id']);
+        return $this->hasOne(Category::class, ["id" => "category_id"]);
     }
 
     public function getImage()
     {
-        return $this->hasOne(Image::class, ['id' => 'image_id']);
+        return $this->hasOne(Image::class, ["id" => "image_id"]);
     }
 }

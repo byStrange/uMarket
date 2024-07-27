@@ -1,5 +1,6 @@
 <?php
 
+use app\models\LocationPoint;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -12,12 +13,19 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'label')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, "label")->textInput(["maxlength" => true]) ?>
 
-    <?= $form->field($model, 'location_id')->textInput() ?>
+    <?= $form
+        ->field($model, "location_id")
+        ->dropDownList(
+            LocationPoint::find()
+                ->select("address_label")
+                ->indexBy("id")
+                ->column()
+        ) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
