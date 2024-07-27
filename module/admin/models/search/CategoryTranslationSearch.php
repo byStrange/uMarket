@@ -17,8 +17,8 @@ class CategoryTranslationSearch extends CategoryTranslation
     public function rules()
     {
         return [
-            [['id', 'category_id', 'image_id'], 'integer'],
-            [['created_at', 'updated_at', 'language_code', 'name'], 'safe'],
+            [["id", "category_id", "image_id"], "integer"],
+            [["created_at", "updated_at", "language_code", "name"], "safe"],
         ];
     }
 
@@ -45,7 +45,7 @@ class CategoryTranslationSearch extends CategoryTranslation
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -58,15 +58,16 @@ class CategoryTranslationSearch extends CategoryTranslation
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'category_id' => $this->category_id,
-            'image_id' => $this->image_id,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "category_id" => $this->category_id,
+            "image_id" => $this->image_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'language_code', $this->language_code])
-            ->andFilterWhere(['ilike', 'name', $this->name]);
+        $query
+            ->andFilterWhere(["ilike", "language_code", $this->language_code])
+            ->andFilterWhere(["ilike", "name", $this->name]);
 
         return $dataProvider;
     }

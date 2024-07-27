@@ -17,9 +17,20 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['password', 'last_login', 'username', 'first_name', 'last_name', 'email', 'date_joined'], 'safe'],
-            [['is_superuser', 'is_staff', 'is_active'], 'boolean'],
+            [["id"], "integer"],
+            [
+                [
+                    "password",
+                    "username",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "created_at",
+                    "updated_at",
+                ],
+                "safe",
+            ],
+            [["is_superuser", "is_active"], "boolean"],
         ];
     }
 
@@ -46,7 +57,7 @@ class UserSearch extends User
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -59,19 +70,18 @@ class UserSearch extends User
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'last_login' => $this->last_login,
-            'is_superuser' => $this->is_superuser,
-            'is_staff' => $this->is_staff,
-            'is_active' => $this->is_active,
-            'date_joined' => $this->date_joined,
+            "id" => $this->id,
+            "is_superuser" => $this->is_superuser,
+            "is_active" => $this->is_active,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['ilike', 'password', $this->password])
-            ->andFilterWhere(['ilike', 'username', $this->username])
-            ->andFilterWhere(['ilike', 'first_name', $this->first_name])
-            ->andFilterWhere(['ilike', 'last_name', $this->last_name])
-            ->andFilterWhere(['ilike', 'email', $this->email]);
+        $query
+            ->andFilterWhere(["ilike", "username", $this->username])
+            ->andFilterWhere(["ilike", "first_name", $this->first_name])
+            ->andFilterWhere(["ilike", "last_name", $this->last_name])
+            ->andFilterWhere(["ilike", "email", $this->email]);
 
         return $dataProvider;
     }

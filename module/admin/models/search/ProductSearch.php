@@ -17,9 +17,9 @@ class ProductSearch extends Product
     public function rules()
     {
         return [
-            [['id', 'views', 'created_by_id'], 'integer'],
-            [['created_at', 'updated_at', 'status'], 'safe'],
-            [['price', 'discount_price'], 'number'],
+            [["id", "views", "created_by_id"], "integer"],
+            [["created_at", "updated_at", "status"], "safe"],
+            [["price", "discount_price"], "number"],
         ];
     }
 
@@ -46,7 +46,7 @@ class ProductSearch extends Product
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -59,16 +59,16 @@ class ProductSearch extends Product
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'price' => $this->price,
-            'discount_price' => $this->discount_price,
-            'views' => $this->views,
-            'created_by_id' => $this->created_by_id,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "price" => $this->price,
+            "discount_price" => $this->discount_price,
+            "views" => $this->views,
+            "created_by_id" => $this->created_by_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'status', $this->status]);
+        $query->andFilterWhere(["ilike", "status", $this->status]);
 
         return $dataProvider;
     }

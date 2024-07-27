@@ -6,7 +6,6 @@ use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
 
-
 /**
  * This is the model class for table "main_cart".
  *
@@ -25,7 +24,7 @@ class Cart extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'main_cart';
+        return "main_cart";
     }
 
     /**
@@ -34,11 +33,17 @@ class Cart extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['user_id'], 'default', 'value' => null],
-            [['user_id'], 'integer'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [["user_id"], "required"],
+            [["created_at", "updated_at"], "safe"],
+            [["user_id"], "default", "value" => null],
+            [["user_id"], "integer"],
+            [
+                ["user_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => User::class,
+                "targetAttribute" => ["user_id" => "id"],
+            ],
         ];
     }
 
@@ -48,22 +53,22 @@ class Cart extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'user_id' => 'User ID',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "user_id" => "User ID",
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
-          [
-            'class' => TimeStampBehavior::class,
-            'value' => new Expression('now()')
-          ],
+            [
+                "class" => TimeStampBehavior::class,
+                "value" => new Expression("now()"),
+            ],
         ];
     }
-
 
     /**
      * Gets query for [[CartItems]].
@@ -72,7 +77,7 @@ class Cart extends \yii\db\ActiveRecord
      */
     public function getCartItems()
     {
-        return $this->hasMany(CartItem::class, ['cart_id' => 'id']);
+        return $this->hasMany(CartItem::class, ["cart_id" => "id"]);
     }
 
     /**
@@ -82,6 +87,6 @@ class Cart extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::class, ['id' => 'user_id']);
+        return $this->hasOne(User::class, ["id" => "user_id"]);
     }
 }

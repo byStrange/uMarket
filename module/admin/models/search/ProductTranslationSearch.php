@@ -17,8 +17,8 @@ class ProductTranslationSearch extends ProductTranslation
     public function rules()
     {
         return [
-            [['id', 'product_id'], 'integer'],
-            [['created_at', 'updated_at', 'language_code', 'title'], 'safe'],
+            [["id", "product_id"], "integer"],
+            [["created_at", "updated_at", "language_code", "title"], "safe"],
         ];
     }
 
@@ -45,7 +45,7 @@ class ProductTranslationSearch extends ProductTranslation
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -58,14 +58,15 @@ class ProductTranslationSearch extends ProductTranslation
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'product_id' => $this->product_id,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "product_id" => $this->product_id,
         ]);
 
-        $query->andFilterWhere(['ilike', 'language_code', $this->language_code])
-            ->andFilterWhere(['ilike', 'title', $this->title]);
+        $query
+            ->andFilterWhere(["ilike", "language_code", $this->language_code])
+            ->andFilterWhere(["ilike", "title", $this->title]);
 
         return $dataProvider;
     }

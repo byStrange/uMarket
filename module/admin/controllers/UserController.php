@@ -18,17 +18,14 @@ class UserController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        return array_merge(parent::behaviors(), [
+            "verbs" => [
+                "class" => VerbFilter::className(),
+                "actions" => [
+                    "delete" => ["POST"],
                 ],
-            ]
-        );
+            ],
+        ]);
     }
 
     /**
@@ -41,9 +38,9 @@ class UserController extends Controller
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
+        return $this->render("index", [
+            "searchModel" => $searchModel,
+            "dataProvider" => $dataProvider,
         ]);
     }
 
@@ -55,8 +52,8 @@ class UserController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+        return $this->render("view", [
+            "model" => $this->findModel($id),
         ]);
     }
 
@@ -70,15 +67,24 @@ class UserController extends Controller
         $model = new User();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load($this->request->post())) {
+                $model->setAccessToken();
+                $model->setAuthKey();
+                $model->setPassword($model->password);
+
+                if ($model->save()) {
+                    return $this->redirect(["view", "id" => $model->id]);
+                } else {
+                    var_dump($model->errors);
+                    die();
+                }
             }
         } else {
             $model->loadDefaultValues();
         }
 
-        return $this->render('create', [
-            'model' => $model,
+        return $this->render("create", [
+            "model" => $model,
         ]);
     }
 
@@ -93,12 +99,16 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if (
+            $this->request->isPost &&
+            $model->load($this->request->post()) &&
+            $model->save()
+        ) {
+            return $this->redirect(["view", "id" => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
+        return $this->render("update", [
+            "model" => $model,
         ]);
     }
 
@@ -113,7 +123,7 @@ class UserController extends Controller
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(["index"]);
     }
 
     /**
@@ -125,10 +135,10 @@ class UserController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = User::findOne(['id' => $id])) !== null) {
+        if (($model = User::findOne(["id" => $id])) !== null) {
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException("The requested page does not exist.");
     }
 }

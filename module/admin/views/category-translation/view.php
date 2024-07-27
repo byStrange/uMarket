@@ -7,8 +7,11 @@ use yii\widgets\DetailView;
 /** @var app\models\CategoryTranslation $model */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Category Translations', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params["breadcrumbs"][] = [
+    "label" => "Category Translations",
+    "url" => ["index"],
+];
+$this->params["breadcrumbs"][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="category-translation-view">
@@ -16,26 +19,34 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ]) ?>
+        <?= Html::a(
+            "Update",
+            ["update", "id" => $model->id],
+            ["class" => "btn btn-primary"]
+        ) ?>
+        <?= Html::a(
+            "Delete",
+            ["delete", "id" => $model->id],
+            [
+                "class" => "btn btn-danger",
+                "data" => [
+                    "confirm" => "Are you sure you want to delete this item?",
+                    "method" => "post",
+                ],
+            ]
+        ) ?>
     </p>
 
     <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'created_at',
-            'updated_at',
-            'language_code',
-            'name',
-            'category_id',
-            'image_id',
+        "model" => $model,
+        "attributes" => [
+            "id",
+            "created_at",
+            "updated_at",
+            "language_code",
+            "name",
+            "category_id",
+            "image_id",
         ],
     ]) ?>
 

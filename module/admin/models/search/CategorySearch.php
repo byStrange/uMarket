@@ -17,8 +17,8 @@ class CategorySearch extends Category
     public function rules()
     {
         return [
-            [['id', 'parent_id_id'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [["id", "parent_id_id"], "integer"],
+            [["created_at", "updated_at"], "safe"],
         ];
     }
 
@@ -45,7 +45,7 @@ class CategorySearch extends Category
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -58,10 +58,10 @@ class CategorySearch extends Category
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'parent_id_id' => $this->parent_id_id,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "parent_id_id" => $this->parent_id_id,
         ]);
 
         return $dataProvider;

@@ -16,9 +16,7 @@ class CartItemSearch extends CartItem
      */
     public function rules()
     {
-        return [
-            [['id', 'quantity', 'cart_id', 'product_id'], 'integer'],
-        ];
+        return [[["id", "quantity", "cart_id", "product_id"], "integer"]];
     }
 
     /**
@@ -44,7 +42,7 @@ class CartItemSearch extends CartItem
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -57,10 +55,10 @@ class CartItemSearch extends CartItem
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'quantity' => $this->quantity,
-            'cart_id' => $this->cart_id,
-            'product_id' => $this->product_id,
+            "id" => $this->id,
+            "quantity" => $this->quantity,
+            "cart_id" => $this->cart_id,
+            "product_id" => $this->product_id,
         ]);
 
         return $dataProvider;

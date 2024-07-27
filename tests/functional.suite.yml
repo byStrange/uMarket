@@ -8,7 +8,7 @@
 #basic/web/index.php
 actor: FunctionalTester
 modules:
-    enabled:
-      - Filesystem
-      - Yii2
-      - Asserts
+  enabled:
+    - Filesystem
+    - Yii2
+    - Asserts

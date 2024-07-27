@@ -11,23 +11,25 @@ use yii\widgets\ActiveForm;
 <div class="delivery-point-search">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
-        'method' => 'get',
+        "action" => ["index"],
+        "method" => "get",
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, "id") ?>
 
-    <?= $form->field($model, 'created_at') ?>
+    <?= $form->field($model, "created_at") ?>
 
-    <?= $form->field($model, 'updated_at') ?>
+    <?= $form->field($model, "updated_at") ?>
 
-    <?= $form->field($model, 'label') ?>
+    <?= $form->field($model, "label") ?>
 
-    <?= $form->field($model, 'location_id') ?>
+    <?= $form->field($model, "location_id") ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
+        <?= Html::submitButton("Search", ["class" => "btn btn-primary"]) ?>
+        <?= Html::resetButton("Reset", [
+            "class" => "btn btn-outline-secondary",
+        ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

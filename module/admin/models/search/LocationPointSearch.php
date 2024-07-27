@@ -17,9 +17,9 @@ class LocationPointSearch extends LocationPoint
     public function rules()
     {
         return [
-            [['id'], 'integer'],
-            [['created_at', 'updated_at', 'address_label'], 'safe'],
-            [['lon', 'lat'], 'number'],
+            [["id"], "integer"],
+            [["created_at", "updated_at", "address_label"], "safe"],
+            [["lon", "lat"], "number"],
         ];
     }
 
@@ -46,7 +46,7 @@ class LocationPointSearch extends LocationPoint
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -59,14 +59,18 @@ class LocationPointSearch extends LocationPoint
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'lon' => $this->lon,
-            'lat' => $this->lat,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "lon" => $this->lon,
+            "lat" => $this->lat,
         ]);
 
-        $query->andFilterWhere(['ilike', 'address_label', $this->address_label]);
+        $query->andFilterWhere([
+            "ilike",
+            "address_label",
+            $this->address_label,
+        ]);
 
         return $dataProvider;
     }

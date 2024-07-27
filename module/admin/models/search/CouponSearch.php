@@ -17,9 +17,9 @@ class CouponSearch extends Coupon
     public function rules()
     {
         return [
-            [['id', 'discount_percentage'], 'integer'],
-            [['created_at', 'updated_at', 'code'], 'safe'],
-            [['is_active'], 'boolean'],
+            [["id", "discount_percentage"], "integer"],
+            [["created_at", "updated_at", "code"], "safe"],
+            [["is_active"], "boolean"],
         ];
     }
 
@@ -46,7 +46,7 @@ class CouponSearch extends Coupon
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            "query" => $query,
         ]);
 
         $this->load($params);
@@ -59,14 +59,14 @@ class CouponSearch extends Coupon
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-            'discount_percentage' => $this->discount_percentage,
-            'is_active' => $this->is_active,
+            "id" => $this->id,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+            "discount_percentage" => $this->discount_percentage,
+            "is_active" => $this->is_active,
         ]);
 
-        $query->andFilterWhere(['ilike', 'code', $this->code]);
+        $query->andFilterWhere(["ilike", "code", $this->code]);
 
         return $dataProvider;
     }

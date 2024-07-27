@@ -2,10 +2,11 @@
 
 namespace app\models;
 
+use Exception;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
-
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "main_image".
@@ -13,7 +14,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property string $created_at
  * @property string $updated_at
- * @property string $image
+ * @property UploadedFile $image
  * @property string $alt
  *
  * @property MainCategorytranslation $mainCategorytranslation
@@ -23,11 +24,13 @@ use yii\behaviors\TimestampBehavior;
 class Image extends \yii\db\ActiveRecord
 {
     /**
+     * @var UploadedFile $image */
+    /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'main_image';
+        return "main_image";
     }
 
     /**
@@ -36,10 +39,10 @@ class Image extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at', 'image', 'alt'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['image'], 'string', 'max' => 100],
-            [['alt'], 'string', 'max' => 255],
+            [["image", "alt"], "required"],
+            [["created_at", "updated_at"], "safe"],
+            [["image"], "file", "skipOnEmpty" => false],
+            [["alt"], "string", "max" => 255],
         ];
     }
 
@@ -49,23 +52,23 @@ class Image extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'image' => 'Image',
-            'alt' => 'Alt',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "image" => "Image",
+            "alt" => "Alt",
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
-          [
-            'class' => TimeStampBehavior::class,
-            'value' => new Expression('now()')
-          ],
+            [
+                "class" => TimeStampBehavior::class,
+                "value" => new Expression("now()"),
+            ],
         ];
     }
-
 
     /**
      * Gets query for [[MainCategorytranslation]].
@@ -74,7 +77,7 @@ class Image extends \yii\db\ActiveRecord
      */
     public function getMainCategorytranslation()
     {
-        return $this->hasOne(CategoryTranslation::class, ['image_id' => 'id']);
+        return $this->hasOne(CategoryTranslation::class, ["image_id" => "id"]);
     }
 
     /**
@@ -84,7 +87,7 @@ class Image extends \yii\db\ActiveRecord
      */
     public function getUser()
     {
-        return $this->hasOne(User::class, ['profile_picture_id' => 'id']);
+        return $this->hasOne(User::class, ["profile_picture_id" => "id"]);
     }
 
     /**
@@ -94,6 +97,30 @@ class Image extends \yii\db\ActiveRecord
      */
     public function getProducts()
     {
-        return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('main_product_images', ['image_id' => 'id']);
+        return $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
+            "main_product_images",
+            ["image_id" => "id"]
+        );
+    }
+
+    public function upload()
+    {
+        if (!$this->image || !$this->image->tempName) {
+            return false;
+        }
+
+        if (!is_dir("uploads")) {
+            if (!mkdir("uploads", 0755, true)) {
+                throw new Exception("Failed to create upload directory.");
+            }
+        }
+
+        $filename = uniqid() . "." . $this->image->extension;
+
+        if (!$this->image->saveAs("uploads/" . $filename)) {
+            throw new Exception("Failed to save uploaded image.");
+        }
+
+        return true;
     }
 }

@@ -6,7 +6,6 @@ use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
 
-
 /**
  * This is the model class for table "main_deliverypoint".
  *
@@ -26,7 +25,7 @@ class DeliveryPoint extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'main_deliverypoint';
+        return "main_deliverypoint";
     }
 
     /**
@@ -35,13 +34,19 @@ class DeliveryPoint extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at', 'location_id'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['location_id'], 'default', 'value' => null],
-            [['location_id'], 'integer'],
-            [['label'], 'string', 'max' => 255],
-            [['location_id'], 'unique'],
-            [['location_id'], 'exist', 'skipOnError' => true, 'targetClass' => LocationPoint::class, 'targetAttribute' => ['location_id' => 'id']],
+            [["location_id"], "required"],
+            [["created_at", "updated_at"], "safe"],
+            [["location_id"], "default", "value" => null],
+            [["location_id"], "integer"],
+            [["label"], "string", "max" => 255],
+            [["location_id"], "unique"],
+            [
+                ["location_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => LocationPoint::class,
+                "targetAttribute" => ["location_id" => "id"],
+            ],
         ];
     }
 
@@ -51,23 +56,23 @@ class DeliveryPoint extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'label' => 'Label',
-            'location_id' => 'Location ID',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "label" => "Label",
+            "location_id" => "Location ID",
         ];
     }
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
-          [
-            'class' => TimeStampBehavior::class,
-            'value' => new Expression('now()')
-          ],
+            [
+                "class" => TimeStampBehavior::class,
+                "value" => new Expression("now()"),
+            ],
         ];
     }
-
 
     /**
      * Gets query for [[Location]].
@@ -76,7 +81,7 @@ class DeliveryPoint extends \yii\db\ActiveRecord
      */
     public function getLocation()
     {
-        return $this->hasOne(LocationPoint::class, ['id' => 'location_id']);
+        return $this->hasOne(LocationPoint::class, ["id" => "location_id"]);
     }
 
     /**
@@ -86,6 +91,8 @@ class DeliveryPoint extends \yii\db\ActiveRecord
      */
     public function getUserAddresses()
     {
-        return $this->hasMany(UserAddress::class, ['delivery_point_id' => 'id']);
+        return $this->hasMany(UserAddress::class, [
+            "delivery_point_id" => "id",
+        ]);
     }
 }

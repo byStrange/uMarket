@@ -10,41 +10,53 @@ use yii\grid\GridView;
 /** @var app\module\admin\models\search\OrderSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Orders';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = "Orders";
+$this->params["breadcrumbs"][] = $this->title;
 ?>
 <div class="order-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Order', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(
+            "Create Order",
+            ["create"],
+            ["class" => "btn btn-success"]
+        ) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php
+// echo $this->render('_search', ['model' => $searchModel]);
+?>
 
     <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+        "dataProvider" => $dataProvider,
+        "filterModel" => $searchModel,
+        "columns" => [
+            ["class" => "yii\grid\SerialColumn"],
 
-            'id',
-            'created_at',
-            'updated_at',
-            'status',
-            'payment_type',
+            "id",
+            "created_at",
+            "updated_at",
+            "status",
+            "payment_type",
             //'coupon_id',
             //'user_id',
             //'address_id',
             [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Order $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                "class" => ActionColumn::className(),
+                "urlCreator" => function (
+                    $action,
+                    Order $model,
+                    $key,
+                    $index,
+                    $column
+                ) {
+                    return Url::toRoute([$action, "id" => $model->id]);
+                },
             ],
         ],
-    ]); ?>
+    ]) ?>
 
 
 </div>

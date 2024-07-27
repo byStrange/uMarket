@@ -5,6 +5,8 @@ namespace app\models;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "main_product".
@@ -22,17 +24,11 @@ use yii\behaviors\TimestampBehavior;
  * @property User $createdBy
  * @property Product[] $fromProducts
  * @property Image[] $images
- * @property CartItem[] $mainCartitems
- * @property ProductCategories[] $mainProductCategories
- * @property ProductImages[] $mainProductImages
- * @property ProductLikes[] $mainProductLikes
- * @property ProductRelatedProducts[] $mainProductRelatedProducts
- * @property ProductRelatedProducts[] $mainProductRelatedProducts0
- * @property ProductViewer[] $mainProductViewers
- * @property ProductTranslation[] $mainProducttranslations
+ * @property CartItem[] $cartItems
  * @property Product[] $toProducts
- * @property User[] $users
- * @property User[] $users0
+ * @property User[] $likedUsers
+ * @property User[] $viewers
+ * @property ProductTranslation[] $translations
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -41,7 +37,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'main_product';
+        return "main_product";
     }
 
     /**
@@ -50,13 +46,19 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['created_at', 'updated_at', 'price', 'status', 'views', 'created_by_id'], 'required'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['price', 'discount_price'], 'number'],
-            [['views', 'created_by_id'], 'default', 'value' => null],
-            [['views', 'created_by_id'], 'integer'],
-            [['status'], 'string', 'max' => 20],
-            [['created_by_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['created_by_id' => 'id']],
+            [["price", "status", "views", "created_by_id"], "required"],
+            [["created_at", "updated_at"], "safe"],
+            [["price", "discount_price"], "number"],
+            [["views", "created_by_id"], "default", "value" => null],
+            [["views", "created_by_id"], "integer"],
+            [["status"], "string", "max" => 20],
+            [
+                ["created_by_id"],
+                "exist",
+                "skipOnError" => true,
+                "targetClass" => User::class,
+                "targetAttribute" => ["created_by_id" => "id"],
+            ],
         ];
     }
 
@@ -66,34 +68,44 @@ class Product extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'price' => 'Price',
-            'discount_price' => 'Discount Price',
-            'status' => 'Status',
-            'views' => 'Views',
-            'created_by_id' => 'Created By ID',
+            "id" => "ID",
+            "created_at" => "Created At",
+            "updated_at" => "Updated At",
+            "price" => "Price",
+            "discount_price" => "Discount Price",
+            "status" => "Status",
+            "views" => "Views",
+            "created_by_id" => "Created By ID",
         ];
     }
 
-     public function behaviors() {
+    public function behaviors()
+    {
         return [
-          [
-            'class' => TimestampBehavior::class,
-            'value' => new Expression('now()')
-          ],
+            [
+                "class" => TimestampBehavior::class,
+                "value" => new Expression("now()"),
+            ],
         ];
     }
 
-   /**
+    public function getTranslations()
+    {
+        return $this->hasMany(ProductTranslation::class, [
+            "product_id" => "id",
+        ]);
+    }
+
+    /**
      * Gets query for [[Categories]].
      *
      * @return \yii\db\ActiveQuery
      */
     public function getCategories()
     {
-        return $this->hasMany(Category::class, ['id' => 'category_id'])->viaTable('main_product_categories', ['product_id' => 'id']);
+        return $this->hasMany(Category::class, [
+            "id" => "category_id",
+        ])->viaTable("main_product_categories", ["product_id" => "id"]);
     }
 
     /**
@@ -103,17 +115,21 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getCreatedBy()
     {
-        return $this->hasOne(User::class, ['id' => 'created_by_id']);
+        return $this->hasOne(User::class, ["id" => "created_by_id"]);
     }
 
     /**
-     * Gets query for [[FromProducts]].
+     * Gets all the products in which this product was being used
      *
      * @return \yii\db\ActiveQuery
      */
     public function getFromProducts()
     {
-        return $this->hasMany(Product::class, ['id' => 'from_product_id'])->viaTable('main_product_related_products', ['to_product_id' => 'id']);
+        return $this->hasMany(Product::class, [
+            "id" => "from_product_id",
+        ])->viaTable("main_product_related_products", [
+            "to_product_id" => "id",
+        ]);
     }
 
     /**
@@ -123,7 +139,10 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getImages()
     {
-        return $this->hasMany(Image::class, ['id' => 'image_id'])->viaTable('main_product_images', ['product_id' => 'id']);
+        return $this->hasMany(Image::class, ["id" => "image_id"])->viaTable(
+            "main_product_images",
+            ["product_id" => "id"]
+        );
     }
 
     /**
@@ -133,18 +152,23 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getCartItems()
     {
-        return $this->hasMany(CartItem::class, ['product_id' => 'id']);
+        return $this->hasMany(CartItem::class, ["product_id" => "id"]);
     }
 
-    
     /**
-     * Gets query for [[ToProducts]].
+     * Gets all related_products of the product
+     *
      *
      * @return \yii\db\ActiveQuery
      */
+
     public function getToProducts()
     {
-        return $this->hasMany(Product::class, ['id' => 'to_product_id'])->viaTable('main_product_related_products', ['from_product_id' => 'id']);
+        return $this->hasMany(Product::class, [
+            "id" => "to_product_id",
+        ])->viaTable("main_product_related_products", [
+            "from_product_id" => "id",
+        ]);
     }
 
     /**
@@ -154,7 +178,10 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getLikedUsers()
     {
-        return $this->hasMany(User::class, ['id' => 'user_id'])->viaTable('main_product_likes', ['product_id' => 'id']);
+        return $this->hasMany(User::class, ["id" => "user_id"])->viaTable(
+            "main_product_likes",
+            ["product_id" => "id"]
+        );
     }
 
     /**
@@ -164,6 +191,38 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getViewers()
     {
-        return $this->hasMany(User::class, ['id' => 'user_id'])->viaTable('main_product_viewers', ['product_id' => 'id']);
+        return $this->hasMany(User::class, ["id" => "user_id"])->viaTable(
+            "main_product_viewers",
+            ["product_id" => "id"]
+        );
+    }
+
+    public function linkAll($relation, $ids_list, $relation_model)
+    {
+        if (!is_array($ids_list)) {
+            return;
+        }
+        foreach ($ids_list as $id) {
+            $this->link($relation, $relation_model::findOne(["id" => $id]));
+        }
+    }
+
+    public static function findTranslatedTitlesOrIds()
+    {
+        $products = Product::find()
+            ->select([
+                "main_product.id",
+                "COALESCE(main_producttranslation.title, CAST(main_product.id AS CHAR)) AS title",
+            ])
+            ->leftJoin(
+                "main_producttranslation",
+                "main_product.id = main_producttranslation.product_id AND main_producttranslation.language_code = :lang",
+                [":lang" => Yii::$app->language]
+            )
+            ->asArray()
+            ->all();
+
+        $productList = ArrayHelper::map($products, "id", "title");
+        return $productList;
     }
 }
