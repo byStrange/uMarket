@@ -1,5 +1,6 @@
 <?php
 
+use app\components\Utils;
 use app\models\Category;
 use app\models\Image;
 use yii\helpers\Html;
@@ -12,38 +13,40 @@ use yii\widgets\ActiveForm;
 
 <div class="category-translation-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+  <?php $form = ActiveForm::begin(); ?>
 
+  <?= $form
+    ->field($model, "language_code")
+    ->textInput(["maxlength" => true]) ?>
+
+  <?= $form->field($model, "name")->textInput(["maxlength" => true]); ?>
+
+
+  <?php if (isset($category_id)) : ?>
     <?= $form
-        ->field($model, "language_code")
-        ->textInput(["maxlength" => true]) ?>
+      ->field($model, "category_id")
+      ->hiddenInput(["value" => $category_id])
+      ->label("Category Id: $category_id") ?>
+  <?php else : ?>
+    <?= Utils::popupField($form, $model, 'category_id', function ($form, $model) {
+      return $form
+        ->field($model, "category_id")
+        ->dropDownList(
+          Category::toOptionsList()
+        )
+        ->label("Category");
+    }); ?>
+  <?php endif ?>
+  <?= Utils::popupField($form, $model, '', function ($form, $model) {
+    return $form
+      ->field($model, "image_id")
+      ->dropDownList(Image::toOptionsList())->label("Image");
+  }) ?>
 
-    <?= $form->field($model, "name")->textInput(["maxlength" => true]) ?>
+  <div class="form-group">
+    <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
+  </div>
 
-    <?php if (isset($category_id)) {
-        echo $form
-            ->field($model, "category_id")
-            ->hiddenInput(["value" => $category_id])
-            ->label("Category Id: $category_id");
-    } else {
-        echo $form
-            ->field($model, "category_id")
-            ->dropDownList(
-                Category::find()
-                    ->select(["id"])
-                    ->indexBy("id")
-                    ->column()
-            )
-            ->label("Category");
-    } ?>
-   <?= $form
-       ->field($model, "image_id")
-       ->dropDownList([Image::find()->indexBy("id")->column()]) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
-    </div>
-
-    <?php ActiveForm::end(); ?>
+  <?php ActiveForm::end(); ?>
 
 </div>

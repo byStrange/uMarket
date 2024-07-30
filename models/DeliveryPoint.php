@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "main_deliverypoint".
@@ -94,5 +95,16 @@ class DeliveryPoint extends \yii\db\ActiveRecord
         return $this->hasMany(UserAddress::class, [
             "delivery_point_id" => "id",
         ]);
+    }
+
+    public static function toOptionsList() {
+      return ArrayHelper::map(self::find()->select(['id', 'label'])->all(), 'id', function ($model) {
+        return (string)$model;
+      });
+    }
+
+    public function __toString()
+    {
+      return $this->label;
     }
 }

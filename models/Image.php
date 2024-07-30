@@ -2,10 +2,11 @@
 
 namespace app\models;
 
-use Exception;
+use app\components\Utils;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
 /**
@@ -23,104 +24,92 @@ use yii\web\UploadedFile;
  */
 class Image extends \yii\db\ActiveRecord
 {
-    /**
-     * @var UploadedFile $image */
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return "main_image";
-    }
+  /**
+   * @var UploadedFile $image */
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+    return "main_image";
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [["image", "alt"], "required"],
-            [["created_at", "updated_at"], "safe"],
-            [["image"], "file", "skipOnEmpty" => false],
-            [["alt"], "string", "max" => 255],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function rules()
+  {
+    return [
+      [["image", "alt"], "required"],
+      [["created_at", "updated_at"], "safe"],
+      [["image"], "file", "skipOnEmpty" => false],
+      [["alt"], "string", "max" => 255],
+    ];
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            "id" => "ID",
-            "created_at" => "Created At",
-            "updated_at" => "Updated At",
-            "image" => "Image",
-            "alt" => "Alt",
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function attributeLabels()
+  {
+    return [
+      "id" => "ID",
+      "created_at" => "Created At",
+      "updated_at" => "Updated At",
+      "image" => "Image",
+      "alt" => "Alt",
+    ];
+  }
 
-    public function behaviors()
-    {
-        return [
-            [
-                "class" => TimeStampBehavior::class,
-                "value" => new Expression("now()"),
-            ],
-        ];
-    }
+  public function behaviors()
+  {
+    return [
+      [
+        "class" => TimeStampBehavior::class,
+        "value" => new Expression("now()"),
+      ],
+    ];
+  }
 
-    /**
-     * Gets query for [[MainCategorytranslation]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMainCategorytranslation()
-    {
-        return $this->hasOne(CategoryTranslation::class, ["image_id" => "id"]);
-    }
+  /**
+   * Gets query for [[MainCategorytranslation]].
+   *
+   * @return \yii\db\ActiveQuery
+   */
+  public function getMainCategorytranslation()
+  {
+    return $this->hasOne(CategoryTranslation::class, ["image_id" => "id"]);
+  }
 
-    /**
-     * Gets query for [[User]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUser()
-    {
-        return $this->hasOne(User::class, ["profile_picture_id" => "id"]);
-    }
+  /**
+   * Gets query for [[Products]].
+   *
+   * @return \yii\db\ActiveQuery
+   */
+  public function getProducts()
+  {
+    return $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
+      "main_product_images",
+      ["image_id" => "id"]
+    );
+  }
 
-    /**
-     * Gets query for [[Products]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProducts()
-    {
-        return $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
-            "main_product_images",
-            ["image_id" => "id"]
-        );
-    }
+  public function upload()
+  {
+    $filePath = Utils::uploadImage($this->image);
+    $this->image = $filePath;
+    return true;
+  }
 
-    public function upload()
-    {
-        if (!$this->image || !$this->image->tempName) {
-            return false;
-        }
+  public static function toOptionsList()
+  {
+    return ArrayHelper::map(self::find()->select(['id', 'image'])->all(), 'id', function ($model) {
+      return (string)($model);
+    });
+  }
 
-        if (!is_dir("uploads")) {
-            if (!mkdir("uploads", 0755, true)) {
-                throw new Exception("Failed to create upload directory.");
-            }
-        }
-
-        $filename = uniqid() . "." . $this->image->extension;
-
-        if (!$this->image->saveAs("uploads/" . $filename)) {
-            throw new Exception("Failed to save uploaded image.");
-        }
-
-        return true;
-    }
+  public function __toString()
+  {
+    return $this->image;
+  }
 }

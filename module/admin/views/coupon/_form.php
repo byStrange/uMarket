@@ -16,6 +16,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, "discount_percentage")->textInput() ?>
 
+    <?= $form->field($model, "label")->textInput() ?>
+
     <?= $form->field($model, "is_active")->checkbox() ?>
 
     <div class="form-group">

@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, "updated_at") ?>
 
-    <?= $form->field($model, "parent_id_id") ?>
+    <?= $form->field($model, "parent_id") ?>
 
     <div class="form-group">
         <?= Html::submitButton("Search", ["class" => "btn btn-primary"]) ?>

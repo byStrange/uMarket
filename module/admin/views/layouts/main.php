@@ -37,6 +37,9 @@ $this->registerLinkTag([
     "type" => "image/x-icon",
     "href" => Yii::getAlias("@web/favicon.ico"),
 ]);
+$this->registerCssFile("@web/css/admin.css");
+$this->registerJsFile('@web/js/upload/imagePreview.js', ["depends" => [\yii\web\JqueryAsset::class]]);
+$this->registerJsFile('@web/js/popup/popup.js', ["depends" => [\yii\web\JqueryAsset::class]]);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>

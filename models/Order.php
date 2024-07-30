@@ -41,8 +41,6 @@ class Order extends \yii\db\ActiveRecord
         return [
             [
                 [
-                    "created_at",
-                    "updated_at",
                     "status",
                     "payment_type",
                     "user_id",
