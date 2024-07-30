@@ -11,108 +11,97 @@ use yii\widgets\ActiveForm;
 /** @var yii\web\View $this */
 /** @var app\models\Product $model */
 /** @var yii\widgets\ActiveForm $form */
+$actionId = Yii::$app->controller->action->id;
+$imageOptionsList = Image::toOptionsList();
+$toProductsOptionsList = Product::toOptionsList();
+$categoriesOptionList = Category::toOptionsList();
+$usersOptionList = User::toOptionsList();
 ?>
 
 <div class="product-form">
 
-    <?php $form = ActiveForm::begin(); ?>
-    
-    <?= $form->field($model, "categories[]")->dropDownList(
-        Category::find()
-            ->select(["label"])
-            ->indexBy("id")
-            ->column(),
-        [
-            "multiple" => true,
-            "options" => Utils::preSelectOptions(
-                Category::find()
-                    ->select(["id"])
-                    ->indexBy("id")
-                    ->column(),
-                $model->categories
-            ),
-        ]
-    ) ?>
+  <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, "images[]")->dropDownList(
-        Image::find()
-            ->select(["image"])
-            ->indexBy("id")
-            ->column(),
-        [
-            "multiple" => true,
-            "options" => Utils::preSelectOptions(
-                Image::find()
-                    ->select(["id"])
-                    ->indexBy("id")
-                    ->column(),
-                $model->images
-            ),
-        ]
-    ) ?>
-
-    <?= $form
-        ->field($model, "toProducts[]")
-        ->dropDownList(Product::find()->indexBy("id")->column(), [
-            "multiple" => true,
-            "options" => Utils::preSelectOptions(
-                Product::find()
-                    ->select(["id"])
-                    ->indexBy("id")
-                    ->column(),
-                $model->toProducts
-            ),
-        ]) ?>
-
-    <?= $form->field($model, "viewers[]")->dropDownList(
-        User::find()
-            ->select(["username"])
-            ->indexBy("id")
-            ->column(),
-        [
-            "multiple" => true,
-            "options" => Utils::preSelectOptions(
-                User::find()
-                    ->select(["id"])
-                    ->indexBy("id")
-                    ->column(),
-                $model->toProducts
-            ),
-        ]
-    ) ?> 
-
-<?= $form->field($model, "likedUsers[]")->dropDownList(
-    User::find()
-        ->select(["username"])
-        ->indexBy("id")
-        ->column(),
-    [
+  <?= Utils::popupField($form, $model, 'category', function ($form, $model) use ($categoriesOptionList) {
+    return $form->field($model, "categories[]")->dropDownList(
+      $categoriesOptionList,
+      [
         "multiple" => true,
         "options" => Utils::preSelectOptions(
-            User::find()
-                ->select(["id"])
-                ->indexBy("id")
-                ->column(),
-            $model->likedUsers
+          $categoriesOptionList,
+          $model->categories
         ),
-    ]
-) ?> 
-    <?= $form->field($model, "price")->textInput() ?>
+      ]
+    );
+  }) ?>
 
-    <?= $form->field($model, "discount_price")->textInput() ?>
+  <?= Utils::popupField($form, $model, 'image', function ($form, $model) use ($imageOptionsList) {
+    return $form->field($model, "images[]")->dropDownList(
+      $imageOptionsList,
+      [
+        "multiple" => true,
+        "options" => Utils::preSelectOptions(
+          $imageOptionsList,
+          $model->images
+        ),
+      ]
+    );
+  }) ?>
 
-    <?= $form->field($model, "status")->textInput(["maxlength" => true]) ?>
+  <?= Utils::popupField($form, $model, 'product', function ($form, $model) use ($toProductsOptionsList) {
+    return $form
+      ->field($model, "toProducts[]")
+      ->dropDownList($toProductsOptionsList, [
+        "multiple" => true,
+        "options" => Utils::preSelectOptions(
+          $toProductsOptionsList,
+          $model->toProducts
+        ),
+      ])->label('Related products');
+  }) ?>
 
-    <?= $form->field($model, "views")->textInput() ?>
+  <?php if ($actionId != 'create'): ?>
 
-    <?= $form
-        ->field($model, "created_by_id")
-        ->dropDownList(User::find()->indexBy("id")->column()) ?>
+    <?= Utils::popupField($form, $model, 'user', function ($form, $model) use ($usersOptionList) {
+      return $form->field($model, "viewers[]")->dropDownList(
+        $usersOptionList,
+        [
+          "multiple" => true,
+          "options" => Utils::preSelectOptions(
+            $usersOptionList,
+            $model->viewers
+          ),
+        ]
+      );
+    }) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
-    </div>
+    <?= Utils::popupField($form, $model, 'user', function ($form, $model) use ($usersOptionList) {
+      return $form->field($model, "likedUsers[]")->dropDownList(
+        $usersOptionList,
+        [
+          "multiple" => true,
+          "options" => Utils::preSelectOptions(
+            $usersOptionList,
+            $model->likedUsers
+          ),
+        ]
+      );
+    }) ?>
 
-    <?php ActiveForm::end(); ?>
+  <?php endif ?>
+
+  <?= $form->field($model, "price")->textInput() ?>
+
+  <?= $form->field($model, "discount_price")->textInput() ?>
+
+  <?= $form->field($model, "status")->textInput(["maxlength" => true]) ?>
+
+  <?= $form->field($model, "views")->textInput() ?>
+
+  <div class="form-group">
+    <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
+  </div>
+
+  <?php ActiveForm::end(); ?>
 
 </div>

@@ -1,5 +1,6 @@
 <?php
 
+use app\components\Utils;
 use app\models\LocationPoint;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -11,23 +12,21 @@ use yii\widgets\ActiveForm;
 
 <div class="delivery-point-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+  <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, "label")->textInput(["maxlength" => true]) ?>
+  <?= $form->field($model, "label")->textInput(["maxlength" => true]) ?>
 
-    <?= $form
-        ->field($model, "location_id")
-        ->dropDownList(
-            LocationPoint::find()
-                ->select("address_label")
-                ->indexBy("id")
-                ->column()
-        ) ?>
+  <?= Utils::popupField($form, $model, 'location-point', function ($form, $model) {
+    return $form
+      ->field($model, "location_id")
+      ->dropDownList(
+        LocationPoint::toOptionsList());
+  }) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
-    </div>
+  <div class="form-group">
+    <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
+  </div>
 
-    <?php ActiveForm::end(); ?>
+  <?php ActiveForm::end(); ?>
 
 </div>

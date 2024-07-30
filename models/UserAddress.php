@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "main_useraddress".
@@ -118,5 +119,16 @@ class UserAddress extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::class, ["id" => "user_id"]);
+    }
+
+    public static function toOptionsList() {
+      return ArrayHelper::map(self::find()->select(['user_id','label', 'id'])->all(), 'id', function ($model) {
+        return (string)$model;
+      });
+    }
+
+    public function __toString()
+    {
+      return (string)$this->user . ' : ' . $this->label;
     }
 }

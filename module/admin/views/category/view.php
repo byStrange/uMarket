@@ -41,7 +41,7 @@ $this->params["breadcrumbs"][] = $this->title;
             "created_at",
             "label",
             "updated_at",
-            "parent_id_id",
+            "parent_id",
             /*[*/
             /*    "label" => "name",*/
             /*    "value" => $model->getCategoryTranslationForLanguage(*/

@@ -58,7 +58,7 @@ $this->params["breadcrumbs"][] = $this->title;
             "label",
             "created_at",
             "updated_at",
-            "parent_id_id",
+            "parent_id",
             [
                 "class" => ActionColumn::class,
                 "urlCreator" => function ($action, Category $model) {

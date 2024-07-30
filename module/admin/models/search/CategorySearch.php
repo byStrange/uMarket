@@ -17,7 +17,7 @@ class CategorySearch extends Category
     public function rules()
     {
         return [
-            [["id", "parent_id_id"], "integer"],
+            [["id", "parent_id"], "integer"],
             [["created_at", "updated_at"], "safe"],
         ];
     }
@@ -61,7 +61,7 @@ class CategorySearch extends Category
             "id" => $this->id,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
-            "parent_id_id" => $this->parent_id_id,
+            "parent_id" => $this->parent_id,
         ]);
 
         return $dataProvider;

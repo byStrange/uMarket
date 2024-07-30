@@ -4,101 +4,261 @@
 /** @var string $content */
 
 use app\assets\AppAsset;
-use app\widgets\Alert;
-use yii\bootstrap5\Breadcrumbs;
+use app\components\home\Footer;
+use app\components\home\Header;
+
 use yii\bootstrap5\Html;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\NavBar;
+use yii\widgets\Breadcrumbs;
 
 AppAsset::register($this);
 
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(["charset" => Yii::$app->charset], "charset");
 $this->registerMetaTag([
-    "name" => "viewport",
-    "content" => "width=device-width, initial-scale=1, shrink-to-fit=no",
+  "name" => "viewport",
+  "content" => "width=device-width, initial-scale=1, shrink-to-fit=no",
 ]);
 $this->registerMetaTag([
-    "name" => "description",
-    "content" => $this->params["meta_description"] ?? "",
+  "name" => "description",
+  "content" => $this->params["meta_description"] ?? "",
 ]);
 $this->registerMetaTag([
-    "name" => "keywords",
-    "content" => $this->params["meta_keywords"] ?? "",
+  "name" => "keywords",
+  "content" => $this->params["meta_keywords"] ?? "",
 ]);
 $this->registerLinkTag([
-    "rel" => "icon",
-    "type" => "image/x-icon",
-    "href" => Yii::getAlias("@web/favicon.ico"),
+  "rel" => "icon",
+  "type" => "image/x-icon",
+  "href" => Yii::getAlias("@web/favicon.ico"),
 ]);
+$this->registerJsFile(
+  '@web/js/vendor/bootstrap.bundle.min.js',
+)
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>" class="h-100">
+
 <head>
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head(); ?>
+  <title><?= Html::encode($this->title) ?></title>
+  <?php $this->head(); ?>
+  <link rel="stylesheet" href="/css/style.min.css" />
 </head>
-<body class="d-flex flex-column h-100">
-<?php $this->beginBody(); ?>
 
-<header id="header">
-    <?php
-    NavBar::begin([
-        "brandLabel" => Yii::$app->name,
-        "brandUrl" => Yii::$app->homeUrl,
-        "options" => [
-            "class" => "navbar-expand-md navbar-dark bg-dark fixed-top",
-        ],
-    ]);
-    echo Nav::widget([
-        "options" => ["class" => "navbar-nav"],
-        "items" => [
-            ["label" => "Home", "url" => ["/site/index"]],
-            ["label" => "About", "url" => ["/site/about"]],
-            ["label" => "Contact", "url" => ["/site/contact"]],
-            ["label" => "Gii", "url" => ["/gii"]],
-            ["label" => "Admin", "url" => ["/admin"]],
-            Yii::$app->user->isGuest
-                ? ["label" => "Login", "url" => ["/site/login"]]
-                : '<li class="nav-item">' .
-                    Html::beginForm(["/site/logout"]) .
-                    Html::submitButton(
-                        "Logout (" . Yii::$app->user->identity->username . ")",
-                        ["class" => "nav-link btn btn-link logout"]
-                    ) .
-                    Html::endForm() .
-                    "</li>",
-        ],
-    ]);
-    NavBar::end();
-    ?>
-</header>
+<body>
+  <?php $this->beginBody(); ?>
+  <?= Header::widget() ?>
+  <div class="main-wrapper">
 
-<main id="main" class="flex-shrink-0" role="main">
-    <div class="container">
-        <?php if (!empty($this->params["breadcrumbs"])): ?>
-            <?= Breadcrumbs::widget([
+    <?php if (!empty($this->params["breadcrumbs"])): ?>
+      <div class="breadcrumb-area">
+        <div class="container">
+          <div class="row align-items-center justify-content-center">
+            <div class="col-12 text-center">
+              <h2 class="breadcrumb-title"><?= $this->title ?></h2>
+              <?= Breadcrumbs::widget([
+                "options" => ["class" => "breadcrumb-list"],
+                "itemTemplate" => "<li class=\"breadcrumb-item\">{link}</li>",
+                "activeItemTemplate" => "<li class=\"breadcrumb-item active\">{link}</li>",
                 "links" => $this->params["breadcrumbs"],
-            ]) ?>
-        <?php endif; ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
-    </div>
-</main>
-
-<footer id="footer" class="mt-auto py-3 bg-light">
-    <div class="container">
-        <div class="row text-muted">
-            <div class="col-md-6 text-center text-md-start">&copy; My Company <?= date(
-                "Y"
-            ) ?></div>
-            <div class="col-md-6 text-center text-md-end"><?= Yii::powered() ?></div>
+                "homeLink" => ["url" => "/", "label" => "Home"],
+              ]) ?>
+            </div>
+          </div>
         </div>
-    </div>
-</footer>
+      </div>
+    <?php endif ?>
+    <?= $content ?>
+  </div>
+  <?= Footer::widget()  ?>
 
-<?php $this->endBody(); ?>
+
+
+  <!-- Modal -->
+  <div class="modal modal-2 fade" id="exampleModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <i class="pe-7s-close"></i></button>
+          <div class="row">
+            <div class="col-lg-6 col-sm-12 col-xs-12 mb-lm-30px mb-md-30px mb-sm-30px">
+              <!-- Swiper -->
+              <div class="swiper-container gallery-top">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/zoom-image/1.webp" alt="">
+                  </div>
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/zoom-image/2.webp" alt="">
+                  </div>
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/zoom-image/3.webp" alt="">
+                  </div>
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/zoom-image/4.webp" alt="">
+                  </div>
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/zoom-image/5.webp" alt="">
+                  </div>
+                </div>
+              </div>
+              <div class="swiper-container gallery-thumbs mt-20px slider-nav-style-1 small-nav">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/small-image/1.webp" alt="">
+                  </div>
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/small-image/2.webp" alt="">
+                  </div>
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/small-image/3.webp" alt="">
+                  </div>
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/small-image/4.webp" alt="">
+                  </div>
+                  <div class="swiper-slide">
+                    <img class="img-responsive m-auto" src="/images/product-image/small-image/5.webp" alt="">
+                  </div>
+                </div>
+                <!-- Add Arrows -->
+                <div class="swiper-buttons">
+                  <div class="swiper-button-next"></div>
+                  <div class="swiper-button-prev"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6 col-sm-12 col-xs-12" data-aos="fade-up" data-aos-delay="200">
+              <div class="product-details-content quickview-content">
+                <h2>Modern Smart Phone</h2>
+                <div class="pricing-meta">
+                  <ul class="d-flex">
+                    <li class="new-price">$20.90</li>
+                  </ul>
+                </div>
+                <div class="pro-details-rating-wrap">
+                  <div class="rating-product">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                  </div>
+                  <span class="read-review"><a class="reviews" href="#">( 2 Review )</a></span>
+                </div>
+                <p class="mt-30px">Lorem ipsum dolor sit amet, consecte adipisicing elit, sed do eiusmll tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mill veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip exet commodo consequat. Duis aute irure dolor</p>
+                <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
+                  <span>SKU:</span>
+                  <ul class="d-flex">
+                    <li>
+                      <a href="#">Ch-256xl</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
+                  <span>Categories: </span>
+                  <ul class="d-flex">
+                    <li>
+                      <a href="#">Smart Device, </a>
+                    </li>
+                    <li>
+                      <a href="#">ETC</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
+                  <span>Tags: </span>
+                  <ul class="d-flex">
+                    <li>
+                      <a href="#">Smart Device, </a>
+                    </li>
+                    <li>
+                      <a href="#">Phone</a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="pro-details-quality">
+                  <div class="cart-plus-minus">
+                    <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
+                  </div>
+                  <div class="pro-details-cart">
+                    <button class="add-cart"> Add To
+                      Cart</button>
+                  </div>
+                  <div class="pro-details-compare-wishlist pro-details-wishlist ">
+                    <a href="wishlist.html"><i class="pe-7s-like"></i></a>
+                  </div>
+                </div>
+                <div class="payment-img">
+                  <a href="#"><img src="/images/icons/payment.png" alt=""></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal end -->
+  <!-- Modal Cart -->
+  <div class="modal customize-class fade" id="exampleModal-Cart" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="pe-7s-close"></i></button>
+          <div class="tt-modal-messages">
+            <i class="pe-7s-check"></i> Added to cart successfully!
+          </div>
+          <div class="tt-modal-product">
+            <div class="tt-img">
+              <img src="/images/product-image/1.webp" alt="Modern Smart Phone">
+            </div>
+            <h2 class="tt-title"><a href="#">Modern Smart Phone</a></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal wishlist -->
+  <div class="modal customize-class fade" id="exampleModal-Wishlist" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="pe-7s-close"></i></button>
+          <div class="tt-modal-messages">
+            <i class="pe-7s-check"></i> Added to Wishlist successfully!
+          </div>
+          <div class="tt-modal-product">
+            <div class="tt-img">
+              <img src="/images/product-image/1.webp" alt="Modern Smart Phone">
+            </div>
+            <h2 class="tt-title"><a href="#">Modern Smart Phone</a></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal compare -->
+  <div class="modal customize-class fade" id="exampleModal-Compare" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body text-center">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="pe-7s-close"></i></button>
+          <div class="tt-modal-messages">
+            <i class="pe-7s-check"></i> Added to compare successfully!
+          </div>
+          <div class="tt-modal-product">
+            <div class="tt-img">
+              <img src="/images/product-image/1.webp" alt="Modern Smart Phone">
+            </div>
+            <h2 class="tt-title"><a href="#">Modern Smart Phone</a></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <?php $this->endBody(); ?>
 </body>
+
 </html>
 <?php $this->endPage(); ?>

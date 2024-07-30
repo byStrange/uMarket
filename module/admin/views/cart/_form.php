@@ -1,5 +1,6 @@
 <?php
 
+use app\components\Utils;
 use app\models\User;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
@@ -11,19 +12,18 @@ use yii\widgets\ActiveForm;
 
 <div class="cart-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+  <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, "user_id")->dropDownList(
-        User::find()
-            ->select(["username"])
-            ->indexBy("id")
-            ->column()
-    ) ?>
+  <?= Utils::popupField($form, $model, '', function ($form, $model) {
+    return $form->field($model, "user_id")->dropDownList(
+      User::toOptionsList()
+    );
+  }) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
-    </div>
+  <div class="form-group">
+    <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
+  </div>
 
-    <?php ActiveForm::end(); ?>
+  <?php ActiveForm::end(); ?>
 
 </div>
