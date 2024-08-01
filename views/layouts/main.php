@@ -15,25 +15,23 @@ AppAsset::register($this);
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(["charset" => Yii::$app->charset], "charset");
 $this->registerMetaTag([
-  "name" => "viewport",
-  "content" => "width=device-width, initial-scale=1, shrink-to-fit=no",
+    "name" => "viewport",
+    "content" => "width=device-width, initial-scale=1, shrink-to-fit=no",
 ]);
 $this->registerMetaTag([
-  "name" => "description",
-  "content" => $this->params["meta_description"] ?? "",
+    "name" => "description",
+    "content" => $this->params["meta_description"] ?? "",
 ]);
 $this->registerMetaTag([
-  "name" => "keywords",
-  "content" => $this->params["meta_keywords"] ?? "",
+    "name" => "keywords",
+    "content" => $this->params["meta_keywords"] ?? "",
 ]);
 $this->registerLinkTag([
-  "rel" => "icon",
-  "type" => "image/x-icon",
-  "href" => Yii::getAlias("@web/favicon.ico"),
+    "rel" => "icon",
+    "type" => "image/x-icon",
+    "href" => Yii::getAlias("@web/favicon.ico"),
 ]);
-$this->registerJsFile(
-  '@web/js/vendor/bootstrap.bundle.min.js',
-)
+$this->registerJsFile("@web/js/vendor/bootstrap.bundle.min.js");
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -57,20 +55,23 @@ $this->registerJsFile(
             <div class="col-12 text-center">
               <h2 class="breadcrumb-title"><?= $this->title ?></h2>
               <?= Breadcrumbs::widget([
-                "options" => ["class" => "breadcrumb-list"],
-                "itemTemplate" => "<li class=\"breadcrumb-item\">{link}</li>",
-                "activeItemTemplate" => "<li class=\"breadcrumb-item active\">{link}</li>",
-                "links" => $this->params["breadcrumbs"],
-                "homeLink" => ["url" => "/", "label" => "Home"],
+                  "options" => [
+                      "class" => "breadcrumb-list",
+                  ],
+                  "itemTemplate" => "<li class=\"breadcrumb-item\">{link}</li>",
+                  "activeItemTemplate" =>
+                      "<li class=\"breadcrumb-item active\">{link}</li>",
+                  "links" => $this->params["breadcrumbs"],
+                  "homeLink" => ["url" => "/", "label" => "Home"],
               ]) ?>
             </div>
           </div>
         </div>
       </div>
-    <?php endif ?>
+    <?php endif; ?>
     <?= $content ?>
   </div>
-  <?= Footer::widget()  ?>
+  <?= Footer::widget() ?>
 
 
 

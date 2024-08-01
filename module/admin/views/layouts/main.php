@@ -38,8 +38,12 @@ $this->registerLinkTag([
     "href" => Yii::getAlias("@web/favicon.ico"),
 ]);
 $this->registerCssFile("@web/css/admin.css");
-$this->registerJsFile('@web/js/upload/imagePreview.js', ["depends" => [\yii\web\JqueryAsset::class]]);
-$this->registerJsFile('@web/js/popup/popup.js', ["depends" => [\yii\web\JqueryAsset::class]]);
+$this->registerJsFile("@web/js/upload/imagePreview.js", [
+    "depends" => [\yii\web\JqueryAsset::class],
+]);
+$this->registerJsFile("@web/js/popup/popup.js", [
+    "depends" => [\yii\web\JqueryAsset::class],
+]);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -82,7 +86,7 @@ $this->registerJsFile('@web/js/popup/popup.js', ["depends" => [\yii\web\JqueryAs
             ["label" => "Location Points", "url" => ["location-point/index"]],
             ["label" => "Order", "url" => ["order/index"]],
             ["label" => "Delivery Points", "url" => ["delivery-point/index"]],
-            ["label" => "Featured Products", "url" => ["featured-offer/index"]],
+            ["label" => "Featured Offers", "url" => ["featured-offer/index"]],
             ["label" => "Rating", "url" => ["rating/index"]],
         ],
     ]);

@@ -21,21 +21,20 @@ use yii\widgets\ActiveForm;
 
   <?= $form->field($model, "zip_code")->textInput(["maxlength" => true]) ?>
 
-  <?= Utils::popupField($form, $model, 'delivery-point', function ($form, $model) {
-    return $form
-      ->field($model, "delivery_point_id")
-      ->dropDownList(
-        DeliveryPoint::toOptionsList()
-      )
-      ->label("Delivery point");
+  <?= Utils::popupField($form, $model, "delivery-point", function (
+      $form,
+      $model
+  ) {
+      return $form
+          ->field($model, "delivery_point_id")
+          ->dropDownList(DeliveryPoint::toOptionsList())
+          ->label("Delivery point");
   }) ?>
 
   <?= $form
-    ->field($model, "user_id")
-    ->dropDownList(
-      User::find()->select("username")->indexBy("id")->column()
-    )
-    ->label("User") ?>
+      ->field($model, "user_id")
+      ->dropDownList(User::find()->select("username")->indexBy("id")->column())
+      ->label("User") ?>
 
   <div class="form-group">
     <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>

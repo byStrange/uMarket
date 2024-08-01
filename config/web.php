@@ -11,6 +11,14 @@ $config = [
     "basePath" => dirname(__DIR__),
     "bootstrap" => ["log"],
     "modules" => [
+        "gridview" => [
+            "class" => "\kartik\grid\Module",
+            // see settings on http://demos.krajee.com/grid#module
+        ],
+        "datecontrol" => [
+            "class" => "\kartik\datecontrol\Module",
+            // see settings on http://demos.krajee.com/datecontrol#module
+        ],
         "admin" => [
             "class" => "app\module\admin\Admin",
             "as access" => [
@@ -38,6 +46,10 @@ $config = [
         "@npm" => "@vendor/npm-asset",
     ],
     "components" => [
+        "formatter" => [
+            "class" => "yii\i18n\Formatter",
+            "currencyCode" => "USD", // Set your desired currency code here
+        ],
         "request" => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             "cookieValidationKey" => "lvlIyXgVTD2abv0dXFlVZTPlkGsC4WYf",

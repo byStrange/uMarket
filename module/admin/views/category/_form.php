@@ -23,36 +23,30 @@ use yii\widgets\ActiveForm;
 
   <?php $form = ActiveForm::begin(); ?>
 
-  <?= Utils::popupField($form, $model, 'category', function ($form, $model) {
-    return $form
-      ->field($model, "parent_id")
-      ->dropDownList(
-        Category::toOptionsList(),
-        [
-          "prompt" => "--- Select a Category ---",
-        ]
-      );
+  <?= Utils::popupField($form, $model, "category", function ($form, $model) {
+      return $form
+          ->field($model, "parent_id")
+          ->dropDownList(Category::toOptionsList(), [
+              "prompt" => "--- Select a Category ---",
+          ]);
   }) ?>
 
   <?= $form->field($model, "label")->textInput() ?>
 
   <?= $form
-    ->field($model, "type")
-    ->radioList(
-      array_column(Category::getTypeOptions(), "label", "value"),
-      [
-        "item" => function ($index, $label, $name, $checked, $value) {
-          $description = Category::getTypeOptions()[$value]["description"];
-          return RadioItem::widget([
-            "name" => $name,
-            "value" => $value,
-            "id" => $index . $label,
-            "label" => $label,
-            "description" => $description,
-          ]);
-        },
-      ]
-    ) ?>
+      ->field($model, "type")
+      ->radioList(array_column(Category::getTypeOptions(), "label", "value"), [
+          "item" => function ($index, $label, $name, $checked, $value) {
+              $description = Category::getTypeOptions()[$value]["description"];
+              return RadioItem::widget([
+                  "name" => $name,
+                  "value" => $value,
+                  "id" => $index . $label,
+                  "label" => $label,
+                  "description" => $description,
+              ]);
+          },
+      ]) ?>
 
 
   <div class="form-group">

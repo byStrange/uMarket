@@ -33,32 +33,31 @@ $this->params["breadcrumbs"][] = $this->title;
                                         "id" => "login-form",
                                         "fieldConfig" => [
                                             "template" =>
-                                            "{label}\n{input}\n{error}",
+                                                "{label}\n{input}\n{error}",
                                             "labelOptions" => [
                                                 "class" =>
-                                                "col-lg-1 col-form-label mr-lg-3",
+                                                    "col-lg-1 col-form-label mr-lg-3",
                                             ],
                                             "inputOptions" => [
                                                 "class" =>
-                                                "col-lg-3 form-control",
+                                                    "col-lg-3 form-control",
                                             ],
                                             "errorOptions" => [
                                                 "class" =>
-                                                "col-lg-7 invalid-feedback",
+                                                    "col-lg-7 invalid-feedback",
                                             ],
                                         ],
                                     ]); ?>
                                     <?= $form
-                                        ->field(
-                                            $model,
-                                            "username"
-                                        )
+                                        ->field($model, "username")
                                         ->textInput([
                                             "autofocus" => true,
                                         ]) ?>
 
 
-                                    <?= $form->field($model, "password")->passwordInput() ?>
+                                    <?= $form
+                                        ->field($model, "password")
+                                        ->passwordInput() ?>
 
 
                                     <div class="button-box">
@@ -72,10 +71,15 @@ $this->params["breadcrumbs"][] = $this->title;
                                         </div>
                                         <div class="form-group">
                                             <div>
-                                                <?= Html::submitButton("Login", [
-                                                    "class" => "btn btn-primary",
-                                                    "name" => "login-button",
-                                                ]) ?>
+                                                <?= Html::submitButton(
+                                                    "Login",
+                                                    [
+                                                        "class" =>
+                                                            "btn btn-primary",
+                                                        "name" =>
+                                                            "login-button",
+                                                    ]
+                                                ) ?>
                                             </div>
                                         </div>
 

@@ -77,14 +77,21 @@ class LocationPoint extends \yii\db\ActiveRecord
         return $this->hasOne(DeliveryPoint::class, ["location_id" => "id"]);
     }
 
-    public static function toOptionsList() {
-      return ArrayHelper::map(self::find()->select(['address_label', 'id'])->all(), 'id', function ($model) {
-        return (string)$model;
-      });
+    public static function toOptionsList()
+    {
+        return ArrayHelper::map(
+            self::find()
+                ->select(["address_label", "id"])
+                ->all(),
+            "id",
+            function ($model) {
+                return (string) $model;
+            }
+        );
     }
 
     public function __toString()
     {
-      return $this->address_label;
+        return $this->address_label;
     }
 }

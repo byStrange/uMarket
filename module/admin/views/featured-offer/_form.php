@@ -26,56 +26,73 @@ use yii\widgets\ActiveForm;
 
   <?php $form = ActiveForm::begin(); ?>
 
+    <?= $form->field($model, "title")->textInput() ?>
+
+    <?= $form
+        ->field($model, "type")
+        ->radioList(
+            array_column(FeaturedOffer::getTypeOptions(), "label", "value"),
+            [
+                "item" => function ($index, $label, $name, $checked, $value) {
+                    $description = FeaturedOffer::getTypeOptions()[$value][
+                        "description"
+                    ];
+                    return RadioItem::widget([
+                        "name" => $name,
+                        "value" => $value,
+                        "id" => $index . $label,
+                        "label" => $label,
+                        "description" => $description,
+                    ]);
+                },
+            ]
+        ) ?>
+
+ <div id="selectProductWrapper"> 
+<?= Utils::popupField($form, $model, "", function ($form, $model) {
+    return $form
+        ->field($model, "product_id")
+        ->dropDownList(Product::toOptionsList())
+        ->label("Product");
+}) ?>
+
   <?= $form->field($model, "dicount_price")->textInput() ?>
+    </div>
 
-  <?= $form->field($model, "start_time")->input("datetime-local") ?>
-
-  <?= $form->field($model, "end_time")->input("datetime-local") ?>
-  <?= $form
-    ->field($model, "type")
-    ->radioList(
-      array_column(FeaturedOffer::getTypeOptions(), "label", "value"),
-      [
-        "item" => function ($index, $label, $name, $checked, $value) {
-          $description = FeaturedOffer::getTypeOptions()[$value]["description"];
-          return RadioItem::widget([
-            "name" => $name,
-            "value" => $value,
-            "id" => $index . $label,
-            "label" => $label,
-            "description" => $description,
-          ]);
-        },
-      ]
-    ) ?>
-
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form
-      ->field($model, "product_id")
-      ->dropDownList(Product::toOptionsList())
-      ->label("Product");
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "category_id")
+          ->dropDownList(Category::toOptionsList())
+          ->label("Category");
   }) ?>
 
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form
-      ->field($model, "category_id")
-      ->dropDownList(
-        Category::toOptionsList()
-      )
-      ->label("Category");
-  }) ?>
+  <div class="form-check form-switch mb-3">
+    <input class="form-check-input" type="checkbox" id="specifyTime">
+    <label class="form-check-label" for="specifyTime">Specify time</label>
+  </div>
+
+  <div style="display: none" id="timeField"> 
+    <?= $form->field($model, "start_time")->input("datetime-local") ?>
+
+    <?= $form->field($model, "end_time")->input("datetime-local") ?>
+  </div>
+
+
 
   <?= $form
-    ->field($model, "image_banner")->fileInput()
-    ->label("Banner image") ?>
+      ->field($model, "image_banner")
+      ->fileInput()
+      ->label("Banner image") ?>
 
   <?= $form
-    ->field($model, "image_portrait")->fileInput()
-    ->label("Portrait image") ?>
+      ->field($model, "image_portrait")
+      ->fileInput()
+      ->label("Portrait image") ?>
 
   <?= $form
-    ->field($model, "image_small_landscape")->fileInput()
-    ->label("Small landscape image") ?>
+      ->field($model, "image_small_landscape")
+      ->fileInput()
+      ->label("Small landscape image") ?>
 
 
   <div class="form-group">
@@ -87,12 +104,15 @@ use yii\widgets\ActiveForm;
   <?php
   $jsCode = <<<javascript
   $(function () {
-    const productIdField = $(".field-featuredoffer-product_id").parent().parent();
+    const specifyTime = $('#specifyTime')
+    const productIdField = $("#selectProductWrapper");
     const categoryIdField = $(".field-featuredoffer-category_id").parent().parent();
     const offerTypeRadioInputs = $('[name="FeaturedOffer[type]"]');
+
     var value;
     productIdField.hide();
     categoryIdField.hide();
+
     offerTypeRadioInputs.on("change", function (event) {
       value = event.target.value;
       if (value === "category") {
@@ -103,6 +123,14 @@ use yii\widgets\ActiveForm;
         productIdField.slideDown();
       }
     });
+
+    specifyTime.on('change', function (event)  {
+      if ($(this).prop('checked')) {
+       $('#timeField').slideDown(); 
+      } else {
+        $('#timeField').slideUp()
+      }
+    })
   });
 javascript;
 

@@ -2,6 +2,7 @@
 
 use app\models\Product;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /** @var Product $product */
 $salePercentage = number_format($product->getProductSalePercentage(), 0);
@@ -14,8 +15,8 @@ $thumbnailImage = count($product->images) ? $product->images[0] : null;
   <div class="product">
     <span class="badges">
       <?php if ($salePercentage): ?>
-        <span class="sale">-<?= $salePercentage ?>%</span>
-      <?php endif ?>
+        <span class="sale"><?= $salePercentage ?>%</span>
+      <?php endif; ?>
     </span>
     <div class="thumb">
       <a href="single-product.html" class="image">
@@ -23,20 +24,30 @@ $thumbnailImage = count($product->images) ? $product->images[0] : null;
           <?= Html::img($thumbnailImage->image) ?>
         <?php else: ?>
           <img src="/images/product-image/1.webp" />
-        <?php endif ?>
+        <?php endif; ?>
       </a>
     </div>
     <div class="content">
       <span class="category"><a href="#">Accessories</a></span>
       <h5 class="title">
-        <a href="single-product.html"><?= $product->getProductTranslationForLanguage(Yii::$app->language)->title ?></a>
+        <?= Html::a(
+            $product->getProductTranslationForLanguage(Yii::$app->language)
+                ->title,
+            Url::toRoute(["shop/product", "id" => $product->id])
+        ) ?>
       </h5>
       <span class="price">
         <?php if ($product->discount_price): ?>
-          <span class="old"><?= Yii::$app->formatter->asCurrency($product->price) ?></span>
-          <span class="new"><?= Yii::$app->formatter->asCurrency($product->discount_price) ?></span>
+          <span class="old"><?= Yii::$app->formatter->asCurrency(
+              $product->price
+          ) ?></span>
+          <span class="new"><?= Yii::$app->formatter->asCurrency(
+              $product->discount_price
+          ) ?></span>
         <?php else: ?>
-          <span class="new"><?= Yii::$app->formatter->asCurrency($product->price) ?></span>
+          <span class="new"><?= Yii::$app->formatter->asCurrency(
+              $product->price
+          ) ?></span>
         <?php endif; ?>
       </span>
     </div>

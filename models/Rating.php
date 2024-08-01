@@ -99,6 +99,23 @@ class Rating extends \yii\db\ActiveRecord
         return $this->hasOne(Product::class, ["id" => "product_id"]);
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        $this->updateProductRating();
+    }
+
+    public function afterDelete()
+    {
+        parent::afterDelete();
+        $this->updateProductRating();
+    }
+
+    protected function updateProductRating()
+    {
+        $this->product->updateRatingStats();
+    }
+
     /**
      * Gets query for [[User]].
      *

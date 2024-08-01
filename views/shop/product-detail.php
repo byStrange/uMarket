@@ -1,9 +1,16 @@
 <?php
 
-use app\widgets\components\home\product\RelatedProducts;
+use app\models\Product;
+use yii\helpers\Html;
+use yii\helpers\StringHelper;
+
+/** @var Product $product **/
 
 $this->title = "Product detail";
 $this->params["breadcrumbs"][] = $this->title;
+$translatedProduct = $product->getProductTranslationForLanguage(
+    Yii::$app->language
+);
 ?>
 
 
@@ -89,10 +96,12 @@ $this->params["breadcrumbs"][] = $this->title;
       </div>
       <div class="col-lg-6 col-sm-12 col-xs-12" data-aos="fade-up" data-aos-delay="200">
         <div class="product-details-content quickview-content ml-25px">
-          <h2>Modern Smart Phone</h2>
+          <h2><?= $translatedProduct->title ?></h2>
           <div class="pricing-meta">
             <ul class="d-flex">
-              <li class="new-price">$20.90</li>
+              <li class="new-price"><?= Yii::$app->formatter->asCurrency(
+                  $product->price
+              ) ?></li>
             </ul>
           </div>
           <div class="pro-details-rating-wrap">
@@ -105,15 +114,11 @@ $this->params["breadcrumbs"][] = $this->title;
             </div>
             <span class="read-review"><a class="reviews" href="#">(5 Customer Review)</a></span>
           </div>
-          <p class="mt-30px">Lorem ipsum dolor sit amet, consecte adipisicing elit, sed do eiusmll tempor incididunt ut labore et dolore magna aliqua. Ut enim ad mill veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip exet commodo consequat. Duis aute irure dolor</p>
-          <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-            <span>SKU:</span>
-            <ul class="d-flex">
-              <li>
-                <a href="#">Ch-256xl</a>
-              </li>
-            </ul>
-          </div>
+          <p class="mt-30px"><?= StringHelper::truncateWords(
+              $translatedProduct->description,
+              20,
+              "..."
+          ) ?></p>
           <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
             <span>Categories: </span>
             <ul class="d-flex">
@@ -122,17 +127,6 @@ $this->params["breadcrumbs"][] = $this->title;
               </li>
               <li>
                 <a href="#">ETC</a>
-              </li>
-            </ul>
-          </div>
-          <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-            <span>Tags: </span>
-            <ul class="d-flex">
-              <li>
-                <a href="#">Smart Device, </a>
-              </li>
-              <li>
-                <a href="#">Phone</a>
               </li>
             </ul>
           </div>
@@ -149,100 +143,58 @@ $this->params["breadcrumbs"][] = $this->title;
             <div class="pro-details-compare-wishlist pro-details-wishlist ">
               <a href="wishlist.html"><i class="pe-7s-like"></i></a>
             </div>
-            <div class="pro-details-compare-wishlist pro-details-wishlist ">
-              <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>
-            </div>
           </div>
         </div>
         <!-- product details description area start -->
         <div class="description-review-wrapper">
           <div class="description-review-topbar nav">
-            <button data-bs-toggle="tab" data-bs-target="#des-details2">Information</button>
             <button class="active" data-bs-toggle="tab" data-bs-target="#des-details1">Description</button>
-            <button data-bs-toggle="tab" data-bs-target="#des-details3">Reviews (02)</button>
+            <button data-bs-toggle="tab" data-bs-target="#des-details3">Reviews (<?= count(
+                $product->ratings
+            ) ?>)</button>
           </div>
           <div class="tab-content description-review-bottom">
-            <div id="des-details2" class="tab-pane">
-              <div class="product-anotherinfo-wrapper text-start">
-                <ul>
-                  <li><span>Weight</span> 400 g</li>
-                  <li><span>Dimensions</span>10 x 10 x 15 cm</li>
-                  <li><span>Materials</span> 60% cotton, 40% polyester</li>
-                  <li><span>Other Info</span> American heirloom jean shorts pug seitan letterpress</li>
-                </ul>
-              </div>
-            </div>
             <div id="des-details1" class="tab-pane active">
               <div class="product-description-wrapper">
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eius tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip efgx ea co consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occae cupidatat non proident, sunt in culpa qui
-                </p>
+                <p><?= $translatedProduct->description ?></p>
               </div>
             </div>
             <div id="des-details3" class="tab-pane">
               <div class="row">
                 <div class="col-lg-12">
                   <div class="review-wrapper">
-                    <div class="single-review">
-                      <div class="review-img">
-                        <img src="/images/review-image/1.png" alt="">
-                      </div>
-                      <div class="review-content">
-                        <div class="review-top-wrap">
-                          <div class="review-left">
-                            <div class="review-name">
-                              <h4>White Lewis</h4>
-                            </div>
-                            <div class="rating-product">
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                          <div class="review-left">
-                            <a href="#">Reply</a>
-                          </div>
+                    <?php foreach ($product->ratings as $rating): ?>
+                      <div class="single-review">
+                        <div class="review-img">
+                          <?= Html::img(
+                              $rating->user->profile_picture
+                                  ? $rating->user->profile_picture
+                                  : "/images/review-image/1.png"
+                          ) ?>
                         </div>
-                        <div class="review-bottom">
-                          <p>
-                            Vestibulum ante ipsum primis aucibus orci luctustrices posuere
-                            cubilia Curae Suspendisse viverra ed viverra. Mauris ullarper
-                            euismod vehicula. Phasellus quam nisi, congue id nulla.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="single-review child-review">
-                      <div class="review-img">
-                        <img src="/images/review-image/2.png" alt="">
-                      </div>
-                      <div class="review-content">
-                        <div class="review-top-wrap">
-                          <div class="review-left">
-                            <div class="review-name">
-                              <h4>White Lewis</h4>
-                            </div>
-                            <div class="rating-product">
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
+                        <div class="review-content">
+                          <div class="review-top-wrap">
+                            <div class="review-left">
+                              <div class="review-name">
+                                <h4><?= $rating->user->first_name ?></h4>
+                              </div>
+                              <div class="rating-product">
+                                <?php for (
+                                    $i = 0;
+                                    $i < $rating->score;
+                                    $i++
+                                ): ?>
+                                  <i class="fa fa-star"></i>
+                                <?php endfor; ?>
+                              </div>
                             </div>
                           </div>
-                          <div class="review-left">
-                            <a href="#">Reply</a>
+                          <div class="review-bottom">
+                            <p><?= $rating->comment ?></p>
                           </div>
                         </div>
-                        <div class="review-bottom">
-                          <p>Vestibulum ante ipsum primis aucibus orci luctustrices posuere
-                            cubilia Curae Sus pen disse viverra ed viverra. Mauris ullarper
-                            euismod vehicula.</p>
-                        </div>
                       </div>
-                    </div>
+                    <?php endforeach; ?>
                   </div>
                 </div>
                 <div class="col-lg-12">
@@ -291,6 +243,3 @@ $this->params["breadcrumbs"][] = $this->title;
     </div>
   </div>
 </div>
-
-
-<?= RelatedProducts::widget() ?>

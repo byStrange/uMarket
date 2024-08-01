@@ -7,8 +7,8 @@ use yii\helpers\Html;
 
 $this->title = "Create Image";
 if (!$popup) {
-  $this->params["breadcrumbs"][] = ["label" => "Images", "url" => ["index"]];
-  $this->params["breadcrumbs"][] = $this->title;
+    $this->params["breadcrumbs"][] = ["label" => "Images", "url" => ["index"]];
+    $this->params["breadcrumbs"][] = $this->title;
 }
 ?>
 <div class="image-create">
@@ -16,7 +16,7 @@ if (!$popup) {
   <h1><?= Html::encode($this->title) ?></h1>
 
   <?= $this->render("_form", [
-    "model" => $model,
+      "model" => $model,
   ]) ?>
 
 </div>

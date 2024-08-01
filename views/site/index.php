@@ -3,20 +3,22 @@
 /** @var yii\web\View $this */
 
 use app\components\home\FeaturedOffers;
-use app\components\home\HeroIntroSlider;
 use app\components\home\OffCanvasList;
 use app\models\Product;
 
 /** @var Product[] $products */
 
-$this->title = "My Yii Application"; ?>
+$this->title = "My Yii Application";
+?>
 <div class="main-wrapper">
 
     <!-- OffCanvas menus start -->
-    <?= OffCanvasList::widget()  ?>
+    <?= OffCanvasList::widget() ?>
     <!-- OffCanvas menus End -->
     <!-- Hero/Intro Slider Start -->
-    <?= HeroIntroSlider::widget() ?>
+    <?= $this->render("@app/components/home/HeroIntroSlider", [
+        "featuredOffers" => $featuredOffers,
+    ]) ?>
     <!-- Hero/Intro Slider End -->
     <!-- Banner Area Start -->
     <div class="banner-area style-one pt-100px pb-100px">
@@ -56,7 +58,11 @@ $this->title = "My Yii Application"; ?>
     </div>
     <!-- Banner Area End -->
     <!-- Product Area Start -->
-    <?= $this->render('@app/components/product/ProductsList', ["products" => $products, "view" => $this]) ?>
+    <?= $this->render("@app/components/product/ProductsList", [
+        "products" => $products,
+        "famous8" => $famous8,
+        "view" => $this,
+    ]) ?>
     <!-- Product Area End -->
     <!-- Fashion Area Start -->
     <div class="fashion-area" data-bg-image="/images/fashion/fashion-bg.webp">
@@ -64,7 +70,7 @@ $this->title = "My Yii Application"; ?>
             <div class="row justify-content-center align-items-center h-100">
                 <div class="col-12 text-center">
                     <h2 class="title"> <span>Smart Fashion</span> With Smart Devices </h2>
-                    <a href="shop-left-sidebar.html" class="btn btn-primary text-capitalize m-auto">Shop All Devices</a>
+                    <a href="/shop" class="btn btn-primary text-capitalize m-auto">Shop All Devices</a>
                 </div>
             </div>
         </div>

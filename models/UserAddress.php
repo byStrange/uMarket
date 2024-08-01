@@ -121,14 +121,21 @@ class UserAddress extends \yii\db\ActiveRecord
         return $this->hasOne(User::class, ["id" => "user_id"]);
     }
 
-    public static function toOptionsList() {
-      return ArrayHelper::map(self::find()->select(['user_id','label', 'id'])->all(), 'id', function ($model) {
-        return (string)$model;
-      });
+    public static function toOptionsList()
+    {
+        return ArrayHelper::map(
+            self::find()
+                ->select(["user_id", "label", "id"])
+                ->all(),
+            "id",
+            function ($model) {
+                return (string) $model;
+            }
+        );
     }
 
     public function __toString()
     {
-      return (string)$this->user . ' : ' . $this->label;
+        return (string) $this->user . " : " . $this->label;
     }
 }

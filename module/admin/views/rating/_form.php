@@ -19,19 +19,17 @@ use yii\widgets\ActiveForm;
 
   <?= $form->field($model, "comment")->textarea(["rows" => 6]) ?>
 
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form
-      ->field($model, "product_id")
-      ->dropDownList(Product::toOptionsList());
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "product_id")
+          ->dropDownList(Product::toOptionsList());
   }) ?>
 
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form
-      ->field($model, "user_id")
-      ->dropDownList(
-        User::toOptionsList()
-      )
-      ->label("User");
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "user_id")
+          ->dropDownList(User::toOptionsList())
+          ->label("User");
   }) ?>
 
   <div class="form-group">

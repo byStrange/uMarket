@@ -10,6 +10,7 @@ $(function () {
           image.src = url;
           image.style.maxWidth = '477px';
           image.style.marginTop = '24px'
+          $(this).parent().find('img').remove()
           $(this).parent().append(image);
       }
     })

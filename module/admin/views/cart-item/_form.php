@@ -17,17 +17,18 @@ use yii\widgets\ActiveForm;
 
   <?= $form->field($model, "quantity")->textInput() ?>
 
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form->field($model, "cart_id")->dropDownList(
-      Cart::toOptionsList()
-    )->label('Cart');
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "cart_id")
+          ->dropDownList(Cart::toOptionsList())
+          ->label("Cart");
   }) ?>
 
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form
-      ->field($model, "product_id")
-      ->dropDownList(Product::toOptionsList())
-      ->label("Product");
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "product_id")
+          ->dropDownList(Product::toOptionsList())
+          ->label("Product");
   }) ?>
 
   <div class="form-group">

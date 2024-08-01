@@ -14,20 +14,20 @@ use yii\widgets\ActiveForm;
 /** @var yii\widgets\ActiveForm $form */
 
 $statuses = [
-  1 => "Pending",
-  2 => "Processing",
-  3 => "Shipped",
-  4 => "Delivered",
-  5 => "Cancelled",
+    1 => "Pending",
+    2 => "Processing",
+    3 => "Shipped",
+    4 => "Delivered",
+    5 => "Cancelled",
 ];
 
 $paymentTypes = [
-  "click" => "ClickUz",
-  "payme" => "PayMe",
-  "cod" => "Cash on Delivery",
+    "click" => "ClickUz",
+    "payme" => "PayMe",
+    "cod" => "Cash on Delivery",
 ];
 
-$cartItemQuery = CartItem::toOptionsList()
+$cartItemQuery = CartItem::toOptionsList();
 ?>
 
 <div class="order-form">
@@ -38,39 +38,44 @@ $cartItemQuery = CartItem::toOptionsList()
 
   <?= $form->field($model, "payment_type")->dropDownList($paymentTypes) ?>
 
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form
-      ->field($model, "coupon_id")
-      ->dropDownList(Coupon::toOptionsList())
-      ->label("Coupon");
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "coupon_id")
+          ->dropDownList(Coupon::toOptionsList())
+          ->label("Coupon");
   }) ?>
 
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form
-      ->field($model, "user_id")
-      ->dropDownList(
-        User::toOptionsList()
-      )
-      ->label("User");
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "user_id")
+          ->dropDownList(User::toOptionsList())
+          ->label("User");
   }) ?>
 
-  <?= Utils::popupField($form, $model, 'user-address', function ($form, $model) {
-    return $form
-      ->field($model, "address_id")
-      ->dropDownList(
-        UserAddress::toOptionsList()
-      )
-      ->label("Address");
+  <?= Utils::popupField($form, $model, "user-address", function (
+      $form,
+      $model
+  ) {
+      return $form
+          ->field($model, "address_id")
+          ->dropDownList(UserAddress::toOptionsList())
+          ->label("Address");
   }) ?>
 
-  <?= Utils::popupField($form, $model, 'cart-item', function ($form, $model) use ($cartItemQuery) {
-    return $form
-      ->field($model, "cartItems[]")
-      ->dropDownList($cartItemQuery, [
-        "multiple" => true,
-        "options" => Utils::preSelectOptions($cartItemQuery, $model->cartItems),
-      ])
-      ->label("Cart items");
+  <?= Utils::popupField($form, $model, "cart-item", function (
+      $form,
+      $model
+  ) use ($cartItemQuery) {
+      return $form
+          ->field($model, "cartItems[]")
+          ->dropDownList($cartItemQuery, [
+              "multiple" => true,
+              "options" => Utils::preSelectOptions(
+                  $cartItemQuery,
+                  $model->cartItems
+              ),
+          ])
+          ->label("Cart items");
   }) ?>
 
   <div class="form-group">

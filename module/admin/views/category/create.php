@@ -7,8 +7,11 @@ use yii\helpers\Html;
 
 $this->title = "Create Category";
 if (!$popup) {
-  $this->params["breadcrumbs"][] = ["label" => "Categories", "url" => ["index"]];
-  $this->params["breadcrumbs"][] = $this->title;
+    $this->params["breadcrumbs"][] = [
+        "label" => "Categories",
+        "url" => ["index"],
+    ];
+    $this->params["breadcrumbs"][] = $this->title;
 }
 ?>
 <div class="category-create">

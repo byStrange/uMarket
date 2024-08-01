@@ -14,10 +14,10 @@ use yii\widgets\ActiveForm;
 
   <?php $form = ActiveForm::begin(); ?>
 
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form->field($model, "user_id")->dropDownList(
-      User::toOptionsList()
-    );
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "user_id")
+          ->dropDownList(User::toOptionsList());
   }) ?>
 
   <div class="form-group">

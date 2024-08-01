@@ -98,14 +98,21 @@ class CartItem extends \yii\db\ActiveRecord
         return $this->hasOne(Product::class, ["id" => "product_id"]);
     }
 
-    public static function toOptionsList() {
-      return ArrayHelper::map(self::find()->select(['cart_id', 'product_id', 'id'])->all(), 'id', function ($model) {
-        return (string)($model);
-      });
+    public static function toOptionsList()
+    {
+        return ArrayHelper::map(
+            self::find()
+                ->select(["cart_id", "product_id", "id"])
+                ->all(),
+            "id",
+            function ($model) {
+                return (string) $model;
+            }
+        );
     }
 
     public function __toString()
     {
-      return  (string)$this->cart . ' -> ' . (string)$this->product;
+        return (string) $this->cart . " -> " . (string) $this->product;
     }
 }

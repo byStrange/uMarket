@@ -97,14 +97,21 @@ class DeliveryPoint extends \yii\db\ActiveRecord
         ]);
     }
 
-    public static function toOptionsList() {
-      return ArrayHelper::map(self::find()->select(['id', 'label'])->all(), 'id', function ($model) {
-        return (string)$model;
-      });
+    public static function toOptionsList()
+    {
+        return ArrayHelper::map(
+            self::find()
+                ->select(["id", "label"])
+                ->all(),
+            "id",
+            function ($model) {
+                return (string) $model;
+            }
+        );
     }
 
     public function __toString()
     {
-      return $this->label;
+        return $this->label;
     }
 }

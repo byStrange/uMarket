@@ -16,11 +16,13 @@ use yii\widgets\ActiveForm;
 
   <?= $form->field($model, "label")->textInput(["maxlength" => true]) ?>
 
-  <?= Utils::popupField($form, $model, 'location-point', function ($form, $model) {
-    return $form
-      ->field($model, "location_id")
-      ->dropDownList(
-        LocationPoint::toOptionsList());
+  <?= Utils::popupField($form, $model, "location-point", function (
+      $form,
+      $model
+  ) {
+      return $form
+          ->field($model, "location_id")
+          ->dropDownList(LocationPoint::toOptionsList());
   }) ?>
 
   <div class="form-group">

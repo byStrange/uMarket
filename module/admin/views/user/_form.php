@@ -13,9 +13,7 @@ use yii\widgets\ActiveForm;
 
   <?php $form = ActiveForm::begin(); ?>
 
-  <?= $form
-    ->field($model, "password")
-    ->passwordInput(["maxlength" => true]) ?>
+  <?= $form->field($model, "password")->passwordInput(["maxlength" => true]) ?>
 
   <?= $form->field($model, "is_superuser")->checkbox() ?>
 
@@ -27,8 +25,7 @@ use yii\widgets\ActiveForm;
 
   <?= $form->field($model, "email")->textInput(["maxlength" => true]) ?>
 
-  <?= $form
-    ->field($model, "profile_picture")->fileInput() ?>
+  <?= $form->field($model, "profile_picture")->fileInput() ?>
 
   <?= $form->field($model, "is_active")->checkbox() ?>
 

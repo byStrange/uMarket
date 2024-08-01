@@ -4,7 +4,6 @@ use yii\helpers\Html;
 
 $this->title = "Account";
 $this->params["breadcrumbs"][] = $this->title;
-
 ?>
 
 <div class="account-dashboard pt-100px pb-100px">
@@ -22,12 +21,8 @@ $this->params["breadcrumbs"][] = $this->title;
             </li>
             <li>
               <?= Html::beginForm(["/site/logout"]) .
-                Html::submitButton(
-                  "Logout",
-                  ["class" => "nav-link"]
-                ) .
-                Html::endForm()
-              ?>
+                  Html::submitButton("Logout", ["class" => "nav-link"]) .
+                  Html::endForm() ?>
             </li>
           </ul>
         </div>

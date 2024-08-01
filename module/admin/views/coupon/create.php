@@ -7,8 +7,8 @@ use yii\helpers\Html;
 
 $this->title = "Create Coupon";
 if (!$popup) {
-  $this->params["breadcrumbs"][] = ["label" => "Coupons", "url" => ["index"]];
-  $this->params["breadcrumbs"][] = $this->title;
+    $this->params["breadcrumbs"][] = ["label" => "Coupons", "url" => ["index"]];
+    $this->params["breadcrumbs"][] = $this->title;
 }
 ?>
 <div class="coupon-create">
@@ -16,7 +16,7 @@ if (!$popup) {
   <h1><?= Html::encode($this->title) ?></h1>
 
   <?= $this->render("_form", [
-    "model" => $model,
+      "model" => $model,
   ]) ?>
 
 </div>

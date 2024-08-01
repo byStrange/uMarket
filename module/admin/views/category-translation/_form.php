@@ -15,32 +15,32 @@ use yii\widgets\ActiveForm;
 
   <?php $form = ActiveForm::begin(); ?>
 
-  <?= $form
-    ->field($model, "language_code")
-    ->textInput(["maxlength" => true]) ?>
+  <?= $form->field($model, "language_code")->textInput(["maxlength" => true]) ?>
 
-  <?= $form->field($model, "name")->textInput(["maxlength" => true]); ?>
+  <?= $form->field($model, "name")->textInput(["maxlength" => true]) ?>
 
 
-  <?php if (isset($category_id)) : ?>
+  <?php if (isset($category_id)): ?>
     <?= $form
-      ->field($model, "category_id")
-      ->hiddenInput(["value" => $category_id])
-      ->label("Category Id: $category_id") ?>
-  <?php else : ?>
-    <?= Utils::popupField($form, $model, 'category_id', function ($form, $model) {
-      return $form
         ->field($model, "category_id")
-        ->dropDownList(
-          Category::toOptionsList()
-        )
-        ->label("Category");
-    }); ?>
-  <?php endif ?>
-  <?= Utils::popupField($form, $model, '', function ($form, $model) {
-    return $form
-      ->field($model, "image_id")
-      ->dropDownList(Image::toOptionsList())->label("Image");
+        ->hiddenInput(["value" => $category_id])
+        ->label("Category Id: $category_id") ?>
+  <?php else: ?>
+    <?= Utils::popupField($form, $model, "category_id", function (
+        $form,
+        $model
+    ) {
+        return $form
+            ->field($model, "category_id")
+            ->dropDownList(Category::toOptionsList())
+            ->label("Category");
+    }) ?>
+  <?php endif; ?>
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+      return $form
+          ->field($model, "image_id")
+          ->dropDownList(Image::toOptionsList())
+          ->label("Image");
   }) ?>
 
   <div class="form-group">
