@@ -8,6 +8,7 @@ use app\components\home\Footer;
 use app\components\home\Header;
 
 use yii\bootstrap5\Html;
+use yii\web\View;
 use yii\widgets\Breadcrumbs;
 
 AppAsset::register($this);
@@ -32,6 +33,34 @@ $this->registerLinkTag([
     "href" => Yii::getAlias("@web/favicon.ico"),
 ]);
 $this->registerJsFile("@web/js/vendor/bootstrap.bundle.min.js");
+
+$script = <<<JS
+function reloadScript(url, callback) {
+  // Find existing script with the same URL
+  var existingScript = document.querySelector(`script[src=" + url + "]`);
+
+  // Remove the existing script if it exists
+  if (existingScript) {
+    existingScript.parentNode.removeChild(existingScript);
+  }
+
+  // Create a new script element
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = url + '?v=' + new Date().getTime(); // Cache-busting parameter
+
+  // Execute the callback function after the script has been loaded
+  script.onload = callback;
+
+  // Append the new script to the head
+  document.head.appendChild(script);
+}
+
+document.addEventListener('htmx:afterSettle', function(event) {
+  reloadScript('/js/main.min.js')
+})
+JS;
+$this->registerJs($script, View::POS_HEAD);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -46,7 +75,7 @@ $this->registerJsFile("@web/js/vendor/bootstrap.bundle.min.js");
 <body>
   <?php $this->beginBody(); ?>
   <?= Header::widget() ?>
-  <div class="main-wrapper">
+  <main class="main-wrapper">
 
     <?php if (!empty($this->params["breadcrumbs"])): ?>
       <div class="breadcrumb-area">
@@ -70,15 +99,15 @@ $this->registerJsFile("@web/js/vendor/bootstrap.bundle.min.js");
       </div>
     <?php endif; ?>
     <?= $content ?>
-  </div>
+  </main>
   <?= Footer::widget() ?>
 
 
 
   <!-- Modal -->
-  <div class="modal modal-2 fade" id="exampleModal" tabindex="-1" role="dialog">
+  <div class="modal modal-2 fade" id="productDetailModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
+      <div class="modal-content pt-4 px-4">
         <div class="modal-body">
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <i class="pe-7s-close"></i></button>
           <div class="row">

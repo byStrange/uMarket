@@ -11,7 +11,7 @@ $thumbnailImage = count($product->images) ? $product->images[0] : null;
 
 
 <div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px">
-  <!-- Single Prodect -->
+  <!-- Single Product -->
   <div class="product">
     <span class="badges">
       <?php if ($salePercentage): ?>
@@ -19,7 +19,7 @@ $thumbnailImage = count($product->images) ? $product->images[0] : null;
       <?php endif; ?>
     </span>
     <div class="thumb">
-      <a href="single-product.html" class="image">
+      <a href="<?= Url::toRoute(["shop/product", "id" => $product->id]) ?>" class="image">
         <?php if ($thumbnailImage): ?>
           <?= Html::img($thumbnailImage->image) ?>
         <?php else: ?>
@@ -54,7 +54,7 @@ $thumbnailImage = count($product->images) ? $product->images[0] : null;
     <div class="actions">
       <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart"><i class="pe-7s-shopbag"></i></button>
       <button class="action wishlist" title="Wishlist" data-bs-toggle="modal" data-bs-target="#exampleModal-Wishlist"><i class="pe-7s-like"></i></button>
-      <button class="action quickview" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="pe-7s-look"></i></button>
+      <button class="action quickview" hx-get="/shop/product/?id=<?= $product->id ?>&d=pjax" hx-target="#productDetailModal .modal-content" hx-trigger="click" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#productDetailModal"><i class="pe-7s-look"></i></button>
       <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare"><i class="pe-7s-refresh-2"></i></button>
     </div>
   </div>

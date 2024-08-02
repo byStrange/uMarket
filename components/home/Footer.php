@@ -7,7 +7,7 @@ class Footer extends Widget
     public function run()
     {
         return <<<HTML
-  <div class="footer-area">
+  <footer class="footer-area">
     <div class="footer-container">
         <div class="footer-top">
             <div class="container">
@@ -110,7 +110,7 @@ class Footer extends Widget
             </div>
         </div>
     </div>
-</div>
+</footer>
 HTML;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 use app\models\Product;
 /** @var Product[] $products */
+/** @var Product[] $famous8 */
 /** @var yii\web\View $view */
 ?>
 <div class="product-area pb-100px">
