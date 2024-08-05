@@ -28,10 +28,7 @@ use app\models\Product;
           <!-- 1st tab start -->
           <div class="tab-pane fade show active" id="newarrivals">
             <div class="row mb-n-30px">
-              <?php foreach ($products as $product) {
-                  echo $view->render("_product_card", ["product" => $product]);
-              } ?>
-
+              <?= $view->render('@app/components/product/_products_list', ["view" => &$view, "products" => $products]) ?>
             </div>
           </div>
           <!-- 1st tab end -->
@@ -39,9 +36,7 @@ use app\models\Product;
           <!-- 2nd tab start -->
           <div class="tab-pane fade" id="toprated">
             <div class="row">
-              <?php foreach ($famous8 as $product) {
-                  echo $view->render("_product_card", ["product" => $product]);
-              } ?>
+              <?= $view->render('@app/components/product/_products_list', ["view" => &$view, "products" => $famous8]) ?>
             </div>
           </div>
           <!-- 2nd tab end -->

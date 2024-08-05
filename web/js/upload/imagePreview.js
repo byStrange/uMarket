@@ -8,8 +8,7 @@ $(function () {
           const url = URL.createObjectURL(blob);
 
           image.src = url;
-          image.style.maxWidth = '477px';
-          image.style.marginTop = '24px'
+          image.className = 'img-fluid my-2'
           $(this).parent().find('img').remove()
           $(this).parent().append(image);
       }

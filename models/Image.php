@@ -24,98 +24,99 @@ use yii\web\UploadedFile;
  */
 class Image extends \yii\db\ActiveRecord
 {
-    /**
-     * @var UploadedFile $image */
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return "main_image";
-    }
+  public $image_file;
+  /**
+   * @var UploadedFile $image_file */
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+    return "main_image";
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [["image", "alt"], "required"],
-            [["created_at", "updated_at"], "safe"],
-            [["image"], "file", "skipOnEmpty" => false],
-            [["alt"], "string", "max" => 255],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function rules()
+  {
+    return [
+      [["image", "alt"], "required"],
+      [["created_at", "updated_at"], "safe"],
+      [["image"], "string"],
+      [["alt"], "string", "max" => 255],
+    ];
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            "id" => "ID",
-            "created_at" => "Created At",
-            "updated_at" => "Updated At",
-            "image" => "Image",
-            "alt" => "Alt",
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function attributeLabels()
+  {
+    return [
+      "id" => "ID",
+      "created_at" => "Created At",
+      "updated_at" => "Updated At",
+      "image" => "Image",
+      "alt" => "Alt",
+    ];
+  }
 
-    public function behaviors()
-    {
-        return [
-            [
-                "class" => TimeStampBehavior::class,
-                "value" => new Expression("now()"),
-            ],
-        ];
-    }
+  public function behaviors()
+  {
+    return [
+      [
+        "class" => TimeStampBehavior::class,
+        "value" => new Expression("now()"),
+      ],
+    ];
+  }
 
-    /**
-     * Gets query for [[MainCategorytranslation]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMainCategorytranslation()
-    {
-        return $this->hasOne(CategoryTranslation::class, ["image_id" => "id"]);
-    }
+  /**
+   * Gets query for [[MainCategorytranslation]].
+   *
+   * @return \yii\db\ActiveQuery
+   */
+  public function getMainCategorytranslation()
+  {
+    return $this->hasOne(CategoryTranslation::class, ["image_id" => "id"]);
+  }
 
-    /**
-     * Gets query for [[Products]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProducts()
-    {
-        return $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
-            "main_product_images",
-            ["image_id" => "id"]
-        );
-    }
+  /**
+   * Gets query for [[Products]].
+   *
+   * @return \yii\db\ActiveQuery
+   */
+  public function getProducts()
+  {
+    return $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
+      "main_product_images",
+      ["image_id" => "id"]
+    );
+  }
 
-    public function upload()
-    {
-        $filePath = Utils::uploadImage($this->image);
-        $this->image = $filePath;
-        return true;
-    }
+  public function upload()
+  {
+    $filePath = Utils::uploadImage($this->image_file);
+    $this->image = $filePath;
+    return true;
+  }
 
-    public static function toOptionsList()
-    {
-        return ArrayHelper::map(
-            self::find()
-                ->select(["id", "image"])
-                ->all(),
-            "id",
-            function ($model) {
-                return (string) $model;
-            }
-        );
-    }
+  public static function toOptionsList()
+  {
+    return ArrayHelper::map(
+      self::find()
+        ->select(["id", "image"])
+        ->all(),
+      "id",
+      function ($model) {
+        return (string) $model;
+      }
+    );
+  }
 
-    public function __toString()
-    {
-        return $this->image;
-    }
+  public function __toString()
+  {
+    return $this->image;
+  }
 }

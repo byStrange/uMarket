@@ -13,7 +13,7 @@ use yii\web\View;
 
 $sort = $dataProvider->getSort();
 
-$this->title = "Shop All Products";
+$this->title = $category;
 $this->params["breadcrumbs"][] = $this->title;
 
 ?>

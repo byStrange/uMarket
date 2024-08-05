@@ -102,7 +102,7 @@ class Footer extends Widget
                             <div class="payment-mth"><a href="#"><img class="img img-fluid" src="/images/icons/payment.png" alt="payment-image"></a></div>
                         </div>
                         <div class="col-md-6 text-center text-md-start">
-                            <p class="copy-text"> © 2021 <strong>GreenRyzen</strong> Made With <i class="fa fa-heart" aria-hidden="true"></i> By <a class="company-name" href="https://themeforest.net/user/codecarnival/portfolio">
+                            <p class="copy-text"> © 2021 <strong>Hmart</strong> Made With <i class="fa fa-heart" aria-hidden="true"></i> By <a class="company-name" href="https://themeforest.net/user/codecarnival/portfolio">
                                     <strong> Codecarnival </strong></a>.</p>
                         </div>
                     </div>

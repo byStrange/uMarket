@@ -7,10 +7,13 @@ use yii\helpers\Url;
 /** @var Product $product */
 $salePercentage = number_format($product->getProductSalePercentage(), 0);
 $thumbnailImage = count($product->images) ? $product->images[0] : null;
+$wrappedInCol = isset($wrappedInCol) ? $wrappedInCol : true;
 ?>
 
 
-<div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px">
+<?php if (isset($wrappedInCol) && $wrappedInCol): ?>
+  <div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px">
+  <?php endif ?>
   <!-- Single Product -->
   <div class="product">
     <span class="badges">
@@ -21,7 +24,7 @@ $thumbnailImage = count($product->images) ? $product->images[0] : null;
     <div class="thumb">
       <a href="<?= Url::toRoute(["shop/product", "id" => $product->id]) ?>" class="image">
         <?php if ($thumbnailImage): ?>
-          <?= Html::img($thumbnailImage->image) ?>
+          <?= Html::img('/' . $thumbnailImage->image) ?>
         <?php else: ?>
           <img src="/images/product-image/1.webp" />
         <?php endif; ?>
@@ -31,23 +34,23 @@ $thumbnailImage = count($product->images) ? $product->images[0] : null;
       <span class="category"><a href="#">Accessories</a></span>
       <h5 class="title">
         <?= Html::a(
-            $product->getProductTranslationForLanguage(Yii::$app->language)
-                ->title,
-            Url::toRoute(["shop/product", "id" => $product->id])
+          $product->getProductTranslationForLanguage(Yii::$app->language)
+            ->title,
+          Url::toRoute(["shop/product", "id" => $product->id])
         ) ?>
       </h5>
       <span class="price">
         <?php if ($product->discount_price): ?>
           <span class="old"><?= Yii::$app->formatter->asCurrency(
-              $product->price
-          ) ?></span>
+                              $product->price
+                            ) ?></span>
           <span class="new"><?= Yii::$app->formatter->asCurrency(
-              $product->discount_price
-          ) ?></span>
+                              $product->discount_price
+                            ) ?></span>
         <?php else: ?>
           <span class="new"><?= Yii::$app->formatter->asCurrency(
-              $product->price
-          ) ?></span>
+                              $product->price
+                            ) ?></span>
         <?php endif; ?>
       </span>
     </div>
@@ -58,4 +61,7 @@ $thumbnailImage = count($product->images) ? $product->images[0] : null;
       <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare"><i class="pe-7s-refresh-2"></i></button>
     </div>
   </div>
-</div>
+
+  <?php if (isset($wrappedInCol) && $wrappedInCol): ?>
+  </div>
+<?php endif ?>

@@ -30,149 +30,152 @@ use yii\helpers\ArrayHelper;
  */
 class FeaturedOffer extends \yii\db\ActiveRecord
 {
-    const TYPE_PRODUCT = "product";
-    const TYPE_CATEGORY = "category";
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return "main_featuredoffer";
-    }
+  const TYPE_PRODUCT = "product";
+  const TYPE_CATEGORY = "category";
+  public $image_banner_file;
+  public $image_portrait_file;
+  public $image_small_landscape_file;
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+    return "main_featuredoffer";
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [["dicount_price", "type"], "required"],
-            [["created_at", "updated_at", "start_time", "end_time"], "safe"],
-            [["dicount_price"], "number"],
-            [["product_id", "category_id"], "default", "value" => null],
-            [["product_id", "category_id"], "integer"],
-            [
-                ["image_banner", "image_small_landscape", "image_portrait"],
-                "file",
-                "skipOnEmpty" => true,
-            ],
-            [["type", "title"], "string", "max" => 255],
-            [
-                ["type"],
-                "in",
-                "range" => [self::TYPE_CATEGORY, self::TYPE_PRODUCT],
-            ],
-            [
-                ["category_id"],
-                "exist",
-                "skipOnError" => true,
-                "targetClass" => Category::class,
-                "targetAttribute" => ["category_id" => "id"],
-            ],
-            [
-                ["product_id"],
-                "exist",
-                "skipOnError" => true,
-                "targetClass" => Product::class,
-                "targetAttribute" => ["product_id" => "id"],
-            ],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function rules()
+  {
+    return [
+      [["type"], "required"],
+      [["created_at", "updated_at", "start_time", "end_time"], "safe"],
+      [["dicount_price"], "number"],
+      [["product_id", "category_id"], "default", "value" => null],
+      [["product_id", "category_id"], "integer"],
+      [
+        ["image_banner", "image_small_landscape", "image_portrait"],
+        "file",
+        "skipOnEmpty" => true,
+      ],
+      [["type", "title"], "string", "max" => 255],
+      [
+        ["type"],
+        "in",
+        "range" => [self::TYPE_CATEGORY, self::TYPE_PRODUCT],
+      ],
+      [
+        ["category_id"],
+        "exist",
+        "skipOnError" => true,
+        "targetClass" => Category::class,
+        "targetAttribute" => ["category_id" => "id"],
+      ],
+      [
+        ["product_id"],
+        "exist",
+        "skipOnError" => true,
+        "targetClass" => Product::class,
+        "targetAttribute" => ["product_id" => "id"],
+      ],
+    ];
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            "id" => "ID",
-            "created_at" => "Created At",
-            "updated_at" => "Updated At",
-            "dicount_price" => "Dicount Price",
-            "start_time" => "Start Time",
-            "end_time" => "End Time",
-            "product_id" => "Product ID",
-            "category_id" => "Category ID",
-            "image_banner" => "Image Banner",
-            "image_portrait" => "Image Portrait",
-            "image_small_landscape" => "Image Small Landscape",
-            "type" => "Type",
-            "title" => "Title",
-        ];
-    }
-    public function behaviors()
-    {
-        return [
-            [
-                "class" => TimestampBehavior::class,
-                "value" => new Expression("now()"),
-            ],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function attributeLabels()
+  {
+    return [
+      "id" => "ID",
+      "created_at" => "Created At",
+      "updated_at" => "Updated At",
+      "dicount_price" => "Dicount Price",
+      "start_time" => "Start Time",
+      "end_time" => "End Time",
+      "product_id" => "Product ID",
+      "category_id" => "Category ID",
+      "image_banner" => "Image Banner",
+      "image_portrait" => "Image Portrait",
+      "image_small_landscape" => "Image Small Landscape",
+      "type" => "Type",
+      "title" => "Title",
+    ];
+  }
+  public function behaviors()
+  {
+    return [
+      [
+        "class" => TimestampBehavior::class,
+        "value" => new Expression("now()"),
+      ],
+    ];
+  }
 
-    public static function getTypeOptions()
-    {
-        return [
-            self::TYPE_CATEGORY => [
-                "label" => "Category",
-                "value" => self::TYPE_CATEGORY,
-                "description" =>
-                    "Include category that will be featured (all the products inside that category will be included automatically)",
-            ],
-            self::TYPE_PRODUCT => [
-                "label" => "Product",
-                "value" => self::TYPE_PRODUCT,
-                "description" =>
-                    "Include single product that will be featured (only the selected product will be included)",
-            ],
-        ];
-    }
+  public static function getTypeOptions()
+  {
+    return [
+      self::TYPE_CATEGORY => [
+        "label" => "Category",
+        "value" => self::TYPE_CATEGORY,
+        "description" =>
+        "Include category that will be featured (all the products inside that category will be included automatically)",
+      ],
+      self::TYPE_PRODUCT => [
+        "label" => "Product",
+        "value" => self::TYPE_PRODUCT,
+        "description" =>
+        "Include single product that will be featured (only the selected product will be included)",
+      ],
+    ];
+  }
 
-    /**
-     * Gets query for [[Category]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCategory()
-    {
-        return $this->hasOne(Category::class, ["id" => "category_id"]);
-    }
+  /**
+   * Gets query for [[Category]].
+   *
+   * @return \yii\db\ActiveQuery
+   */
+  public function getCategory()
+  {
+    return $this->hasOne(Category::class, ["id" => "category_id"]);
+  }
 
-    /**
-     * Gets query for [[Product]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProduct()
-    {
-        return $this->hasOne(Product::class, ["id" => "product_id"]);
-    }
+  /**
+   * Gets query for [[Product]].
+   *
+   * @return \yii\db\ActiveQuery
+   */
+  public function getProduct()
+  {
+    return $this->hasOne(Product::class, ["id" => "product_id"]);
+  }
 
-    public function upload()
-    {
-        $this->image_banner = Utils::uploadImage($this->image_banner);
-        $this->image_small_landscape = Utils::uploadImage(
-            $this->image_small_landscape
-        );
-        $this->image_portrait = Utils::uploadImage($this->image_portrait);
-        return true;
-    }
+  public function upload()
+  {
+    $this->image_banner = Utils::uploadImage($this->image_banner_file);
+    $this->image_small_landscape = Utils::uploadImage(
+      $this->image_small_landscape_file
+    );
+    $this->image_portrait = Utils::uploadImage($this->image_portrait_file);
+    return true;
+  }
 
-    public static function toOptionsList()
-    {
-        return ArrayHelper::map(
-            self::find()
-                ->select(["id", "product_id"])
-                ->all(),
-            "id",
-            function ($model) {
-                return (string) $model;
-            }
-        );
-    }
+  public static function toOptionsList()
+  {
+    return ArrayHelper::map(
+      self::find()
+        ->select(["id", "product_id"])
+        ->all(),
+      "id",
+      function ($model) {
+        return (string) $model;
+      }
+    );
+  }
 
-    public function __toString()
-    {
-        return "Offered " . (string) $this->product;
-    }
+  public function __toString()
+  {
+    return "Offered " . (string) $this->product;
+  }
 }

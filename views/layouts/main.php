@@ -16,21 +16,21 @@ AppAsset::register($this);
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(["charset" => Yii::$app->charset], "charset");
 $this->registerMetaTag([
-    "name" => "viewport",
-    "content" => "width=device-width, initial-scale=1, shrink-to-fit=no",
+  "name" => "viewport",
+  "content" => "width=device-width, initial-scale=1, shrink-to-fit=no",
 ]);
 $this->registerMetaTag([
-    "name" => "description",
-    "content" => $this->params["meta_description"] ?? "",
+  "name" => "description",
+  "content" => $this->params["meta_description"] ?? "",
 ]);
 $this->registerMetaTag([
-    "name" => "keywords",
-    "content" => $this->params["meta_keywords"] ?? "",
+  "name" => "keywords",
+  "content" => $this->params["meta_keywords"] ?? "",
 ]);
 $this->registerLinkTag([
-    "rel" => "icon",
-    "type" => "image/x-icon",
-    "href" => Yii::getAlias("@web/favicon.ico"),
+  "rel" => "icon",
+  "type" => "image/x-icon",
+  "href" => Yii::getAlias("@web/favicon.ico"),
 ]);
 $this->registerJsFile("@web/js/vendor/bootstrap.bundle.min.js");
 
@@ -76,7 +76,6 @@ $this->registerJs($script, View::POS_HEAD);
   <?php $this->beginBody(); ?>
   <?= Header::widget() ?>
   <main class="main-wrapper">
-
     <?php if (!empty($this->params["breadcrumbs"])): ?>
       <div class="breadcrumb-area">
         <div class="container">
@@ -84,30 +83,29 @@ $this->registerJs($script, View::POS_HEAD);
             <div class="col-12 text-center">
               <h2 class="breadcrumb-title"><?= $this->title ?></h2>
               <?= Breadcrumbs::widget([
-                  "options" => [
-                      "class" => "breadcrumb-list",
-                  ],
-                  "itemTemplate" => "<li class=\"breadcrumb-item\">{link}</li>",
-                  "activeItemTemplate" =>
-                      "<li class=\"breadcrumb-item active\">{link}</li>",
-                  "links" => $this->params["breadcrumbs"],
-                  "homeLink" => ["url" => "/", "label" => "Home"],
+                "options" => [
+                  "class" => "breadcrumb-list",
+                ],
+                "itemTemplate" => "<li class=\"breadcrumb-item\">{link}</li>",
+                "activeItemTemplate" =>
+                "<li class=\"breadcrumb-item active\">{link}</li>",
+                "links" => $this->params["breadcrumbs"],
+                "homeLink" => ["url" => "/", "label" => "Home"],
               ]) ?>
             </div>
           </div>
         </div>
       </div>
     <?php endif; ?>
-    <?= $content ?>
+    <?= $content; ?>
   </main>
   <?= Footer::widget() ?>
-
 
 
   <!-- Modal -->
   <div class="modal modal-2 fade" id="productDetailModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content pt-4 px-4">
+      <div class="modal-content pt-4">
         <div class="modal-body">
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <i class="pe-7s-close"></i></button>
           <div class="row">
