@@ -71,7 +71,6 @@ $cartItemQuery = CartItem::toOptionsList();
           ->dropDownList($cartItemQuery, [
               "multiple" => true,
               "options" => Utils::preSelectOptions(
-                  $cartItemQuery,
                   $model->cartItems
               ),
           ])

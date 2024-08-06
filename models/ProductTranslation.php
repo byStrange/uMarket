@@ -16,7 +16,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $description
  * @property int $product_id
  *
- * @property MainProduct $product
+ * @property Product $product
  */
 class ProductTranslation extends \yii\db\ActiveRecord
 {

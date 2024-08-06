@@ -27,6 +27,7 @@ use yii\helpers\ArrayHelper;
  * @property Product[] $fromProducts
  * @property Image[] $images
  * @property CartItem[] $cartItems
+ * @property Wishlistitem[] $wishlistitems
  * @property Product[] $toProducts
  * @property User[] $likedUsers
  * @property User[] $viewers
@@ -200,10 +201,7 @@ class Product extends \yii\db\ActiveRecord
    */
   public function getImages()
   {
-    return $this->hasMany(Image::class, ["id" => "image_id"])->viaTable(
-      "main_product_images",
-      ["product_id" => "id"]
-    );
+    return $this->hasMany(Image::class, ['id' => 'image_id'])->viaTable('main_product_images', ['product_id' => 'id']);
   }
 
   /**
@@ -214,6 +212,16 @@ class Product extends \yii\db\ActiveRecord
   public function getCartItems()
   {
     return $this->hasMany(CartItem::class, ["product_id" => "id"]);
+  }
+
+  /**
+   * Gets query for [[Wishlistitems]].
+   *
+   * @return \yii\db\ActiveQuery
+   */
+  public function getWishlistitems()
+  {
+    return $this->hasMany(Wishlistitem::class, ['product_id' => 'id']);
   }
 
   /**
@@ -256,6 +264,44 @@ class Product extends \yii\db\ActiveRecord
       "main_product_viewers",
       ["product_id" => "id"]
     );
+  }
+
+  public function priceAsCurrency()
+  {
+    return Yii::$app->formatter->asCurrency($this->discount_price ? $this->discount_price : $this->price);
+  }
+  public function discountPriceAsCurrency()
+  {
+    return Yii::$app->formatter->asCurrency($this->discount_price);
+  }
+
+  public function isOnTheCart()
+  {
+    $session = Yii::$app->session;
+    $cart_id = $session->get('cart_id');
+    if (!$cart_id) {
+      return false;
+    }
+
+    $cart_item = $this->getCartItems()->where(['cart_id' => $cart_id])->one();
+    if ($cart_item) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public function isOnTheWishlist()
+  {
+    $session = Yii::$app->session;
+    $cart_id = $session->get('cart_id');
+    if (!$cart_id) return false;
+
+    $wishlistitem = $this->getWishlistitems()->where(['cart_id' => $cart_id])->one();
+    if ($wishlistitem) {
+      return true;
+    }
+    return false;
   }
 
   public function linkAll($relation, $ids_list, $relation_model)

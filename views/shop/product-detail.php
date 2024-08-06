@@ -7,7 +7,6 @@ use app\models\Product;
 
 $this->title = "Product detail";
 $this->params["breadcrumbs"][] = $this->title;
-
 ?>
 
 <div class="pt-100px pb-100px">

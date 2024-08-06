@@ -16,6 +16,7 @@ class ShopController extends Controller
     $searchModel = new ProductSearch();
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+
     $pagination = new Pagination([
       'defaultPageSize' => 5,
       'totalCount' => $dataProvider->query->count(),
@@ -33,10 +34,12 @@ class ShopController extends Controller
     $product = Product::findOne(["id" => $id]);
 
     if ($d) {
-      return $this->renderAjax('@app/components/product/_product_detail_section', ["product" => $product, "detailed" => false]);
+      return $this->renderPartial('@app/components/product/_product_detail_section', ["product" => $product, "detailed" => false]);
     }
+
     return $this->render("product-detail", ["product" => $product]);
   }
+
 
 
   public function actionCategory($id)
@@ -46,17 +49,9 @@ class ShopController extends Controller
     $searchModel->category_id = $category->id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     $totalCount = $dataProvider->query->count();
-
-    /*var_dump($category);*/
-    /*die;*/
-
-    $pagination = new Pagination([
-      'defaultPageSize' => 5,
-      'totalCount' => $totalCount
-    ]);
-
+    $pagination = new Pagination(['defaultPageSize' => 5, 'totalCount' => $totalCount]);
     $products = $dataProvider->query->offset($pagination->offset)->limit($pagination->limit)->all();
-
     return $this->render('category', ["category" => $category, "products" => $products, "pagination" => $pagination, "dataProvider" => $dataProvider, "totalCount" => $totalCount]);
   }
+
 }

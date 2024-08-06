@@ -8,14 +8,15 @@ use yii\helpers\Url;
 
 class Utils
 {
-  public static function preSelectOptions($dataIds, $existingRelation)
+  public static function preSelectOptions($existingRelation)
   {
-    if (empty($dataIds) || empty($existingRelation)) {
+    if (empty($existingRelation)) {
       return [];
     }
     $options = [];
     $existingIds = array_column($existingRelation, "id");
-    foreach ($dataIds as $id) {
+    foreach ($existingIds as $id) {
+      var_dump($id);
       $options[$id] = [
         "selected" => in_array($id, $existingIds),
       ];
@@ -55,11 +56,11 @@ class Utils
   public static function popupField($form, $model, $modelName = "", $field)
   {
     echo "<div class='row'>";
-    echo "<div class='col-3'>";
+    echo "<div class='col-9'>";
     $d = $field($form, $model);
     echo $d;
     echo "</div>";
-    echo "<div class='col-4 d-flex align-items-center'>";
+    echo "<div class='col-3 d-flex align-items-center'>";
     $inputId = $d->inputId;
     $inputIdSplit = explode("-", $inputId);
     $inputIdToModelName = $modelName ? $modelName : $inputIdSplit[1];

@@ -81,6 +81,7 @@ $this->registerJsFile("@web/js/popup/popup.js", [
             ["label" => "Images", "url" => ["image/index"]],
             ["label" => "Carts", "url" => ["cart/index"]],
             ["label" => "CartItems", "url" => ["cart-item/index"]],
+            ["label" => "Wishlistitems", "url" => ["wishlistitem/index"]],
             ["label" => "Coupons", "url" => ["coupon/index"]],
             ["label" => "User addresses", "url" => ["user-address/index"]],
             ["label" => "Location Points", "url" => ["location-point/index"]],

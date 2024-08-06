@@ -6,7 +6,7 @@
 use app\assets\AppAsset;
 use app\components\home\Footer;
 use app\components\home\Header;
-
+use app\components\home\offcanvas\OffCanvasMobileMenu;
 use yii\bootstrap5\Html;
 use yii\web\View;
 use yii\widgets\Breadcrumbs;
@@ -36,31 +36,73 @@ $this->registerJsFile("@web/js/vendor/bootstrap.bundle.min.js");
 
 $script = <<<JS
 function reloadScript(url, callback) {
-  // Find existing script with the same URL
   var existingScript = document.querySelector(`script[src=" + url + "]`);
 
-  // Remove the existing script if it exists
   if (existingScript) {
     existingScript.parentNode.removeChild(existingScript);
   }
 
-  // Create a new script element
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src = url + '?v=' + new Date().getTime(); // Cache-busting parameter
+  script.src = url + '?v=' + new Date().getTime();
 
-  // Execute the callback function after the script has been loaded
   script.onload = callback;
 
-  // Append the new script to the head
   document.head.appendChild(script);
 }
 
 document.addEventListener('htmx:afterSettle', function(event) {
-  reloadScript('/js/main.min.js')
-})
+  if (event.detail.requestConfig.elt.classList.contains('quickview')) reloadScript('/js/main.min.js')
+});
 JS;
 $this->registerJs($script, View::POS_HEAD);
+
+$script = <<<JS
+$(function () {
+  $(document).on('htmx:afterOnLoad', function (event) {
+    var response = event.detail.xhr.response; 
+    const parser = new DOMParser();
+    var doc = parser.parseFromString(response, 'text/html')
+    var body = $(doc.body);
+    var wrapper = body.children().first()
+    var id = wrapper.attr('data-id');
+    var action = wrapper.attr('data-action')
+    var heartIconSvg = `<svg id="wishlist-icon-` + id + `" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="red"/>
+</svg>`
+    var likeButton = $('#wishlist-icon-' + id);
+    var likeButtonHtml = '<i class="pe-7s-like" id="wishlist-icon-' + id + '"' + '></i>'
+
+    switch (action) {
+      case 'addToWishlist':
+        likeButton.replaceWith(heartIconSvg)
+        break;
+
+      case 'removeFromWishList':
+        likeButton.replaceWith(likeButtonHtml)
+
+        var removedWishlistItem =  $('#wishlistitem-' + id);
+        console.log(removedWishlistItem)
+        removedWishlistItem.slideUp()
+        break;
+
+      case 'removeFromCart':
+        var removedCartItem = $('.cartitem-' + id); 
+        removedCartItem.slideUp();
+        break;
+    }
+  })
+});
+JS;
+$this->registerJs($script);
+
+
+$style = <<<CSS
+.pe-7s-like.liked {
+  text-shadow: 2px 2px red, -2px -2px blue, -2px 0 red, 0 -2px blue;
+}
+CSS;
+$this->registerCss($style);
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -105,7 +147,7 @@ $this->registerJs($script, View::POS_HEAD);
   <!-- Modal -->
   <div class="modal modal-2 fade" id="productDetailModal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content pt-4">
+      <div class="modal-content p-4">
         <div class="modal-body">
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <i class="pe-7s-close"></i></button>
           <div class="row">
@@ -228,22 +270,9 @@ $this->registerJs($script, View::POS_HEAD);
   </div>
   <!-- Modal end -->
   <!-- Modal Cart -->
-  <div class="modal customize-class fade" id="exampleModal-Cart" tabindex="-1" aria-hidden="true">
+  <div class="modal customize-class fade" id="cartModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-body text-center">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="pe-7s-close"></i></button>
-          <div class="tt-modal-messages">
-            <i class="pe-7s-check"></i> Added to cart successfully!
-          </div>
-          <div class="tt-modal-product">
-            <div class="tt-img">
-              <img src="/images/product-image/1.webp" alt="Modern Smart Phone">
-            </div>
-            <h2 class="tt-title"><a href="#">Modern Smart Phone</a></h2>
-          </div>
-        </div>
-      </div>
+      <div class="modal-content"></div>
     </div>
   </div>
   <!-- Modal wishlist -->
@@ -285,6 +314,10 @@ $this->registerJs($script, View::POS_HEAD);
     </div>
   </div>
 
+  <div class="offcanvas-overlay"></div>
+  <?= $this->render('@app/components/home/offcanvas/OffCanvasWishList', ['view' => &$this]) ?>
+  <?= $this->render('@app/components/home/offcanvas/OffCanvasCart', ['view' => &$this]) ?>
+  <?php echo OffCanvasMobileMenu::widget(); ?>
   <?php $this->endBody(); ?>
 </body>
 

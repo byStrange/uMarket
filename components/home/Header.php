@@ -2,14 +2,22 @@
 
 namespace app\components\home;
 
+use app\models\Cart;
 use Yii;
 use yii\base\Widget;
 
 class Header extends Widget
 {
-    public function run()
-    {
-        $content = <<<HTML
+  public function run()
+  {
+    $cart = Cart::getOrCreateCurrentInstance();
+    $cart_items = $cart->cartItems;
+    $cart_items_count = count($cart_items);
+
+    $content = <<<HTML
+
+
+
       <header>
           <!-- Header top area start -->
           <div class="header-top">
@@ -24,22 +32,22 @@ class Header extends Widget
                           <div class="top-nav">
                               <ul>
 HTML;
-        if (!Yii::$app->user->isGuest) {
-            $content .= <<<HTML
+    if (!Yii::$app->user->isGuest) {
+      $content .= <<<HTML
                         <li><a href="/site/account"><i class="fa fa-user"></i>Profile</a></li>
 HTML;
-            if (Yii::$app->user->identity->is_superuser) {
-                $content .= <<<HTML
+      if (Yii::$app->user->identity->is_superuser) {
+        $content .= <<<HTML
                         <li><a href="/admin"><i class="fa fa-wrench"></i> Admin panel</a></li>
 HTML;
-            }
-        } else {
-            $content .= <<<HTML
+      }
+    } else {
+      $content .= <<<HTML
                         <li><a href="site/login">Login</a></li>
 HTML;
-        }
+    }
 
-        $content .= <<<HTML
+    $content .= <<<HTML
                         </ul>
                     </div>
                 </div>
@@ -67,13 +75,17 @@ HTML;
                 <div class="col-lg-3 col">
                     <div class="header-actions">
                         <!-- Single Wedge Start -->
-                        <a href="#offcanvas-wishlist" class="header-action-btn offcanvas-toggle">
+                        <a href="#offcanvas-wishlist" hx-get="/cart/wishlist?d=true" hx-target="#offcanvas-wishlist .body" hx-trigger="click" class="header-action-btn offcanvas-toggle">
                             <i class="pe-7s-like"></i>
                         </a>
                         <!-- Single Wedge End -->
-                        <a href="#offcanvas-cart" class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
+                        <a href="#offcanvas-cart" hx-get="/cart/?d=true" hx-target="#offcanvas-cart .body" hx-trigger="click" class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
                             <i class="pe-7s-shopbag"></i>
-                            <span class="header-action-num">01</span>
+                                  <span class="header-action-num">
+    HTML;
+    $content .= $cart_items_count;
+    $content .= <<<HTML
+                                </span>
                             <!-- <span class="cart-amount">€30.00</span> -->
                         </a>
                         <a href="#offcanvas-mobile-menu" class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
@@ -111,7 +123,12 @@ HTML;
                         <!-- Single Wedge End -->
                         <a href="#offcanvas-cart" class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
                             <i class="pe-7s-shopbag"></i>
-                            <span class="header-action-num">01</span>
+                                            <span class="header-action-num">
+    HTML;
+    $content .= $cart_items_count;
+    $content .= <<<HTML
+
+                                            </span>
                             <!-- <span class="cart-amount">€30.00</span> -->
                         </a>
                         <a href="#offcanvas-mobile-menu" class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
@@ -183,6 +200,6 @@ HTML;
 </header>
 HTML;
 
-        return $content;
-    }
+    return $content;
+  }
 }

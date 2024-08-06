@@ -12,7 +12,6 @@ $this->title = "My Yii Application";
 <div>
 
   <!-- OffCanvas menus start -->
-  <?= OffCanvasList::widget() ?>
   <!-- OffCanvas menus End -->
   <!-- Hero/Intro Slider Start -->
   <?= $this->render("@app/components/home/HeroIntroSlider", [
