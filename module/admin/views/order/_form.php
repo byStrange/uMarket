@@ -3,6 +3,7 @@
 use app\components\Utils;
 use app\models\CartItem;
 use app\models\Coupon;
+use app\models\Order;
 use app\models\User;
 use app\models\UserAddress;
 
@@ -21,12 +22,6 @@ $statuses = [
     5 => "Cancelled",
 ];
 
-$paymentTypes = [
-    "click" => "ClickUz",
-    "payme" => "PayMe",
-    "cod" => "Cash on Delivery",
-];
-
 $cartItemQuery = CartItem::toOptionsList();
 ?>
 
@@ -36,7 +31,7 @@ $cartItemQuery = CartItem::toOptionsList();
 
   <?= $form->field($model, "status")->dropDownList($statuses) ?>
 
-  <?= $form->field($model, "payment_type")->dropDownList($paymentTypes) ?>
+  <?= $form->field($model, "payment_type")->dropDownList(Order::getPaymentTypeOptions(), ['value' => $model->payment_type]) ?>
 
   <?= Utils::popupField($form, $model, "", function ($form, $model) {
       return $form

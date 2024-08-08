@@ -1,11 +1,69 @@
 <?php
 
+use app\models\Order;
+use app\models\User;
 use yii\helpers\Html;
+
+/** @var Order[] $orders */
+/** @var User $user */
+
+$csrfToken = Yii::$app->request->csrfToken;
+$script = <<<JS
+var make = (tag, content) => `<` + tag + `>` + content + `</` + tag + `>`;
+
+function insertNewBillingAddress(userAddress) {
+  $('.user-address-table-wrapper').show()
+  $('#billingAddressesEmpty').hide()
+  console.log(
+    $('.user-address-table-wrapper').css({ display: 'block'})
+  )
+  const newRow = $('<tr>');
+  newRow.attr('id', 'useraddress-item-' + userAddress.id)
+  newRow.append(make('td', $('#userAddressTable tbody').children().length + 1))
+  newRow.append(make('td', userAddress.user_first_name + " " + userAddress.user_last_name));
+  newRow.append(make('td', userAddress.city));
+  newRow.append(make('td', userAddress.apartment));
+  newRow.append(make('td', userAddress.street_address));
+  newRow.append(make('td', userAddress.user_phone_number));
+  newRow.append(make('td', userAddress.label));
+  newRow.append(make('td', userAddress.zip_code));
+  var actionTd = $('<td>')
+  var actionBtn = $('<a class="view" href="#">Delete</a>');
+  actionBtn.attr('hx-post', '/site/delete-useraddress');
+  actionBtn.attr('hx-vals', JSON.stringify({ id: userAddress.id, _csrf: "{$csrfToken}" }))
+  actionBtn.attr('data-bs-toggle', 'modal');
+  actionBtn.attr('data-bs-target', '#cartModal');
+  actionBtn.attr('hx-target', '#cartModal .modal-content')
+  actionBtn.attr('hx-trigger', 'click')
+  
+  actionTd.append(actionBtn);
+  newRow.append(actionTd)
+  htmx.process(actionBtn[0]);
+  $('#userAddressTable tbody').append(newRow);
+}
+
+function removeBillingAddress(id) {
+  console.log(id)
+  if ($('#userAddressTable tbody tr').length < 1) {
+    $('.user-address-table-wrapper').hide()
+    $('#billingAddressesEmpty').show();
+  }
+  $('#useraddress-item-' + id).remove();
+}
+window.insertNewBillingAddress = insertNewBillingAddress;
+window.removeBillingAddress = removeBillingAddress
+JS;
+
+$this->registerJs($script);
 
 $this->title = "Account";
 $this->params["breadcrumbs"][] = $this->title;
 ?>
-
+<style>
+  table td {
+    white-space: nowrap;
+  }
+</style>
 <div class="account-dashboard pt-100px pb-100px">
   <div class="container">
     <div class="row">
@@ -15,14 +73,13 @@ $this->params["breadcrumbs"][] = $this->title;
           <ul role="tablist" class="nav flex-column dashboard-list">
             <li><a href="#dashboard" data-bs-toggle="tab" class="nav-link active">Dashboard</a></li>
             <li> <a href="#orders" data-bs-toggle="tab" class="nav-link">Orders</a></li>
-            <li><a href="#downloads" data-bs-toggle="tab" class="nav-link">Downloads</a></li>
             <li><a href="#address" data-bs-toggle="tab" class="nav-link">Addresses</a></li>
             <li><a href="#account-details" data-bs-toggle="tab" class="nav-link">Account details</a>
             </li>
             <li>
               <?= Html::beginForm(["/site/logout"]) .
-                  Html::submitButton("Logout", ["class" => "nav-link"]) .
-                  Html::endForm() ?>
+                Html::submitButton("Logout", ["class" => "nav-link"]) .
+                Html::endForm() ?>
             </li>
           </ul>
         </div>
@@ -38,134 +95,116 @@ $this->params["breadcrumbs"][] = $this->title;
           <div class="tab-pane fade" id="orders">
             <h4>Orders</h4>
             <div class="table_page table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Order</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Total</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>May 10, 2018</td>
-                    <td><span class="success">Completed</span></td>
-                    <td>$25.00 for 1 item </td>
-                    <td><a href="cart.html" class="view">view</a></td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>May 10, 2018</td>
-                    <td>Processing</td>
-                    <td>$17.00 for 1 item </td>
-                    <td><a href="cart.html" class="view">view</a></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="tab-pane fade" id="downloads">
-            <h4>Downloads</h4>
-            <div class="table_page table-responsive">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Product</th>
-                    <th>Downloads</th>
-                    <th>Expires</th>
-                    <th>Download</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Shopnovilla - Free Real Estate PSD Template</td>
-                    <td>May 10, 2018</td>
-                    <td><span class="danger">Expired</span></td>
-                    <td><a href="#" class="view">Click Here To Download Your File</a></td>
-                  </tr>
-                  <tr>
-                    <td>Organic - ecommerce html template</td>
-                    <td>Sep 11, 2018</td>
-                    <td>Never</td>
-                    <td><a href="#" class="view">Click Here To Download Your File</a></td>
-                  </tr>
-                </tbody>
-              </table>
+              <?php if (!empty($orders)): ?>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Order ID</th>
+                      <th>Date</th>
+                      <th>Status</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php foreach ($orders as $index => $order) : ?>
+                      <tr>
+                        <td><?= $index + 1 ?></td>
+                        <td><?= $order->id ?></td>
+                        <td><?= Yii::$app->formatter->asDate($order->created_at, 'medium') ?></td>
+                        <td><?= $order->status ?></td>
+                        <td style="white-space: nowrap;"><?= $order->totalPriceAsCurrency() ?> for <?= count($order->cartItems) ?> item<?= count($order->cartItems) > 1 ? 's' : '' ?> </td>
+                      </tr>
+                    <?php endforeach ?>
+                  </tbody>
+                </table>
+              <?php else: ?>
+                <div class="empty-text-contant text-center">
+                  <i class="pe-7s-shopbag"></i>
+                  <h3>You haven't ordered anything yet</h3>
+                  <a class="empty-cart-btn" href="/shop">
+                    <i class="fa fa-arrow-left"> </i> Go to shopping
+                  </a>
+                </div>
+              <?php endif ?>
             </div>
           </div>
           <div class="tab-pane" id="address">
-            <p>The following addresses will be used on the checkout page by default.</p>
-            <h5 class="billing-address">Billing address</h5>
-            <a href="#" class="view">Edit</a>
-            <p class="mb-2"><strong>Michael M Hoskins</strong></p>
-            <address>
-              <span class="mb-1 d-inline-block"><strong>City:</strong> Seattle</span>,
-              <br>
-              <span class="mb-1 d-inline-block"><strong>State:</strong> Washington(WA)</span>,
-              <br>
-              <span class="mb-1 d-inline-block"><strong>ZIP:</strong> 98101</span>,
-              <br>
-              <span><strong>Country:</strong> USA</span>
-            </address>
+            <h4>Billing addresses</h4>
+            <div class="user-address-table-wrapper" style="display: <?= empty($user->userAddresses) ? 'none' : '' ?>">
+              <div class="table_page table-responsive">
+                <div>
+                  <table id="userAddressTable">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Full Name</th>
+                        <th>City</th>
+                        <th>Apartment</th>
+                        <th>Street Address</th>
+                        <th>Phone number</th>
+                        <th>Label</th>
+                        <th>Zip code</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php foreach ($user->userAddresses as $index => $userAddress): ?>
+                        <tr id="useraddress-item-<?= $userAddress->id ?>">
+                          <td><?= $index + 1 ?></td>
+                          <td><?= $userAddress->user_first_name . ' ' . $userAddress->user_last_name ?></td>
+                          <td><?= $userAddress->city ?></td>
+                          <td><?= $userAddress->apartment ?></td>
+                          <td><?= $userAddress->street_address ?></td>
+                          <td><?= $userAddress->user_phone_number ?></td>
+                          <td><?= $userAddress->label ?></td>
+                          <td><?= $userAddress->zip_code ?></td>
+                          <td>
+                            <a hx-swap="none" hx-post="/site/delete-useraddress" hx-target="#cartModal .modal-content" hx-trigger="click" hx-vals='{"id": <?= $userAddress->id ?>, "_csrf": "<?= Yii::$app->request->csrfToken ?>"}' href="#" class="view">Delete</a>
+                          </td>
+                        </tr>
+                      <?php endforeach ?>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <button
+                class="btn-primary mt-3"
+                data-bs-toggle="modal"
+                data-bs-target="#addressModal"
+                hx-get="/admin/user-address/create/?d=true"
+                hx-target="#addressModal .modal-content">
+                <i class="fa fa-plus"> </i>
+                add user address
+              </button>
+            </div>
+
+
+            <div id="billingAddressesEmpty" class="empty-text-contant text-center" style="display: <?= empty($this->userAddresses) ? '' : 'none' ?>">
+              <i class="pe-7s-id"></i>
+              <h3 class="mb-2">You do not have any addresses</h3>
+              <p class="text-muted">You can use these billing address information while ordering something</p>
+              <a
+                href="#"
+                class="empty-cart-btn mt-2"
+                data-bs-toggle="modal"
+                data-bs-target="#addressModal"
+                hx-get="/admin/user-address/create/?d=true"
+                hx-target="#addressModal .modal-content">
+                <i class="fa fa-plus"> </i> Create new one
+              </a>
+            </div>
           </div>
           <div class="tab-pane fade" id="account-details">
             <h3>Account details </h3>
-            <div class="login">
-              <div class="login_form_container">
-                <div class="account_login_form">
-                  <form action="#">
-                    <p>Already have an account? <a href="#" data-bs-toggle="modal" data-bs-target="#loginActive">Log in instead!</a></p>
-                    <div class="input-radio">
-                      <span class="custom-radio"><input type="radio" value="1" name="id_gender"> Mr.</span>
-                      <span class="custom-radio"><input type="radio" value="1" name="id_gender"> Mrs.</span>
-                    </div> <br>
-                    <div class="default-form-box mb-20">
-                      <label>First Name</label>
-                      <input type="text" name="first-name">
-                    </div>
-                    <div class="default-form-box mb-20">
-                      <label>Last Name</label>
-                      <input type="text" name="last-name">
-                    </div>
-                    <div class="default-form-box mb-20">
-                      <label>Email</label>
-                      <input type="text" name="email-name">
-                    </div>
-                    <div class="default-form-box mb-20">
-                      <label>Password</label>
-                      <input type="password" name="user-password">
-                    </div>
-                    <div class="default-form-box mb-20">
-                      <label>Birthdate</label>
-                      <input type="date" name="birthday">
-                    </div>
-                    <span class="example">
-                      (E.g.: 05/31/1970)
-                    </span>
-                    <br>
-                    <label class="checkbox-default" for="offer">
-                      <input type="checkbox" id="offer">
-                      <span>Receive offers from our partners</span>
-                    </label>
-                    <br>
-                    <label class="checkbox-default checkbox-default-more-text" for="newsletter">
-                      <input type="checkbox" id="newsletter">
-                      <span>Sign up for our newsletter<br><em>You may unsubscribe at any
-                          moment. For that purpose, please find our contact info in the
-                          legal notice.</em></span>
-                    </label>
-                    <div class="save_button mt-3">
-                      <button class="btn" type="submit">Save</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
+            <p>working on this feature</p>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="modal fade" id="addressModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content p-3"></div>
       </div>
     </div>
   </div>

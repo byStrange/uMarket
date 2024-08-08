@@ -8282,9 +8282,10 @@ body.offcanvas-open {
 .your-order-area .Place-order {
   margin-top: 25px;
 }
-.your-order-area .Place-order a {
+.your-order-area .Place-order button {
   background-color: #266bf9;
   color: #fff;
+  width: 100%;
   display: block;
   font-weight: 600;
   letter-spacing: 1px;
@@ -8295,7 +8296,7 @@ body.offcanvas-open {
   border-radius: 0px;
   z-index: 9;
 }
-.your-order-area .Place-order a:hover {
+.your-order-area .Place-order button:hover {
   background-color: #000000;
 }
 

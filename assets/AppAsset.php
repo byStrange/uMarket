@@ -27,7 +27,7 @@ class AppAsset extends AssetBundle
       'js/vendor/jquery-migrate-3.3.2.min.js',
       'js/vendor/modernizr-3.11.2.min.js',
       'js/plugins.min.js',
-      'js/main.min.js'
+      'js/main.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

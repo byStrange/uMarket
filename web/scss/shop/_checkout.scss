@@ -244,9 +244,10 @@
 	}
 	.Place-order {
 	    margin-top: 25px;
-	    & a {
+	    & button {
 		    background-color: $theme-color;
 		    color: #fff;
+        width: 100%;
 		    display: block;
 		    font-weight: 600;
 		    letter-spacing: 1px;

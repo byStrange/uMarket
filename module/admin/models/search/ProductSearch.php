@@ -42,7 +42,7 @@ class ProductSearch extends Product
    */
   public function search($params)
   {
-    $query = Product::find()->joinWith('categories');
+    $query = Product::find()->active()->joinWith('categories');
 
     // add conditions that should always apply here
 
@@ -71,6 +71,7 @@ class ProductSearch extends Product
       "price" => $this->price,
       "discount_price" => $this->discount_price,
       "views" => $this->views,
+      "is_deleted" => $this->is_deleted,
       "created_by_id" => $this->created_by_id,
     ]);
 

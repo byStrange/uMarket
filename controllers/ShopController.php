@@ -25,16 +25,20 @@ class ShopController extends Controller
     $products = $dataProvider->query->offset($pagination->offset)->limit($pagination->limit)->all();
 
 
-    $totalCount = Product::find()->count();
+    $totalCount = Product::find()->active()->count();
     return $this->render("index", ['dataProvider' => $dataProvider, 'products' => $products, 'pagination' => $pagination, 'totalCount' => $totalCount, "searchModel" => $searchModel]);
   }
 
   public function actionProduct($id, $d = false)
   {
-    $product = Product::findOne(["id" => $id]);
+    $product = Product::findOne(["id" => $id, "is_deleted" => false]);
 
     if ($d) {
       return $this->renderPartial('@app/components/product/_product_detail_section', ["product" => $product, "detailed" => false]);
+    }
+
+    if (!$product) {
+      return $this->render('@app/views/site/404');
     }
 
     return $this->render("product-detail", ["product" => $product]);
@@ -53,5 +57,4 @@ class ShopController extends Controller
     $products = $dataProvider->query->offset($pagination->offset)->limit($pagination->limit)->all();
     return $this->render('category', ["category" => $category, "products" => $products, "pagination" => $pagination, "dataProvider" => $dataProvider, "totalCount" => $totalCount]);
   }
-
 }

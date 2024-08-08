@@ -56,6 +56,7 @@ $this->params["breadcrumbs"][] = $this->title;
             ],
             "id",
             "label",
+            "is_pinned:boolean",
             "created_at",
             "updated_at",
             "parent_id",

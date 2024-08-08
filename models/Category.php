@@ -16,12 +16,14 @@ use yii\helpers\ArrayHelper;
  * @property int|null $parent_id
  * @property string $type
  * @property string $label
+ * @property string $is_pinned
  *
  * @property Category[] $categories
  * @property CategoryTranslation[] $translations
  * @property ProductCategories[] $productCategories
  * @property Category $parentId
  * @property Product[] $products
+ * @property FeaturedOffer $featuredOffer
  */
 class Category extends \yii\db\ActiveRecord
 {
@@ -63,6 +65,7 @@ class Category extends \yii\db\ActiveRecord
       [["parent_id"], "default", "value" => null],
       [["label", "type"], "string", "max" => 255],
       [["parent_id"], "integer"],
+      [["is_pinned"], "boolean"],
       [
         ["parent_id"],
         "exist",
@@ -148,6 +151,25 @@ class Category extends \yii\db\ActiveRecord
       "main_product_categories",
       ["category_id" => "id"]
     );
+  }
+
+  public function getFeaturedOffer()
+  {
+    return $this->hasOne(FeaturedOffer::class, ['id' => 'category_id']);
+  }
+
+  public function startingFromPrice()
+  {
+    $product = $this->getProducts()->orderBy(['price' => SORT_ASC, 'discount_price' => SORT_ASC])->limit(1)->one();
+
+    if ($product) return $product->cleanPrice();
+
+    return 0;
+  }
+
+  public function startingFromPriceAsCurrency()
+  {
+    return Yii::$app->formatter->asCurrency($this->startingFromPrice());
   }
 
   public static function toOptionsList()

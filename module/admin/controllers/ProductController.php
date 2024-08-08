@@ -76,11 +76,16 @@ class ProductController extends Controller
 
   public function linkAllProductRelations($post, $model)
   {
+
     $submittedCategories = ArrayHelper::getValue(
       $post,
       "Product.categories"
     );
+
     $submittedImages = ArrayHelper::getValue($post, "Product.images");
+
+
+
     $submittedToProducts = ArrayHelper::getValue(
       $post,
       "Product.toProducts"
@@ -122,15 +127,25 @@ class ProductController extends Controller
     $model = new Product();
 
     if ($this->request->isPost) {
-      if ($model->load($this->request->post()) && $model->save()) {
-        $this->linkAllProductRelations($this->request->post(), $model);
-        if ($popup) {
-          return $this->renderPartial(
-            "@app/module/admin/views/_popup_response",
-            ["model" => $model]
-          );
+
+      $submittedImages = ArrayHelper::getValue($this->request->post(), "Product.images");
+      $submittedImages = $submittedImages ? $submittedImages : [];
+
+      if ($model->load($this->request->post())) {
+        if (count($submittedImages) < 5) {
+          $model->addError('images', 'minimum 5 images required');
+        } else {
+          $model->save();
+
+          $this->linkAllProductRelations($this->request->post(), $model);
+          if ($popup) {
+            return $this->renderPartial(
+              "@app/module/admin/views/_popup_response",
+              ["model" => $model]
+            );
+          }
+          return $this->redirect(["view", "id" => $model->id]);
         }
-        return $this->redirect(["view", "id" => $model->id]);
       }
     } else {
       $model->loadDefaultValues();
@@ -154,11 +169,9 @@ class ProductController extends Controller
     $model = $this->findModel($id);
     $translationModel = new ProductTranslation();
 
-    echo (count($model->toProducts));
-
     if ($this->request->isPost) {
-      $this->unlinkAllProductRelations($model);
       if ($model->load($this->request->post()) && $model->save()) {
+        $this->unlinkAllProductRelations($model);
         $this->linkAllProductRelations($this->request->post(), $model);
         return $this->redirect(["view", "id" => $model->id]);
       } elseif (
@@ -185,7 +198,8 @@ class ProductController extends Controller
   public function actionDelete($id)
   {
     $product = Product::findOne($id);
-    $product->delete();
+    $product->is_deleted = true;
+    $product->save();
 
     return $this->redirect(["index"]);
   }

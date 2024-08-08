@@ -6,7 +6,6 @@ use app\models\FeaturedOffer;
 use app\models\Product;
 use app\widgets\RadioItem;
 use yii\helpers\Html;
-use yii\jui\Accordion;
 use yii\web\View as WebView;
 use yii\widgets\ActiveForm;
 

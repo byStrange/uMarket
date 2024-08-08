@@ -41,9 +41,9 @@ class Image extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      [["image", "alt"], "required"],
+      [["alt"], "required"],
       [["created_at", "updated_at"], "safe"],
-      [["image"], "string"],
+      [["image"], "safe"],
       [["alt"], "string", "max" => 255],
     ];
   }

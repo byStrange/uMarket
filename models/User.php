@@ -123,9 +123,9 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCarts()
+    public function getCart()
     {
-        return $this->hasMany(Cart::class, ["user_id" => "id"]);
+        return $this->hasOne(Cart::class, ["user_id" => "id"]);
     }
 
     /**

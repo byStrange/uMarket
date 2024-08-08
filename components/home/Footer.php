@@ -18,40 +18,37 @@ class Footer extends Widget
                             <div class="footer-logo">
                                 <a href="index.html"><img src="/images/logo/footer-logo.png" alt=""></a>
                             </div>
-                            <p class="about-text">Lorem ipsum dolor sit amet consl adipisi elit, sed do eiusmod templ incididunt ut labore
-                            </p>
-                            <ul class="link-follow">
-                                <li>
-                                    <a class="m-0" title="Twitter" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                                </li>
-                                <li>
-                                    <a title="Tumblr" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-tumblr" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a title="Facebook" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-twitter" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a title="Instagram" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-instagram" aria-hidden="true"></i>
-                                    </a>
-                                </li>
-                            </ul>
+                            <p class="about-text">Hmart: Your one-stop digital shop for quality products and great deals.</p>
+                            <!--<ul class="link-follow">-->
+                            <!--    <li>-->
+                            <!--        <a class="m-0" title="Twitter" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>-->
+                            <!--    </li>-->
+                            <!--    <li>-->
+                            <!--        <a title="Tumblr" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-tumblr" aria-hidden="true"></i>-->
+                            <!--        </a>-->
+                            <!--    </li>-->
+                            <!--    <li>-->
+                            <!--        <a title="Facebook" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-twitter" aria-hidden="true"></i>-->
+                            <!--        </a>-->
+                            <!--    </li>-->
+                            <!--    <li>-->
+                            <!--        <a title="Instagram" target="_blank" rel="noopener noreferrer" href="#"><i class="fa fa-instagram" aria-hidden="true"></i>-->
+                            <!--        </a>-->
+                            <!--    </li>-->
+                            <!--</ul>-->
                         </div>
                     </div>
                     <!-- End single blog -->
                     <!-- Start single blog -->
                     <div class="col-md-6 col-lg-3 col-sm-6 mb-lm-30px pl-lg-60px">
                         <div class="single-wedge">
-                            <h4 class="footer-herading">Services</h4>
+                            <h4 class="footer-herading">Site</h4>
                             <div class="footer-links">
                                 <div class="footer-row">
                                     <ul class="align-items-center">
-                                        <li class="li"><a class="single-link" href="my-account.html">My Account</a></li>
-                                        <li class="li"><a class="single-link" href="contact.html">Contact</a></li>
-                                        <li class="li"><a class="single-link" href="cart.html">Shopping cart</a></li>
-                                        <li class="li"><a class="single-link" href="shop-left-sidebar.html">Shop</a></li>
-                                        <li class="li"><a class="single-link" href="login.html">Services Login</a></li>
+                                        <li class="li"><a class="single-link" href="/site/account">My Account</a></li>
+                                        <li class="li"><a class="single-link" href="/shop">Shop</a></li>
+                                        <li class="li"><a class="single-link" href="/login">Services Login</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -61,36 +58,17 @@ class Footer extends Widget
                     <!-- Start single blog -->
                     <div class="col-md-6 col-lg-3 col-sm-6 mb-lm-30px pl-lg-40px">
                         <div class="single-wedge">
-                            <h4 class="footer-herading">My Account</h4>
+                            <h4 class="footer-herading">Cart</h4>
                             <div class="footer-links">
                                 <div class="footer-row">
                                     <ul class="align-items-center">
-                                        <li class="li"><a class="single-link" href="my-account.html">My Account</a></li>
-                                        <li class="li"><a class="single-link" href="contact.html">Contact</a></li>
-                                        <li class="li"><a class="single-link" href="cart.html">Shopping cart</a></li>
-                                        <li class="li"><a class="single-link" href="shop-left-sidebar.html">Shop</a></li>
-                                        <li class="li"><a class="single-link" href="login.html">Services Login</a></li>
+                                        <li class="li"><a class="single-link" href="/cart/wishlist">Wishlist</a></li>
+                                        <li class="li"><a class="single-link" href="/cart">Cart</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- End single blog -->
-                    <!-- Start single blog -->
-                    <div class="col-md-6 col-lg-3 col-sm-12">
-                        <div class="single-wedge">
-                            <h4 class="footer-herading">Contact Info</h4>
-                            <div class="footer-links">
-                                <!-- News letter area -->
-                                <p class="address">Address: Your Address Goes Here.</p>
-                                <p class="phone">Phone/Fax:<a href="tel:0123456789"> 0123456789</a></p>
-                                <p class="mail">Email:<a href="mailto:demo@example.com"> demo@example.com</a></p>
-                                <p class="mail"><a href="https://demo@example.com"> demo@example.com</a></p>
-                                <!-- News letter area  End -->
-                            </div>
-                        </div>
-                    </div>
-                    <!-- End single blog -->
                 </div>
             </div>
         </div>
@@ -102,8 +80,7 @@ class Footer extends Widget
                             <div class="payment-mth"><a href="#"><img class="img img-fluid" src="/images/icons/payment.png" alt="payment-image"></a></div>
                         </div>
                         <div class="col-md-6 text-center text-md-start">
-                            <p class="copy-text"> © 2021 <strong>Hmart</strong> Made With <i class="fa fa-heart" aria-hidden="true"></i> By <a class="company-name" href="https://themeforest.net/user/codecarnival/portfolio">
-                                    <strong> Codecarnival </strong></a>.</p>
+                            <p class="copy-text"> © 2024 <strong>Hmart</strong></p>
                         </div>
                     </div>
                 </div>

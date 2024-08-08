@@ -5,7 +5,7 @@
 use yii\helpers\Html;
 ?>
 
-<div class="single-feature-content">
+<div class="single-feature-content" style="max-width: 570px;">
   <div class="feature-image">
     <?= Html::img("https://placehold.co/570x790", ['alt' => $offer->title]) ?>
   </div>

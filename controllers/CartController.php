@@ -6,7 +6,6 @@ use app\models\Cart;
 use app\models\CartItem;
 use app\models\Product;
 use app\models\Wishlistitem;
-use Mpdf\Tag\Q;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -120,10 +119,11 @@ class CartController extends Controller
 
       # increment quantity or decrement
       $adjustment = $action == 'increment' ? 1 : -1;
-      $cart_item->quantity = $cart_item->quantity + $adjustment;
+      $finalQuantity = $cart_item->quantity + $adjustment;
+      $cart_item->quantity = $finalQuantity <= 0 ? 1 : $finalQuantity;
       if ($cart_item->save()) {
         Yii::$app->response->format = Response::FORMAT_JSON;
-        return ['success' => true, 'totalQuantity' => $cart_item->quantity, 'subtotal' => $cart_item->subTotalAsCurrency(), 'id' => $cart_item->product->id];
+        return ['success' => true, 'cartTotal' => $cart->totalPriceAsCurrency(), 'cartGrandTotal' => $cart->totalPriceAsCurrency(), 'totalQuantity' => $cart_item->quantity, 'subtotal' => $cart_item->subTotalAsCurrency(), 'id' => $cart_item->product->id];
       } else {
         return ['success' => false, 'totalQuantity' => $cart_item->quantity];
       }
@@ -187,8 +187,13 @@ class CartController extends Controller
       return $this->renderPartial('@app/components/product/_modal_response', ['message' => 'There is no cart item with this product']);
     }
 
+    # delete the cart item
     $cartItem->delete();
-    return $this->renderPartial('@app/components/product/_modal_response', ["message" => "Product removed from cart successfully", 'id' => $id, 'action' => 'removeFromCart']);
+
+    # set format to json
+    Yii::$app->response->format = Response::FORMAT_JSON;
+
+    return ['id' => $id, 'action' => 'removeFromCart', 'cartItemsCount' => count($cart->cartItems), 'cartGrandTotal' => $cart->totalPriceAsCurrency(), 'cartTotal' => $cart->totalPriceAsCurrency()];
   }
 
 
@@ -198,6 +203,6 @@ class CartController extends Controller
     $cart = Cart::getOrCreateCurrentInstance();
 
     $cart->delete();
-    return $this->redirect(['cart/index']);
+    $this->goHome();
   }
 }

@@ -1,251 +1,288 @@
+<?php
+
+use app\models\Cart;
+use app\models\CartItem;
+use app\models\DeliveryPoint;
+use app\widgets\RadioItem;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
+
+/** @var CartItem[] $cartitems */
+/** @var Cart $cart */
+
+$cities = ['Andijan', 'Tashkent', 'Fargona'];
+$paymentTypes = ['click' => "Click", 'payme' => "Payme", 'cash' => "Cash"]
+?>
+
+
 <div class="checkout-area pt-100px pb-100px">
   <div class="container">
+    <?php $form = ActiveForm::begin() ?>
     <div class="row">
       <div class="col-lg-7">
-        <div class="billing-info-wrap">
-          <h3>Billing Details</h3>
+        <div class="order-info-wrap">
+          <h3>Order Details</h3>
+
+          <!-- City Selection -->
+          <div class="section my-4">
+            <h4>City</h4>
+            <div class="form-group">
+              <?= $form->field($model, 'city', ['template' => '{input}{hint}{error}'])->dropDownList($cities) ?>
+            </div>
+          </div>
+
+          <!-- Delivery Options -->
+          <div class="border p-3 rounded mb-3">
+            <div class="section">
+              <h4>Delivery Options</h4>
+              <div class="options" id="deliveryOptions">
+                <?= $form->field($model, 'deliveryOption', ['template' => '{input}{hint}{error}'])->radioList(['courier' => 'Courier', 'submitpoint' => 'Submit Point'], [
+                  "item" => function ($index, $label, $name, $checked, $value) {
+                    return RadioItem::widget([
+                      "name" => $name,
+                      "showRadioInput" => false,
+                      "value" => $value,
+                      "id" => $index . $label,
+                      "label" => $label,
+                      "checked" => $checked
+                    ]);
+                  }
+                ]) ?>
+              </div>
+            </div>
+
+            <!-- Courier Details -->
+            <div id="courierDetails">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <?= $form->field($model, 'streetAddress')->textInput() ?>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <?= $form->field($model, 'apartment')->textInput() ?>
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="form-group">
+                    <?= $form->field($model, 'postalCode')->textInput() ?>
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <div class="form-group">
+                    <?= $form->field($model, 'commentForCourier')->textarea() ?>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Point Details -->
+            <div id="submitPointDetails" class="mt-3" style="display: none;">
+              <h5>Select a Submit Point</h5>
+              <?= $form->field($model, 'submitPoint')->dropDownList(DeliveryPoint::toOptionsList(),  ['prompt' => '--- Select a delivery point ---']) ?>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Taker Details -->
+        <div class="section mb-4 border p-3 rounded">
+          <h4>Order Taker Details</h4>
           <div class="row">
-            <div class="col-lg-6 col-md-6">
-              <div class="billing-info mb-4">
-                <label>First Name</label>
-                <input type="text" />
+            <div class="col-lg-6">
+              <div class="form-group">
+                <?= $form->field($model, 'firstName')->textInput() ?>
               </div>
             </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="billing-info mb-4">
-                <label>Last Name</label>
-                <input type="text" />
+            <div class="col-lg-6">
+              <div class="form-group">
+                <?= $form->field($model, 'lastName')->textInput() ?>
               </div>
             </div>
-            <div class="col-lg-12">
-              <div class="billing-info mb-4">
-                <label>Company Name</label>
-                <input type="text" />
-              </div>
-            </div>
-            <div class="col-lg-12">
-              <div class="billing-select mb-4">
-                <label>Country</label>
-                <select>
-                  <option>Select a country</option>
-                  <option>Azerbaijan</option>
-                  <option>Bahamas</option>
-                  <option>Bahrain</option>
-                  <option>Bangladesh</option>
-                  <option>Barbados</option>
-                </select>
-              </div>
-            </div>
-            <div class="col-lg-12">
-              <div class="billing-info mb-4">
-                <label>Street Address</label>
-                <input class="billing-address" placeholder="House number and street name" type="text" />
-                <input placeholder="Apartment, suite, unit etc." type="text" />
-              </div>
-            </div>
-            <div class="col-lg-12">
-              <div class="billing-info mb-4">
-                <label>Town / City</label>
-                <input type="text" />
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="billing-info mb-4">
-                <label>State / County</label>
-                <input type="text" />
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="billing-info mb-4">
-                <label>Postcode / ZIP</label>
-                <input type="text" />
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="billing-info mb-4">
-                <label>Phone</label>
-                <input type="text" />
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="billing-info mb-4">
-                <label>Email Address</label>
-                <input type="text" />
+            <div class="col-lg-6">
+              <div class="form-group">
+                <?= $form->field($model, 'phoneNumber')->textInput() ?>
               </div>
             </div>
           </div>
-          <div class="checkout-account mb-30px">
-            <input class="checkout-toggle2 w-auto h-auto" type="checkbox" />
-            <label>Create an account?</label>
+        </div>
+
+        <!-- Payment Details -->
+        <div class="section mb-4 border rounded p-3">
+          <h4>Payment type</h4>
+
+          <div class="options" id="paymentTypes">
+            <?= $form->field($model, 'paymentType', ['template' => '{input}{hint}{error}'])->radioList($paymentTypes, [
+              "item" => function ($index, $label, $name, $checked, $value) {
+                return RadioItem::widget([
+                  "showRadioInput" => false,
+                  "name" => $name,
+                  "value" => $value,
+                  "id" => $index . $label,
+                  "label" => $label,
+                  "checked" => $checked
+                ]);
+              }
+            ]) ?>
           </div>
-          <div class="checkout-account-toggle open-toggle2 mb-30">
-            <input placeholder="Email address" type="email" />
-            <input placeholder="Password" type="password" />
-            <button class="btn-hover checkout-btn" type="submit">register</button>
-          </div>
-          <div class="additional-info-wrap">
-            <h4>Additional information</h4>
-            <div class="additional-info">
-              <label>Order notes</label>
-              <textarea placeholder="Notes about your order, e.g. special notes for delivery. " name="message"></textarea>
-            </div>
-          </div>
-          <div class="checkout-account mt-25">
-            <input class="checkout-toggle w-auto h-auto" type="checkbox" />
-            <label>Ship to a different address?</label>
-          </div>
-          <div class="different-address open-toggle mt-30px">
+
+          <!-- Card Details (shown only when card is selected) -->
+          <div id="card-details" style="display: none;">
             <div class="row">
-              <div class="col-lg-6 col-md-6">
-                <div class="billing-info mb-4">
-                  <label>First Name</label>
-                  <input type="text" />
-                </div>
-              </div>
-              <div class="col-lg-6 col-md-6">
-                <div class="billing-info mb-4">
-                  <label>Last Name</label>
-                  <input type="text" />
-                </div>
-              </div>
               <div class="col-lg-12">
-                <div class="billing-info mb-4">
-                  <label>Company Name</label>
-                  <input type="text" />
+                <div class="form-group">
+                  <label for="card-number">Card Number</label>
+                  <input type="text" class="form-control" id="card-number">
                 </div>
               </div>
-              <div class="col-lg-12">
-                <div class="billing-select mb-4">
-                  <label>Country</label>
-                  <select>
-                    <option>Select a country</option>
-                    <option>Azerbaijan</option>
-                    <option>Bahamas</option>
-                    <option>Bahrain</option>
-                    <option>Bangladesh</option>
-                    <option>Barbados</option>
-                  </select>
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label for="expiry-date">Expiry Date</label>
+                  <input type="text" class="form-control" id="expiry-date" placeholder="MM/YY">
                 </div>
               </div>
-              <div class="col-lg-12">
-                <div class="billing-info mb-4">
-                  <label>Street Address</label>
-                  <input class="billing-address" placeholder="House number and street name" type="text" />
-                  <input placeholder="Apartment, suite, unit etc." type="text" />
-                </div>
-              </div>
-              <div class="col-lg-12">
-                <div class="billing-info mb-4">
-                  <label>Town / City</label>
-                  <input type="text" />
-                </div>
-              </div>
-              <div class="col-lg-6 col-md-6">
-                <div class="billing-info mb-4">
-                  <label>State / County</label>
-                  <input type="text" />
-                </div>
-              </div>
-              <div class="col-lg-6 col-md-6">
-                <div class="billing-info mb-4">
-                  <label>Postcode / ZIP</label>
-                  <input type="text" />
-                </div>
-              </div>
-              <div class="col-lg-6 col-md-6">
-                <div class="billing-info mb-4">
-                  <label>Phone</label>
-                  <input type="text" />
-                </div>
-              </div>
-              <div class="col-lg-6 col-md-6">
-                <div class="billing-info mb-4">
-                  <label>Email Address</label>
-                  <input type="text" />
+              <div class="col-lg-6">
+                <div class="form-group">
+                  <label for="cvv">CVV</label>
+                  <input type="text" class="form-control" id="cvv">
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-5 mt-md-30px mt-lm-30px ">
-        <div class="your-order-area">
-          <h3>Your order</h3>
-          <div class="your-order-wrap gray-bg-4">
-            <div class="your-order-product-info">
-              <div class="your-order-top">
-                <ul>
-                  <li>Product</li>
-                  <li>Total</li>
-                </ul>
-              </div>
-              <div class="your-order-middle">
-                <ul>
-                  <li><span class="order-middle-left">Product Name X 1</span> <span
-                      class="order-price">$100 </span></li>
-                  <li><span class="order-middle-left">Product Name X 1</span> <span
-                      class="order-price">$100 </span></li>
-                </ul>
-              </div>
-              <div class="your-order-bottom">
-                <ul>
-                  <li class="your-order-shipping">Shipping</li>
-                  <li>Free shipping</li>
-                </ul>
-              </div>
-              <div class="your-order-total">
-                <ul>
-                  <li class="order-total">Total</li>
-                  <li>$100</li>
-                </ul>
-              </div>
-            </div>
-            <div class="payment-method">
-              <div class="payment-accordion element-mrg">
-                <div id="faq" class="panel-group">
-                  <div class="panel panel-default single-my-account m-0">
-                    <div class="panel-heading my-account-title">
-                      <h4 class="panel-title"><a data-bs-toggle="collapse" href="#my-account-1" class="collapsed" aria-expanded="true">Direct bank transfer</a>
-                      </h4>
-                    </div>
-                    <div id="my-account-1" class="panel-collapse collapse show" data-bs-parent="#faq">
-                      <div class="panel-body">
-                        <p>Please send a check to Store Name, Store Street, Store Town,
-                          Store State / County, Store Postcode.</p>
-                      </div>
-                    </div>
+
+      <?php if (!empty($cartitems)): ?>
+        <div class="col-lg-5 mt-md-30px mt-lm-30px">
+          <div class="your-order-area" style="position: sticky; top: 70px">
+            <h3>Your order</h3>
+            <div class="your-order-wrap gray-bg-4">
+              <div class="your-order-product-info">
+                <div class="your-order-top">
+                  <ul>
+                    <li>Product</li>
+                    <li>Total</li>
+                  </ul>
+                </div>
+                <div class="your-order-middle" id="middle" style="border-bottom: none; margin-bottom: 0;">
+                  <ul>
+                    <?php foreach ($cartitems as $cartitem): ?>
+                      <li><span class="order-middle-left"><?= $cartitem->product ?> X <?= $cartitem->quantity ?></span> <span
+                          class="order-price"><?= $cartitem->subTotalAsCurrency() ?></span></li>
+                    <?php endforeach ?>
+                  </ul>
+                </div>
+                <?php if ($cart->couponDiscountAmount()): ?>
+                  <div class="your-order-bottom" id="coupon-wrapper" style="border-top: 1px solid #dee0e4; padding-top: 19px">
+                    <ul>
+                      <li class="couponlist-item-label"><b>Coupon (<?= $cart->coupon->label ? $cart->coupon->label : $cart->coupon->code ?>)</b></li>
+                      <li class="couponlist-item-value">-<?= $cart->couponDiscountAmountAsCurrency() ?></li>
+                    </ul>
                   </div>
-                  <div class="panel panel-default single-my-account m-0">
-                    <div class="panel-heading my-account-title">
-                      <h4 class="panel-title"><a data-bs-toggle="collapse" href="#my-account-2" aria-expanded="false" class="collapsed">Check payments</a></h4>
-                    </div>
-                    <div id="my-account-2" class="panel-collapse collapse" data-bs-parent="#faq">
-                      <div class="panel-body">
-                        <p>Please send a check to Store Name, Store Street, Store Town,
-                          Store State / County, Store Postcode.</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="panel panel-default single-my-account m-0">
-                    <div class="panel-heading my-account-title">
-                      <h4 class="panel-title"><a data-bs-toggle="collapse" href="#my-account-3">Cash on delivery</a></h4>
-                    </div>
-                    <div id="my-account-3" class="panel-collapse collapse" data-bs-parent="#faq">
-                      <div class="panel-body">
-                        <p>Please send a check to Store Name, Store Street, Store Town,
-                          Store State / County, Store Postcode.</p>
-                      </div>
-                    </div>
-                  </div>
+                <?php endif ?>
+                <div class="your-order-total">
+                  <ul>
+                    <li class="order-total">Total</li>
+                    <li id="grandTotal"><?= $cart->totalPriceAsCurrency() ?></li>
+                  </ul>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="Place-order mt-25">
-            <a class="btn-hover" href="#">Place Order</a>
+            <div class="Place-order mt-25">
+              <?= Html::submitButton('Place Order', ['class' => 'btn-hover']) ?>
+            </div>
+            <div class="discount-code-wrapper mt-4">
+              <div class="title-wrap">
+                <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
+              </div>
+              <div class="discount-code">
+                <p>Enter your coupon code if you have one.</p>
+                <input type="text" id="couponCode" name="coupon">
+                <button class="cart-btn-2" hx-post="/site/apply-coupon" hx-trigger="click" hx-include="#couponCode" hx-target="#cartModal .modal-content">Apply Coupon</button>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      <?php endif ?>
     </div>
+    <?php ActiveForm::end() ?>
   </div>
 </div>
+<style>
+  #orderform-deliveryoption {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+
+  }
+
+
+  #orderform-paymenttype {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .options label {
+    cursor: pointer;
+    transition: background-color 200ms;
+  }
+
+  input[type="radio"] {
+    width: 16px;
+    height: 16px;
+  }
+
+  .form-check-input:checked+.form-check-label .card {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 2px rgba(216, 216, 216, 0.5);
+  }
+
+  .help-block {
+    color: var(--bs-danger)
+  }
+</style>
+<?php
+$script = <<<javascript
+function makeCouponTemplate(label, amount) {
+  return '<div class="your-order-bottom" id="coupon-wrapper" style="border-top: 1px solid #dee0e4; padding-top: 19px"><ul><li class="couponlist-item">Coupon (' + label  +')</li> <li>- '+ amount +'</li> </ul> </div>'
+}
+
+
+function applyCoupon({ coupon , couponDiscountAmountAsCurrency, cartGrandTotal }) {
+  var couponWrapper =  $('#coupon-wrapper');
+  var couponItemLabel = couponWrapper.find('.couponlist-item-label');
+  var couponItemValue = couponWrapper.find('.couponlist-item-value');
+  $("#grandTotal").text(cartGrandTotal);
+  var beforeCouponWrapper = $('#middle');
+  var label = coupon.label ? coupon.label : coupon.code
+  if (couponWrapper.length) {
+    couponItemLabel.html('<b>Coupon (' + label + ')</b>');
+    couponItemValue.text('-'  + couponDiscountAmountAsCurrency)
+  } else {
+    var template = makeCouponTemplate(label, couponDiscountAmountAsCurrency)
+    beforeCouponWrapper.after(template)
+  }
+}
+
+window.applyCoupon = applyCoupon;
+  $('input[name="OrderForm[deliveryOption]"]').each(function() {
+    $(this).on('change', function() {
+      var courierDetails = $('#courierDetails');
+      var submitPointDetails = $('#submitPointDetails');
+      //courierDetails.find('.help-block').text('') 
+      //submitPointDetails.find('.help-block').text('') 
+      if ($(this).val() === 'courier') {
+        courierDetails.show();
+        submitPointDetails.hide();
+      } else {
+        courierDetails.hide();
+        submitPointDetails.show();
+      }
+    });
+  });
+javascript;
+
+$this->registerJs($script);
+?>

@@ -33,6 +33,7 @@ use yii\helpers\ArrayHelper;
  * @property User[] $viewers
  * @property Rating[] $ratings
  * @property ProductTranslation[] $translations
+ * @property FeaturedOffer $featuredOffer
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -42,6 +43,11 @@ class Product extends \yii\db\ActiveRecord
   public static function tableName()
   {
     return "main_product";
+  }
+
+  public static function find()
+  {
+    return new ProductQuery(get_called_class());
   }
 
   /**
@@ -139,8 +145,8 @@ class Product extends \yii\db\ActiveRecord
 
   public function updateRatingStats()
   {
-    $this->total_ratings = $this->getRatings()->count();
-    $this->average_rating = $this->getRatings()->average("score");
+    $this->total_ratings = $this->getRatings()->count() ? $this->getRatings()->count() : 0;
+    $this->average_rating = $this->getRatings()->average("score") ? $this->getRatings()->average("score") : 0;
     return $this->save(false);
   }
 
@@ -176,18 +182,33 @@ class Product extends \yii\db\ActiveRecord
     ]);
   }
 
+  public function getFeaturedOffer()
+  {
+    return $this->hasOne(FeaturedOffer::class, ['product_id' => 'id']);
+  }
+
   public function getProductTranslationForLanguage($lang = "")
   {
-    return ProductTranslation::findOne([
+    $translations = ProductTranslation::findOne([
       "product_id" => $this->id,
       "language_code" => $lang ? $lang : Yii::$app->language,
     ]);
+    $newTr = new ProductTranslation(['title' => '', "description" => '']);
+    return $translations ? $translations : $newTr;
   }
 
   public function getProductSalePercentage()
   {
+
     if ($this->discount_price > $this->price) {
       return false;
+    }
+
+    $offer = $this->featuredOffer;
+    if ($offer && $offer->isActive()) {
+      return $offer->dicount_price
+        ? ($offer->dicount_price / $this->price) * 100 - 100
+        : 0;
     }
     return $this->discount_price
       ? ($this->discount_price / $this->price) * 100 - 100
@@ -266,13 +287,31 @@ class Product extends \yii\db\ActiveRecord
     );
   }
 
+  public function cleanPrice()
+  {
+    $featuredOffer = $this->featuredOffer;
+    if ($featuredOffer && $featuredOffer->isActive()) {
+      return $featuredOffer->dicount_price;
+    }
+    return $this->discount_price ? $this->discount_price : $this->price;
+  }
+
   public function priceAsCurrency()
   {
-    return Yii::$app->formatter->asCurrency($this->discount_price ? $this->discount_price : $this->price);
+    return Yii::$app->formatter->asCurrency($this->cleanPrice());
   }
+
   public function discountPriceAsCurrency()
   {
     return Yii::$app->formatter->asCurrency($this->discount_price);
+  }
+
+  public function comparisonPrice()
+  {
+    if ($this->cleanPrice() >= $this->price) {
+      return false;
+    }
+    return ['discount_price' => $this->priceAsCurrency(), 'price' => Yii::$app->formatter->asCurrency($this->price)];
   }
 
   public function isOnTheCart()
@@ -317,7 +356,7 @@ class Product extends \yii\db\ActiveRecord
   public static function toOptionsList()
   {
     return ArrayHelper::map(
-      Product::find()
+      Product::find()->active()
         ->select(["created_by_id", "id"])
         ->all(),
       "id",

@@ -98,4 +98,49 @@ class Utils
     }
     echo Html::a($sort->getAttributeOrder($attributeName) == SORT_DESC ? $ascendingName : $descendingName, $sort->createUrl($attributeName), $linkOptions);
   }
+
+  /**
+   * Get the configuration value by key with a fallback default value.
+   *
+   * @param string $key The configuration key.
+   * @param mixed $default The fallback value if the key does not exist.
+   * @return mixed The configuration value.
+   */
+  public static function getConfig($key, $default = null)
+  {
+    $configPath = __DIR__ . '/../config/config.json'; // Adjust the path as needed
+
+    if (!file_exists($configPath)) {
+      return $default;
+    }
+
+    $configContent = file_get_contents($configPath);
+    $config = json_decode($configContent, true);
+
+    return isset($config[$key]) ? $config[$key] : $default;
+  }
+
+  /**
+   * Set the configuration value for a specific key.
+   *
+   * @param string $key The configuration key.
+   * @param mixed $value The value to set.
+   * @return bool True if the configuration was successfully updated, false otherwise.
+   */
+  public static function setConfig($key, $value)
+  {
+    $configPath = __DIR__ . '/../config/config.json'; // Adjust the path as needed
+
+    if (!file_exists($configPath)) {
+      $config = [];
+    } else {
+      $configContent = file_get_contents($configPath);
+      $config = json_decode($configContent, true);
+    }
+
+    $config[$key] = $value;
+    $configContent = json_encode($config, JSON_PRETTY_PRINT);
+
+    return file_put_contents($configPath, $configContent) !== false;
+  }
 }

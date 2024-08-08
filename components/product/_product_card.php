@@ -40,22 +40,20 @@ $wrappedInCol = isset($wrappedInCol) ? $wrappedInCol : true;
         ) ?>
       </h5>
       <span class="price">
-        <?php if ($product->discount_price): ?>
-          <span class="old"><?= Yii::$app->formatter->asCurrency(
-                              $product->price
-                            ) ?></span>
-          <span class="new"><?= Yii::$app->formatter->asCurrency(
-                              $product->discount_price
-                            ) ?></span>
+        <?php if ($product->comparisonPrice()): ?>
+          <span class="old">
+            <?= $product->comparisonPrice()["price"] ?>
+          </span>
+          <span class="new">
+            <?= $product->comparisonPrice()["discount_price"] ?>
+          </span>
         <?php else: ?>
-          <span class="new"><?= Yii::$app->formatter->asCurrency(
-                              $product->price
-                            ) ?></span>
-        <?php endif; ?>
+          <?= $product->priceAsCurrency() ?>
+        <?php endif ?>
       </span>
     </div>
     <div class="actions">
-        <button title="Add To Cart" hx-target="#cartModal .modal-content" hx-trigger="click" hx-post="<?= Url::toRoute(['cart/add-to-cart']) ?>" class="action add-to-cart" hx-vals='{"id": <?= $product->id ?>}' data-bs-toggle="modal" data-bs-target="#cartModal"><i class="pe-7s-shopbag"></i></button>
+      <button title="Add To Cart" hx-target="#cartModal .modal-content" hx-trigger="click" hx-post="<?= Url::toRoute(['cart/add-to-cart']) ?>" class="action add-to-cart" hx-vals='{"id": <?= $product->id ?>}' data-bs-toggle="modal" data-bs-target="#cartModal"><i class="pe-7s-shopbag"></i></button>
       <button class="action wishlist" hx-target="#cartModal .modal-content" hx-trigger="click" hx-post="<?= Url::toRoute(['cart/add-to-wishlist']) ?>" hx-vals='{ "id": <?= $product->id ?> }' title="Wishlist" data-bs-toggle="modal" data-bs-target="#cartModal">
 
         <?php if ($product->isOnTheWishlist()): ?>
@@ -69,7 +67,6 @@ $wrappedInCol = isset($wrappedInCol) ? $wrappedInCol : true;
         <?php endif ?>
       </button>
       <button class="action quickview" hx-get="/shop/product/?id=<?= $product->id ?>&d=pjax" hx-target="#productDetailModal .modal-content" hx-trigger="click" data-link-action="quickview" title="Quick view" data-bs-toggle="modal" data-bs-target="#productDetailModal"><i class="pe-7s-look"></i></button>
-      <button class="action compare" title="Compare" data-bs-toggle="modal" data-bs-target="#exampleModal-Compare"><i class="pe-7s-refresh-2"></i></button>
     </div>
   </div>
 

@@ -174,6 +174,63 @@ class FeaturedOffer extends \yii\db\ActiveRecord
     );
   }
 
+  public function discountPriceAsCurrency()
+  {
+    if ($this->dicount_price) return Yii::$app->formatter->asCurrency($this->dicount_price);
+
+    if ($this->category) {
+      return $this->category->startingFromPriceAsCurrency();
+    } else if ($this->product) {
+      return $this->product->priceAsCurrency();
+    }
+
+    return 0 . '$';
+  }
+
+  public function isActive()
+  {
+    $currentTime = new \DateTime(); // Get the current time
+
+    $startTime = $this->start_time ? new \DateTime($this->start_time) : null;
+    $endTime = $this->end_time ? new \DateTime($this->end_time) : null;
+
+    // If neither start_time nor end_time is set, consider it always active
+    if (!$startTime && !$endTime) {
+      return true;
+    }
+
+    // If only start_time is set, it's active if the current time is after the start time
+    if ($startTime && !$endTime) {
+      return $currentTime >= $startTime;
+    }
+
+    // If only end_time is set, it's active if the current time is before the end time
+    if (!$startTime && $endTime) {
+      return $currentTime <= $endTime;
+    }
+
+    // If both start_time and end_time are set, it's active if the current time is between the two
+    if ($startTime && $endTime) {
+      return $currentTime >= $startTime && $currentTime <= $endTime;
+    }
+
+    return false; // Fallback, in case something unexpected happens
+  }
+
+  public static function activeOffers()
+  {
+    $now = new Expression('NOW()');
+
+    return self::find()
+      ->where([
+        'or',
+        ['and', ['IS NOT', 'start_time', null], ['IS NOT', 'end_time', null], ['<=', 'start_time', $now], ['>=', 'end_time', $now]],
+        ['and', ['IS', 'start_time', null], ['IS', 'end_time', null]],
+        ['and', ['IS', 'start_time', null], ['>=', 'end_time', $now]],
+        ['and', ['<=', 'start_time', $now], ['IS', 'end_time', null]]
+      ]);
+  }
+
   public function __toString()
   {
     return "Offered " . (string) $this->product;
