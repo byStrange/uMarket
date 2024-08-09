@@ -31,7 +31,9 @@ $wrappedInCol = isset($wrappedInCol) ? $wrappedInCol : true;
       </a>
     </div>
     <div class="content">
-      <span class="category"><a href="#">Accessories</a></span>
+      <?php if (count($product->categories)) : ?>
+        <span class="category mt-2"><a href="<?= Url::toRoute(['shop/category', 'id' => $product->categories[0]->id]) ?>"><?= $product->categories[0] ?></a></span>
+      <?php endif ?>
       <h5 class="title">
         <?= Html::a(
           $product->getProductTranslationForLanguage(Yii::$app->language)
@@ -57,12 +59,12 @@ $wrappedInCol = isset($wrappedInCol) ? $wrappedInCol : true;
       <button class="action wishlist" hx-target="#cartModal .modal-content" hx-trigger="click" hx-post="<?= Url::toRoute(['cart/add-to-wishlist']) ?>" hx-vals='{ "id": <?= $product->id ?> }' title="Wishlist" data-bs-toggle="modal" data-bs-target="#cartModal">
 
         <?php if ($product->isOnTheWishlist()): ?>
-          <svg id="wishlist-icon-<?= $product->id ?>" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="wishlist-icon-<?= $product->id ?>" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="red" />
           </svg>
         <?php else: ?>
 
-          <i class="pe-7s-like" id="wishlist-icon-<?= $product->id ?>"></i>
+          <i class="pe-7s-like wishlist-icon-<?= $product->id ?>"></i>
 
         <?php endif ?>
       </button>

@@ -4,7 +4,6 @@ namespace app\models;
 
 use yii\base\Model;
 
-
 class OrderForm extends Model
 {
   public $city;
@@ -18,24 +17,28 @@ class OrderForm extends Model
   public $postalCode;
   public $commentForCourier;
   public $paymentType;
+  public $selectedAddressId; // New field for selected address
 
-
-  public  function  rules()
+  public function rules()
   {
     return [
       [['city', 'deliveryOption', 'firstName', 'lastName', 'phoneNumber', 'streetAddress', 'apartment', 'commentForCourier', 'paymentType'], 'string'],
       [['postalCode'], 'number'],
+      [['selectedAddressId'], 'integer'], // Rule for the new field
       [
-        ['streetAddress', 'apartment', 'postalCode'],
+        ['streetAddress', 'apartment', 'postalCode', 'city', 'firstName', 'lastName', 'phoneNumber'],
         'required',
-        'whenClient' => "function (attribute, value) { return $('[name=\"OrderForm[deliveryOption]\"]:checked').val() === 'courier'; }",
+        'whenClient' => "function (attribute, value) { 
+                    return $('[name=\"OrderForm[deliveryOption]\"]:checked').val() === 'courier' 
+                        && !$('#orderform-selectedaddressid').val(); 
+                }",
         'when' => function ($model) {
-          return $model->deliveryOption == 'courier';
+          return $model->deliveryOption == 'courier' && !$model->selectedAddressId;
         },
         'skipOnError' => true,
         'skipOnEmpty' => true,
       ],
-      [['city', 'deliveryOption', 'paymentType', 'firstName', 'phoneNumber'], 'required',],
+      [['deliveryOption', 'paymentType'], 'required'],
       [
         ['submitPoint'],
         "exist",

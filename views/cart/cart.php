@@ -2,12 +2,14 @@
 
 use app\models\Cart;
 use app\models\CartItem;
+use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
 
 /** @var CartItem[] $cartitems */
 /** @var Cart $cart */
 /** @var View $this */
+
 $cartEmptyTemplate = $this->render('_cart_empty');
 $script = <<<JS
 function changeCartTotal({ cartTotal, cartGrandTotal }, cartItemsCount) {
@@ -83,7 +85,14 @@ $this->registerJs($script);
                     <?php foreach ($cartitems as $cartitem) : ?>
                       <tr class="cartitem cartitem-<?= $cartitem->product->id ?>" data-id="<?= $cartitem->product->id ?>">
                         <td class="product-thumbnail">
-                          <a href="#"><img class="img-responsive ml-15px" src="/images/product-image/1.webp" alt="" /></a>
+                          <?php $thumbnailImage = count($cartitem->product->images) ? $cartitem->product->images[0] : null  ?>
+                          <a href="<?= Url::toRoute(['shop/product', 'id' => $cartitem->product->id]) ?>" class="image">
+                            <?php if ($thumbnailImage): ?>
+                              <?= Html::img('/' . $thumbnailImage->image, ["alt" => (string)$cartitem->product, "class" => "img-responsive ml-15px"]) ?>
+                            <?php else: ?>
+                              <img class="img-responsive ml-15px" src="/images/product-image/1.webp" alt="<?= (string)$cartitem->product ?>" />
+                            <?php endif; ?>
+                          </a>
                         </td>
                         <td class="product-name">
                           <a href="<?= Url::toRoute(['shop/product', 'id' => $cartitem->product->id]) ?>"><?= $cartitem->product ?></a>

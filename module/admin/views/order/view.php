@@ -73,6 +73,7 @@ $this->params["breadcrumbs"][] = $this->title;
           </div>
           <div class="card-body">
             <p><strong>Comment for Courier:</strong> <span id="commentForCourier"><?= $model->comment_for_courier ?></span></p>
+            <p><strong>Order overall price</strong> <span id="commentForCourier"><?= $model->totalPriceAsCurrency() ?></span></p>
           </div>
         </div>
       </div>

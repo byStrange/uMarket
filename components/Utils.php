@@ -3,11 +3,15 @@
 namespace app\components;
 
 use Exception;
+use Yii;
+use yii\base\Component;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-class Utils
+class Utils extends Component
 {
+
+  const localEmailDir = '@app/mail';
   public static function preSelectOptions($existingRelation)
   {
     if (empty($existingRelation)) {
@@ -142,5 +146,60 @@ class Utils
     $configContent = json_encode($config, JSON_PRETTY_PRINT);
 
     return file_put_contents($configPath, $configContent) !== false;
+  }
+
+  public static function printAsError($text, $die = true)
+  {
+    echo '<pre>';
+    var_dump($text);
+    echo '</pre>';
+    if ($die) die;
+  }
+  public static function daysInSeconds(int|float $days)
+  {
+    return $days * 24 * 60 * 60;
+  }
+
+  public static function sendEmail($to, $subject, $content)
+  {
+    $timestamp = date('Y-m-d_H-i-s');
+    $filename = Yii::getAlias(self::localEmailDir) . "/{$timestamp}_{$to}.eml";
+
+    $headers = implode("\r\n", [
+      "To: {$to}",
+      "Subject: {$subject}",
+      "X-Mailer: PHP/" . PHP_VERSION,
+      "MIME-Version: 1.0",
+      "Content-Type: text/html; charset=UTF-8"
+    ]);
+
+    $fullContent = $headers . "\r\n\r\n" . $content;
+
+    if (!is_dir(dirname($filename))) {
+      mkdir(dirname($filename), 0777, true);
+    }
+
+    return file_put_contents($filename, $fullContent) !== false;
+  }
+
+  # send email for real
+  public static function sendEmailFr($to, $subject, $content)
+  {
+    try {
+      $result = Yii::$app->mailer->compose()
+        ->setTo($to)
+        ->setSubject($subject)
+        ->setHtmlBody($content)
+        ->send();
+
+      if (!$result) {
+        Yii::error("Failed to send email to {$to}", 'email');
+      }
+
+      return $result;
+    } catch (\Exception $e) {
+      Yii::error("Error sending email to {$to}: " . $e->getMessage(), 'email');
+      return false;
+    }
   }
 }

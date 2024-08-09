@@ -28,8 +28,9 @@ $view->registerCss($css);
 
 if (isset($sort)) {
   global $currentFilterDisplay;
-  $currentFilterDisplay = $sort->getAttributeOrders() ? array_keys($sort->getAttributeOrders()[0]) : '';
+  $currentFilterDisplay = $sort->getAttributeOrders() ? array_keys($sort->getAttributeOrders())[0] : '';
 }
+/*Utils::printAsError($products);*/
 ?>
 
 <div class="container">
@@ -99,10 +100,17 @@ if (isset($sort)) {
   </div>
   <!-- Tab Content Area End -->
   <!--  Pagination Area Start -->
+  <style>
+    .pro-pagination-style li.active a {
+      color: #266bf9;
+      border-color: #266bf9;
+      background: #fff;
+    }
+  </style>
   <?php if (isset($pagination)): ?>
     <div class="pro-pagination-style text-center text-lg-end" data-aos="fade-up" data-aos-delay="200">
       <div class="pages">
-        <?= LinkPager::widget(["pagination" => $pagination]) ?>
+        <?= LinkPager::widget(["pagination" => $pagination,]) ?>
       </div>
     </div>
   <?php endif ?>

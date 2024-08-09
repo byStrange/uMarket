@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Utils;
 use Yii;
 use yii\base\Model;
 
@@ -61,7 +62,7 @@ class LoginForm extends Model
             if ($user) {
                 return Yii::$app->user->login(
                     $user,
-                    $this->rememberMe ? 3600 * 24 * 30 : 0
+                    $this->rememberMe ? Utils::daysInSeconds(30) : 0
                 );
             }
         }

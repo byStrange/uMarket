@@ -2,6 +2,7 @@
 
 namespace app\module\admin\models\search;
 
+use app\components\Utils;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\models\Product;
@@ -58,6 +59,7 @@ class ProductSearch extends Product
     $this->load($params);
 
     if (!$this->validate()) {
+      Utils::printAsError('fuckjl');
       // uncomment the following line if you do not want to return any records when validation fails
       // $query->where('0=1');
       return $dataProvider;

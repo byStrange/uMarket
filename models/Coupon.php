@@ -96,8 +96,16 @@ class Coupon extends \yii\db\ActiveRecord
     );
   }
 
+  public function discountPriceAsCurrency() {
+    return Yii::$app->formatter->asCurrency($this->discount_price); 
+  }
+
+  public function discountDisplay() {
+    return $this->discount_percentage ? $this->discount_percentage . '%' : $this->discountPriceAsCurrency();
+  }
+
   public function __toString()
   {
-    return $this->label . " - " . $this->discount_percentage;
+    return $this->label . " - " . $this->discountDisplay();
   }
 }

@@ -63,7 +63,7 @@ $(document).on("htmx:afterOnLoad", function afterCartItemRemove(event) {
     .getResponseHeader("Content-Type")
     .split(";")[0];
   var response = event.detail.xhr.response;
-  var id, action, cartGrandTotal, cartTotal, cartItemsCount;
+  var id, action, cartGrandTotal, cartTotal, cartItemsCount, wishlistItemsCount;
   if (contentType === "application/json") {
     var { id, action, cartGrandTotal, cartTotal, cartItemsCount } =
       JSON.parse(response);
@@ -74,17 +74,20 @@ $(document).on("htmx:afterOnLoad", function afterCartItemRemove(event) {
     var wrapper = body.children().first();
     id = wrapper.attr("data-id");
     action = wrapper.attr("data-action");
+    wishlistItemsCount = wrapper.attr('data-wishlistItemsCount')
   }
 
   var heartIconSvg =
-    `<svg id="wishlist-icon-` +
+    `<svg class="wishlist-icon-` +
     id +
     `" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="red"/>
 </svg>`;
-  var likeButton = $("#wishlist-icon-" + id);
+  var likeButton = $(".wishlist-icon-" + id);
+  console.log(document.querySelectorAll('#wishlist-icon-' + id));
+  console.log(likeButton);
   var likeButtonHtml =
-    '<i class="pe-7s-like" id="wishlist-icon-' + id + '"' + "></i>";
+    '<i class="pe-7s-like wishlist-icon-' + id + '"' + "></i>";
 
   switch (action) {
     case "addToWishlist":
@@ -93,9 +96,7 @@ $(document).on("htmx:afterOnLoad", function afterCartItemRemove(event) {
 
     case "removeFromWishList":
       likeButton.replaceWith(likeButtonHtml);
-
-      var removedWishlistItem = $("#wishlistitem-" + id);
-      removedWishlistItem.slideUp();
+      removeFromWishList({ id, wishlistItemsCount })
       break;
 
     case "removeFromCart":
@@ -137,6 +138,9 @@ $this->registerJs($script);
 $style = <<<CSS
 .pe-7s-like.liked {
   text-shadow: 2px 2px red, -2px -2px blue, -2px 0 red, 0 -2px blue;
+}
+.breadcrumb-area {
+  background: ghostwhite !important;
 }
 CSS;
 $this->registerCss($style);

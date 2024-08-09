@@ -17,7 +17,10 @@ use app\models\LoginForm;
 use app\models\Order;
 use app\models\OrderForm;
 use app\models\Product;
+use app\models\RegisterForm;
+use app\models\User;
 use app\models\UserAddress;
+use PDO;
 use yii\helpers\ArrayHelper;
 
 class SiteController extends Controller
@@ -54,9 +57,9 @@ class SiteController extends Controller
   public function actions()
   {
     return [
-      "error" => [
-        "class" => "yii\web\ErrorAction",
-      ],
+      /*"error" => [*/
+      /*"class" => "",*/
+      /*],*/
       "captcha" => [
         "class" => "yii\captcha\CaptchaAction",
         "fixedVerifyCode" => YII_ENV_TEST ? "testme" : null,
@@ -71,6 +74,7 @@ class SiteController extends Controller
    */
   public function actionIndex()
   {
+
     $products = Product::find()
       ->active()
       ->orderBy(["created_at" => SORT_DESC])
@@ -121,10 +125,35 @@ class SiteController extends Controller
       "model" => $model,
     ]);
   }
+
+  public function actionRegister()
+  {
+    if (!Yii::$app->user->isGuest) {
+      return $this->goHome();
+    }
+
+    $model = new RegisterForm();
+    /*Utils::printAsError(Yii::$app->request->post());*/
+    if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+      /*Utils::printAsError('hellllo');*/
+      Yii::$app->session->setFlash('success', 'Link sent to your email succesffully. Check your inbox or spam folder');
+      return $this->redirect(['site/login']);
+    }
+    /*Utils::printAsError($model->errors);*/
+
+    $model->password = "";
+    $model->confirmPassword = "";
+    return $this->render("signup", [
+      "model" => $model
+    ]);
+  }
+
   public function actionAccount()
   {
+    /** @var User $user */
     $user = Yii::$app->user->identity;
     $orders = $user->orders;
+
     return $this->render("account", ['orders' => $orders, 'user' => $user]);
   }
   /**
@@ -174,21 +203,30 @@ class SiteController extends Controller
 
     if ($this->request->isPost && $model->load($this->request->post())) {
       $order = new Order();
-      $address = new UserAddress();
 
-      $address->city = $model->city;
-      $address->zip_code = $model->postalCode;
-      $address->street_address = $model->streetAddress;
-      $address->apartment = $model->apartment;
-      $address->label = $model->city;
-      $address->user_id = $user ? $user->id : null;
-      $address->user_first_name = $model->firstName;
-      $address->user_last_name = $model->lastName;
-      $address->user_phone_number = $model->phoneNumber;
+      if ($model->selectedAddressId) {
+        $address = UserAddress::findOne($model->selectedAddressId);
+        if (!$address) {
+          Yii::$app->session->setFlash('error', 'Selected address not found.');
+          return $this->render('checkout', ['cart' => $cart, 'cartitems' => $cartitems, 'model' => $model]);
+        }
+      } else {
+        $address = new UserAddress();
+        $address->city = $model->city;
+        $address->zip_code = $model->postalCode;
+        $address->street_address = $model->streetAddress;
+        $address->apartment = $model->apartment;
+        $address->label = $model->city;
+        $address->user_id = $user ? $user->id : null;
+        $address->user_first_name = $model->firstName;
+        $address->user_last_name = $model->lastName;
+        $address->user_phone_number = $model->phoneNumber;
 
-      if (!$address->save()) {
-        return $this->render('checkout', ['cart' => $cart, 'cartitems' => $cartitems, 'model' => $model]);
-      };
+        if (!$address->save()) {
+          Yii::$app->session->setFlash('error', 'Failed to save address.');
+          return $this->render('checkout', ['cart' => $cart, 'cartitems' => $cartitems, 'model' => $model]);
+        }
+      }
 
       $order->delivery_type = $model->deliveryOption;
       $order->delivery_point_id = $model->submitPoint;
@@ -199,17 +237,19 @@ class SiteController extends Controller
       $order->user_id = $user ? $user->id : null;
 
       if (!$order->save()) {
+        Yii::$app->session->setFlash('error', 'Failed to save order.');
         return $this->render('checkout', ['cart' => $cart, 'cartitems' => $cartitems, 'model' => $model]);
       }
-
 
       $order->linkAll('cartItems', $cart->cartItems, CartItem::class);
       $order->coupon_id = $cart->coupon ? $cart->coupon->id : null;
       $order->save();
 
       CartItem::updateAll(['cart_id' => null], ['cart_id' => $cart->id]);
+
       return $this->render('thank-you');
     }
+
     return $this->render('checkout', ['cart' => $cart, 'cartitems' => $cartitems, 'model' => $model]);
   }
 
@@ -233,5 +273,49 @@ class SiteController extends Controller
     $cart->save();
 
     return ['data' => 'coupon applied successfully', 'ok' => true, 'action' => 'applyCoupon', 'cartGrandTotal' => $cart->totalPriceAsCurrency(), 'cartTotal' => $cart->totalPriceAsCurrency(), 'couponDiscountAmount' => $cart->couponDiscountAmount(), 'couponDiscountAmountAsCurrency' => $cart->couponDiscountAmountAsCurrency(), 'coupon' => $coupon];
+  }
+
+  public function actionError()
+  {
+    $exception = Yii::$app->errorHandler->exception;
+    /*Utils::printAsError($exception->statusCode);*/
+    if ($exception !== null && $exception->statusCode == 404) {
+      return $this->render('404');
+    } else {
+      return  $this->render('400');
+    }
+  }
+
+  public function actionVerifyAccessToken($accesstoken)
+  {
+    /** @var User $user */
+    $user = User::findIdentityByaccesstoken($accesstoken);
+
+
+    if ($user) {
+      # check if the user is guest
+      if (Yii::$app->user->isGuest) {
+        # if user is guest, log him in
+        Yii::$app->user->login($user, Utils::daysInSeconds(30));
+      }
+      # user is not guest, and has already logged in, so check if the user is active
+      elseif ($user->is_active) {
+        # user is logged in, and he is already active, there is no point for him to be here
+        # rotate the keys and redirect to home page
+        $user->setaccesstoken();
+        $this->goHome();
+      }
+
+      $user->is_active = true;
+
+      # rotate the access token
+      $user->setaccesstoken();
+
+      # save the user
+      $user->save();
+      return $this->renderPartial('access-verified', ['verified' => true]);
+    }
+
+    return $this->renderPartial('access-verified', ['verified' => false]);
   }
 }

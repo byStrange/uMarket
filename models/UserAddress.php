@@ -42,7 +42,7 @@ class UserAddress extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      [["city", "zip_code", "user_first_name", "apartment", "street_address"], "required"],
+      [["city", "user_first_name"], "required"],
       [["created_at", "updated_at"], "safe"],
       [["user_id"], "default", "value" => null],
       [["user_first_name", "user_last_name", "user_phone_number"], "string", "max" => 255],
@@ -122,5 +122,28 @@ class UserAddress extends \yii\db\ActiveRecord
   public function __toString()
   {
     return (string) $this->user . " : " . $this->label;
+  }
+
+  public static function getAddressesJson($userId)
+  {
+    /** @var UserAddress[] $addresses */
+    $addresses = self::find()->where(['user_id' => $userId])->all();
+    $addressArray = [];
+
+    foreach ($addresses as $address) {
+      $addressArray[] = [
+        'id' => $address->id,
+        'label' => $address->label,
+        'street_address' => $address->street_address,
+        'city' => $address->city,
+        'apartment' => $address->apartment,
+        'zip_code' => $address->zip_code,
+        'user_first_name' => $address->user_first_name,
+        'user_last_name' => $address->user_last_name,
+        'user_phone_number' => $address->user_phone_number
+      ];
+    }
+
+    return json_encode($addressArray);
   }
 }

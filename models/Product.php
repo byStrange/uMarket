@@ -366,6 +366,15 @@ class Product extends \yii\db\ActiveRecord
     );
   }
 
+  public function categoriesListAsDisplay()
+  {
+    if (!$this->categories) return [];
+
+    return ArrayHelper::map($this->categories, 'id', function ($model) {
+      return (string)$model;
+    });
+  }
+
   public function __toString()
   {
     return $this->getProductTranslationForLanguage()

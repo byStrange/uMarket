@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\Utils;
 use app\models\Category;
 use app\models\Product;
 use app\module\admin\models\search\ProductSearch;
@@ -16,17 +17,22 @@ class ShopController extends Controller
     $searchModel = new ProductSearch();
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+    // Set the page size
+    $dataProvider->pagination->pageSize = 5;
 
-    $pagination = new Pagination([
-      'defaultPageSize' => 5,
-      'totalCount' => $dataProvider->query->count(),
-    ]);
-
-    $products = $dataProvider->query->offset($pagination->offset)->limit($pagination->limit)->all();
-
-
+    // Get the total count for all products (if needed)
     $totalCount = Product::find()->active()->count();
-    return $this->render("index", ['dataProvider' => $dataProvider, 'products' => $products, 'pagination' => $pagination, 'totalCount' => $totalCount, "searchModel" => $searchModel]);
+
+    // Fetch the products using the dataProvider
+    $products = $dataProvider->getModels();
+
+    return $this->render("index", [
+      'dataProvider' => $dataProvider,
+      'products' => $products,
+      'pagination' => $dataProvider->pagination,
+      'totalCount' => $totalCount,
+      "searchModel" => $searchModel
+    ]);
   }
 
   public function actionProduct($id, $d = false)

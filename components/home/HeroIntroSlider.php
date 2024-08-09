@@ -13,7 +13,7 @@ use yii\helpers\Url;
     <div class="swiper-wrapper">
       <!-- Single slider item -->
       <?php foreach ($featuredOffers as $offer): ?>
-        <div class="hero-slide-item slider-height swiper-slide bg-color1" data-bg-image="/images/hero/bg/hero-bg-2-1.webp">
+        <div class="hero-slide-item slider-height swiper-slide bg-color1" style="background: ghostwhite;">
           <div class="container h-100">
             <div class="row h-100 flex-row-reverse">
               <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 align-self-center sm-center-view">

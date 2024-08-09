@@ -81,12 +81,7 @@ HTML;
                         <!-- Single Wedge End -->
                         <a href="#offcanvas-cart" hx-get="/cart/?d=true" hx-target="#offcanvas-cart .body" hx-trigger="click" class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
                             <i class="pe-7s-shopbag"></i>
-                                  <span class="header-action-num">
-    HTML;
-    $content .= $cart_items_count;
-    $content .= <<<HTML
-                                </span>
-                            <!-- <span class="cart-amount">€30.00</span> -->
+                                  
                         </a>
                         <a href="#offcanvas-mobile-menu" class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
                             <i class="pe-7s-menu"></i>

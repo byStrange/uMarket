@@ -79,12 +79,24 @@ class CartController extends Controller
     if (!$wishlistitem) {
       $wishlistitem = new Wishlistitem(['product_id' => $product->id, 'cart_id' => $cart->id]);
       $wishlistitem->save();
-      return $this->renderPartial('@app/components/product/_modal_response', ['message' => 'Added to wishlist successfully', 'id' => $id, 'action' => 'addToWishlist']);
+      return $this->renderPartial(
+        '@app/components/product/_modal_response',
+        [
+          'message' => 'Added to wishlist successfully',
+          "dataAttributes" => ['id' => $id, 'action' => 'addToWishlist']
+        ]
+      );
     }
 
     # there was already a wishlist item delete it from wishlist to create toggling effect
     $wishlistitem->delete();
-    return $this->renderPartial('@app/components/product/_modal_response', ['message' => 'Removed from wishlist successfully', 'id' => $id, 'action' => 'removeFromWishList']);
+    return $this->renderPartial(
+      '@app/components/product/_modal_response',
+      [
+        'message' => 'Removed from wishlist successfully',
+        'dataAttributes' => ['id' => $id, 'action' => 'removeFromWishList', 'wishlistItemsCount' => count($cart->wishlistitems)]
+      ]
+    );
   }
 
 
