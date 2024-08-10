@@ -55,11 +55,11 @@ class RegisterForm extends Model
     $user->last_name = $this->last_name;
     $user->phone_number = $this->phone_number;
     $user->is_superuser = false;
-    $user->is_active = true;
+    $user->is_active = false;
     $user->setAuthKey();
     $user->setAccessToken();
 
-    Utils::sendEmail('qosimovrahmatullo006@gmail.com', 'Your verification token', 'Open this link in your browser: ' . $user->generateAccessLink());
+    Utils::sendEmail('qosimovrahmatullo006@gmail.com', 'Your verification token', "$user->first_name welcome to our platform. Open this link in your browser: " . $user->generateAccessLink());
     return $user->save() ? $user : null;
   }
 

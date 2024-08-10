@@ -118,8 +118,22 @@ $this->params["breadcrumbs"][] = $this->title;
 
     </div>
     <div class="mt-4">
-      <a href="#" class="btn btn-primary" id="updateBtn">Update</a>
-      <a href="#" class="btn btn-danger" id="deleteBtn">Delete</a>
+      <?= Html::a(
+        "Update",
+        ["update", "id" => $model->id],
+        ["class" => "btn btn-primary"]
+      ) ?>
+      <?= Html::a(
+        "Delete",
+        ["delete", "id" => $model->id],
+        [
+          "class" => "btn btn-danger",
+          "data" => [
+            "confirm" => "Are you sure you want to delete this item?",
+            "method" => "post",
+          ],
+        ]
+      ) ?>
     </div>
   </div>
 </div>

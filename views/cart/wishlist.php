@@ -72,7 +72,6 @@ $this->registerJs($script);
                           hx-post="<?= Url::toRoute(['cart/add-to-cart']) ?>"
                           hx-target="#cartModal .modal-content"
                           hx-vals='js:{"id": <?= $wishlistitem->product->id ?>, "quantity": parseInt(document.querySelector("tr.wishlistitem-<?= $wishlistitem->product->id ?>").querySelector(".quantity-input").value)}'
-                          class="btn btn-primary"
                           data-bs-toggle="modal"
                           data-bs-target="#cartModal">
                           Add to cart

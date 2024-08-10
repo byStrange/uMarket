@@ -136,7 +136,7 @@ class SiteController extends Controller
     /*Utils::printAsError(Yii::$app->request->post());*/
     if ($model->load(Yii::$app->request->post()) && $model->signup()) {
       /*Utils::printAsError('hellllo');*/
-      Yii::$app->session->setFlash('success', 'Link sent to your email succesffully. Check your inbox or spam folder');
+      Yii::$app->session->setFlash('success', 'Activation Link sent to your email succesffully. Check your inbox or spam folder');
       return $this->redirect(['site/login']);
     }
     /*Utils::printAsError($model->errors);*/
@@ -264,9 +264,13 @@ class SiteController extends Controller
       return ['ok' => false, 'data' => "coupon: this field is required", "errorType" => "BadRequest", 'errorCode' => 'RequiredFieldEmpty', 'action' => 'applyCoupon'];
     }
 
-    $coupon = Coupon::findOne(['code' => $couponCode]);
+    $coupon = Coupon::find()->andWhere(['code' => $couponCode])->one();
     if (!$coupon) {
       return ['ok' => false, 'data' => "coupon not found with code: $couponCode", "errorType" => "BadRequest", 'errorCode' => 'NotFound', 'action' => 'applyCoupon'];
+    }
+
+    if (!$coupon->isActive()) {
+      return ['ok' => false, 'data' => "coupon found with code: $couponCode is expired", "errorType" => "BadRequest", 'errorCode' => 'NotActive', 'action' => 'applyCoupon'];
     }
 
     $cart->coupon_id = $coupon->id;

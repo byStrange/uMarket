@@ -72,6 +72,10 @@ $this->registerJs($script)
 
   <?= $form->field($model, "label")->textInput() ?>
 
+  <?= $form->field($model, "start_date")->input('datetime-local') ?>
+
+  <?= $form->field($model, "end_date")->input('datetime-local') ?>
+
   <?= $form->field($model, "is_active")->checkbox() ?>
 
   <div class="form-group">

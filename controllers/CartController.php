@@ -215,6 +215,6 @@ class CartController extends Controller
     $cart = Cart::getOrCreateCurrentInstance();
 
     $cart->delete();
-    $this->goHome();
+    return $this->goHome();
   }
 }

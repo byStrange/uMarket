@@ -10,6 +10,21 @@ use yii\bootstrap5\Html;
 
 $this->title = "Login";
 $this->params["breadcrumbs"][] = $this->title;
+
+use yii\bootstrap5\Alert;
+
+$session = Yii::$app->session;
+foreach (['success', 'error', 'warning', 'info'] as $type) {
+  if ($session->hasFlash($type)) {
+    echo Alert::widget([
+      'options' => [
+        'class' => 'alert-' . $type,
+      ],
+      'body' => $session->getFlash($type),
+    ]);
+  }
+}
+
 ?>
 
 <div class="login-register-area pt-100px pb-100px">

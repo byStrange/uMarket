@@ -1,5 +1,7 @@
 <?php
+
 use app\models\Product;
+
 /** @var Product[] $products */
 /** @var Product[] $famous8 */
 /** @var yii\web\View $view */
@@ -14,8 +16,8 @@ use app\models\Product;
           <ul class="product-tab-nav nav justify-content-start align-items-center">
             <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#newarrivals">New Arrivals</button>
             </li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#toprated">Top Rated</button>
-            </li>
+            <!--<li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#toprated">Top Rated</button>-->
+            <!--</li>-->
           </ul>
         </div>
         <!-- Tab End -->
@@ -34,11 +36,12 @@ use app\models\Product;
           <!-- 1st tab end -->
 
           <!-- 2nd tab start -->
-          <div class="tab-pane fade" id="toprated">
-            <div class="row">
-              <?= $view->render('@app/components/product/_products_list', ["view" => &$view, "products" => $famous8]) ?>
-            </div>
-          </div>
+          <!--<div class="tab-pane fade" id="toprated">-->
+          <!--<div class="row">-->
+          <?= '' # $view->render('@app/components/product/_products_list', ["view" => &$view, "products" => $famous8]) 
+          ?>
+          <!--</div>-->
+          <!--</div>-->
           <!-- 2nd tab end -->
         </div>
       </div>

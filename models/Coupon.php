@@ -13,6 +13,8 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property string $created_at
  * @property string $updated_at
+ * @property string $start_date
+ * @property string $end_date
  * @property string $code
  * @property int $discount_percentage
  * @property int $discount_price
@@ -38,7 +40,7 @@ class Coupon extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      [["code", "is_active"], "required"],
+      [["code", "is_active", 'start_date', 'end_date'], "required"],
       [["created_at", "updated_at"], "safe"],
       [["discount_percentage"], "integer"],
       [["discount_price"], "integer"],
@@ -96,11 +98,35 @@ class Coupon extends \yii\db\ActiveRecord
     );
   }
 
-  public function discountPriceAsCurrency() {
-    return Yii::$app->formatter->asCurrency($this->discount_price); 
+  public function isActive()
+  {
+    if (!$this->is_active) {
+      return false;
+    }
+
+    $now = new \DateTime();
+    $startDate = new \DateTime($this->start_date);
+    $endDate = new \DateTime($this->end_date);
+
+    return $startDate <= $now && $endDate >= $now;
   }
 
-  public function discountDisplay() {
+  public static function findActive()
+  {
+    $currentDateTime = date('Y-m-d H:i:s'); // Get current datetime
+    return self::find()
+      ->andWhere(['is_active' => true])
+      ->andWhere(['<=', 'start_date', $currentDateTime])
+      ->andWhere(['>=', 'end_date', $currentDateTime]);
+  }
+
+  public function discountPriceAsCurrency()
+  {
+    return Yii::$app->formatter->asCurrency($this->discount_price);
+  }
+
+  public function discountDisplay()
+  {
     return $this->discount_percentage ? $this->discount_percentage . '%' : $this->discountPriceAsCurrency();
   }
 

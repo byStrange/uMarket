@@ -109,7 +109,17 @@ $(document).on("htmx:afterOnLoad", function afterCartItemRemove(event) {
       break;
 
     case "applyCoupon":
-      var { coupon, couponDiscountAmountAsCurrency, cartGrandTotal } = JSON.parse(response);
+      var { coupon, couponDiscountAmountAsCurrency, cartGrandTotal, errorCode } = JSON.parse(response);
+      if (errorCode) {
+        switch (errorCode) {
+          case 'NotFound':
+              alert('Coupon not found');
+              break;
+          case 'NotActive':
+              alert('This coupon is invalid');
+              break;
+      }
+}
       applyCoupon({ coupon, couponDiscountAmountAsCurrency, cartGrandTotal });
       break;
 

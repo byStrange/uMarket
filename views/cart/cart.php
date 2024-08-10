@@ -126,7 +126,7 @@ $this->registerJs($script);
                       <a href="/shop">Continue Shopping</a>
                     </div>
                     <div class="cart-clear">
-                      <a href="#" hx-post="/cart/clean">Clear Shopping Cart</a>
+                      <a href="#" hx-post="/cart/clean" hx-swap="none" hx-on::after-on-load="(function() { location.reload() })()">Clear Shopping Cart</a>
                     </div>
                   </div>
                 </div>

@@ -1,21 +1,95 @@
 <?php
-use yii\bootstrap5\Button; ?>
 
-<div class="admin-default-index">
- <?php echo Button::widget([
-     "label" =>
-         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM64 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L96 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>',
-     "encodeLabel" => false, // Adjust icon class as needed
-     "options" => [
-         "class" => "btn p-1 btn-light navbar-toggler",
-         "type" => "button",
-         "data-bs-toggle" => "offcanvas",
-         "data-bs-target" => "#sidebar-offcanvas", // Use the same ID from Offcanvas
-     ],
- ]); ?>   
-<div class="mt-4">
-<h1><span class="mark"><?= Yii::$app->user->identity
-    ->username ?></span> Welcome to admin panel</h1>
-    <p>Open menu, and navigate to one of the pages</p>
-</div>
+use app\models\Order;
+use yii\helpers\Html;
+use yii\grid\GridView;
+use yii\widgets\Pjax;
+use app\widgets\Card;
+use kartik\grid\ActionColumn;
+use yii\helpers\Url;
+
+/* @var $this yii\web\View */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
+$this->title = 'Admin Dashboard';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+
+<div class="admin-dashboard">
+  <h1><?= Html::encode($this->title) ?></h1>
+
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <?php
+      echo Card::widget([
+        'title' => 'Total Orders',
+        'content' => Html::tag('h2', $totalOrders, ['class' => 'text-center']),
+        'options' => ['class' => 'bg-light'],
+      ]);
+      ?>
+    </div>
+    <div class="col-md-3">
+      <?php
+      echo Card::widget([
+        'title' => 'Total Products',
+        'content' => Html::tag('h2', $totalProducts, ['class' => 'text-center']),
+        'options' => ['class' => 'bg-light'],
+      ]);
+      ?>
+    </div>
+    <div class="col-md-3">
+      <?php
+      echo Card::widget([
+        'title' => 'Featured Offers',
+        'content' => Html::tag('h2', $featuredOffers, ['class' => 'text-center']),
+        'options' => ['class' => 'bg-light'],
+      ]);
+      ?>
+    </div>
+    <div class="col-md-3">
+      <?php
+      echo Card::widget([
+        'title' => 'Active Users',
+        'content' => Html::tag('h2', $activeUsers, ['class' => 'text-center']),
+        'options' => ['class' => 'bg-light'],
+      ]);
+      ?>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h3>Recent Orders</h3>
+      <?php Pjax::begin(); ?>
+      <?= GridView::widget([
+        'dataProvider' => $recentOrdersProvider,
+        'columns' => [
+          'id',
+          'user.username',
+          'total_amount:currency',
+          'created_at:datetime',
+
+          ['class' => 'yii\grid\ActionColumn', 'controller' => 'order',  'template' => '{view}'],
+        ],
+      ]); ?>
+      <?php Pjax::end(); ?>
+    </div>
+    <div class="col-md-6">
+      <h3>Quick Actions</h3>
+      <div class="row">
+        <div class="col-md-6 mb-2">
+          <?= Html::a('Add New Product', ['product/create'], ['class' => 'btn btn-primary btn-block']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <?= Html::a('View All Orders', ['order/index'], ['class' => 'btn btn-info btn-block']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <?= Html::a('Manage Users', ['user/index'], ['class' => 'btn btn-warning btn-block']) ?>
+        </div>
+        <div class="col-md-6 mb-2">
+          <?= Html::a('Update Featured Offers', ['featured-offer/index'], ['class' => 'btn btn-success btn-block']) ?>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
