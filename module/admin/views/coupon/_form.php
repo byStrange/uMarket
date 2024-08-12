@@ -32,7 +32,6 @@ $(function () {
       discountPriceField.slideUp(speed);
     }
   }
-  //toggleDiscountVal(type.val())
 })
 JS;
 
@@ -53,7 +52,10 @@ $this->registerJs($script)
 
   <?= $form->field($model, "code")->textInput(["maxlength" => true]) ?>
 
-  <?= $form->field($model, 'type')->radioList(['percentage' => 'Percentage', 'raw' => 'Discount price'], [
+  <?= $form->field($model, 'type')->radioList([
+    'percentage' => Yii::t('app', 'Percentage'),
+    'raw' => Yii::t('app', 'Discount price')
+  ], [
     "value" => $model->discount_percentage ? 'percentage' : 'raw',
     "item" => function ($index, $label, $name, $checked, $value) {
       return RadioItem::widget([
@@ -66,26 +68,22 @@ $this->registerJs($script)
     }
   ]) ?>
 
-  <?= $form->field($model, "discount_percentage")->textInput() ?>
+  <?= $form->field($model, "discount_percentage")->textInput()->label(Yii::t('app',  "discount_percentage")) ?>
 
-  <?= $form->field($model, "discount_price")->textInput() ?>
+  <?= $form->field($model, "discount_price")->textInput()->label(Yii::t('app',  "Discount Price")) ?>
 
-  <?= $form->field($model, "label")->textInput() ?>
+  <?= $form->field($model, "label")->textInput()->label(Yii::t('app',  "Label")) ?>
 
-  <?= $form->field($model, "start_date")->input('datetime-local') ?>
+  <?= $form->field($model, "start_date")->input('datetime-local')->label(Yii::t('app',  "Start Date")) ?>
 
-  <?= $form->field($model, "end_date")->input('datetime-local') ?>
+  <?= $form->field($model, "end_date")->input('datetime-local')->label(Yii::t('app',  "End Date")) ?>
 
-  <?= $form->field($model, "is_active")->checkbox() ?>
+  <?= $form->field($model, "is_active")->checkbox()->label(Yii::t('app',  "Is Active")) ?>
 
   <div class="form-group">
-    <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
+    <?= Html::submitButton(Yii::t('app', 'Save'), ["class" => "btn btn-success"]) ?>
   </div>
 
   <?php ActiveForm::end(); ?>
 
-
-
-</div>
-</div>
 </div>

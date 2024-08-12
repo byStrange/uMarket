@@ -117,16 +117,16 @@ class FeaturedOffer extends \yii\db\ActiveRecord
   {
     return [
       self::TYPE_CATEGORY => [
-        "label" => "Category",
+        "label" => Yii::t('app', "Category"),
         "value" => self::TYPE_CATEGORY,
         "description" =>
-        "Include category that will be featured (all the products inside that category will be included automatically)",
+        Yii::t('app', "Include category that will be featured (all the products inside that category will be included automatically)"),
       ],
       self::TYPE_PRODUCT => [
-        "label" => "Product",
+        "label" => Yii::t('app',  "Product"),
         "value" => self::TYPE_PRODUCT,
         "description" =>
-        "Include single product that will be featured (only the selected product will be included)",
+        Yii::t('app', "Include single product that will be featured (only the selected product will be included)"),
       ],
     ];
   }

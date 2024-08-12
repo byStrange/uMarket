@@ -71,7 +71,7 @@ $translatedProduct = $product->getProductTranslationForLanguage(
                               "..."
                             ) ?></p>
         <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-          <span>Categories: </span>
+          <span><?= Yii::t('app', 'Categories') ?>:</span>
           <ul class="d-flex">
             <?php foreach ($product->categories as $category): ?>
               <li>
@@ -98,7 +98,7 @@ $translatedProduct = $product->getProductTranslationForLanguage(
               hx-post="<?= Url::toRoute(['cart/add-to-cart']) ?>"
               hx-include='#productIdInput, #quantityInput'
               class="add-cart">
-              Add To Cart
+              <?= Yii::t('app', 'Add To Cart') ?>
             </button>
           </div>
 
@@ -127,7 +127,7 @@ $translatedProduct = $product->getProductTranslationForLanguage(
       <?php if ($detailed): ?>
         <div class="description-review-wrapper">
           <div class="description-review-topbar nav">
-            <button class="active" data-bs-toggle="tab" data-bs-target="#des-details1">Description</button>
+            <button class="active" data-bs-toggle="tab" data-bs-target="#des-details1"><?= Yii::t('app', 'Description') ?></button>
           </div>
           <div class="tab-content description-review-bottom">
             <div id="des-details1" class="tab-pane active">
@@ -175,15 +175,15 @@ $translatedProduct = $product->getProductTranslationForLanguage(
                 </div>
                 <div class="col-lg-12">
                   <div class="ratting-form-wrapper pl-50 pt-0">
-                    <h3>Add a Review</h3>
+                    <h3><?= Yii::t('app', 'Add a Review') ?></h3>
                     <?php if (Yii::$app->user->isGuest): ?>
-                      <p class="my-3">You must be logged in to be able to write reviews </p>
-                      <a href="/site/login">Login</a>
+                      <p class="my-3"><?= Yii::t('app', 'You must be logged in to be able to write reviews ') ?></p>
+                      <a href="/site/login"><?= Yii::t('app', 'Login') ?></a>
                     <?php else: ?>
                       <div class="ratting-form">
                         <form action="#">
                           <div class="star-box">
-                            <span>Your rating:</span>
+                            <span><?= Yii::t('app', 'Your rating') ?>:</span>
                             <div class="rating-product">
                               <i class="fa fa-star"></i>
                               <i class="fa fa-star"></i>
@@ -206,7 +206,7 @@ $translatedProduct = $product->getProductTranslationForLanguage(
                             <div class="col-md-12">
                               <div class="rating-form-style form-submit">
                                 <textarea name="Your Review" placeholder="Message"></textarea>
-                                <button class="btn btn-primary btn-hover-color-primary " type="submit" value="Submit">Submit</button>
+                                <button class="btn btn-primary btn-hover-color-primary " type="submit" value="Submit"><?= Yii::t('app', 'Submit') ?></button>
                               </div>
                             </div>
                           </div>

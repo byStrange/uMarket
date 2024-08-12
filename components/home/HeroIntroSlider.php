@@ -22,9 +22,9 @@ use yii\helpers\Url;
                   <span class="price">
                     <span class="mini-title">
                       <?= $offer->type == "product"
-                        ? "Only"
+                        ? Yii::t('app', "Only")
                         : ($offer->type == "category"
-                          ? "Starting from"
+                          ?  Yii::t('app', "Starting from")
                           : "") ?>
                     </span>
                     <span class="amount"><?= $offer->discountPriceAsCurrency() ?></span>
@@ -36,7 +36,7 @@ use yii\helpers\Url;
                     : ($offer->type == "category"
                       ? ["shop/category", "id" => $offer->category->id]
                       : "#");
-                  echo Html::a("Shop", Url::toRoute($url), [
+                  echo Html::a(Yii::t('app', 'Shop'), Url::toRoute($url), [
                     "class" => "btn btn-primary text-capitalize",
                   ]);
                   ?>
@@ -45,7 +45,7 @@ use yii\helpers\Url;
               <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 d-flex justify-content-center position-relative align-items-center">
                 <div class="show-case">
                   <div class="hero-slide-image slider-2">
-                    <?= Html::img('https://placehold.co/406x404', [
+                    <?= Html::img($offer->image_banner, [
                       "id" => $offer->image_portrait,
                     ]) ?>
                   </div>

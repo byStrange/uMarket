@@ -19,18 +19,18 @@ use yii\widgets\ActiveForm;
     return $form
       ->field($model, "cart_id")
       ->dropDownList(Cart::toOptionsList())
-      ->label("Cart");
+      ->label(Yii::t('app', 'Cart'));
   }) ?>
 
   <?= Utils::popupField($form, $model, "", function ($form, $model) {
     return $form
       ->field($model, "product_id")
       ->dropDownList(Product::toOptionsList())
-      ->label("Product");
+      ->label(Yii::t('app', 'Product'));
   }) ?>
 
   <div class="form-group">
-    <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+    <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
   </div>
 
   <?php ActiveForm::end(); ?>

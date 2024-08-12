@@ -11,6 +11,7 @@ use yii\helpers\Url;
 class Utils extends Component
 {
 
+  const languages_list = ['uz' => 'uz-UZ', 'en' => 'en-US', 'ru' => 'ru-RU'];
   const localEmailDir = '@app/mail';
   public static function preSelectOptions($existingRelation)
   {

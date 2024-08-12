@@ -15,25 +15,26 @@ use yii\widgets\ActiveForm;
 
   <?php $form = ActiveForm::begin(); ?>
 
-  <?= $form->field($model, "score")->textInput() ?>
+  <?= $form->field($model, "score")->textInput()->label(Yii::t('app', 'Score')) ?>
 
-  <?= $form->field($model, "comment")->textarea(["rows" => 6]) ?>
+  <?= $form->field($model, "comment")->textarea(["rows" => 6])->label(Yii::t('app', 'Comment')) ?>
 
   <?= Utils::popupField($form, $model, "", function ($form, $model) {
-      return $form
-          ->field($model, "product_id")
-          ->dropDownList(Product::toOptionsList());
+    return $form
+      ->field($model, "product_id")
+      ->dropDownList(Product::toOptionsList())
+      ->label(Yii::t('app', 'Product'));
   }) ?>
 
   <?= Utils::popupField($form, $model, "", function ($form, $model) {
-      return $form
-          ->field($model, "user_id")
-          ->dropDownList(User::toOptionsList())
-          ->label("User");
+    return $form
+      ->field($model, "user_id")
+      ->dropDownList(User::toOptionsList())
+      ->label(Yii::t('app', 'User'));
   }) ?>
 
   <div class="form-group">
-    <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
+    <?= Html::submitButton(Yii::t('app', 'Save'), ["class" => "btn btn-success"]) ?>
   </div>
 
   <?php ActiveForm::end(); ?>

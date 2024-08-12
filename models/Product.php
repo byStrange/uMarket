@@ -298,7 +298,7 @@ class Product extends \yii\db\ActiveRecord
 
   public function priceAsCurrency()
   {
-    return Yii::$app->formatter->asCurrency($this->cleanPrice());
+    return Yii::$app->formatter->asCurrency((integer)$this->cleanPrice());
   }
 
   public function discountPriceAsCurrency()

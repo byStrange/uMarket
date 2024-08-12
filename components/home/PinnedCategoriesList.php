@@ -9,6 +9,14 @@ use yii\web\View;
 
 <div class="banner-area style-one pt-100px pb-100px">
   <div class="container">
+    <?php if (count(Category::find()->select(['id'])->all()) > 3): ?>
+      <div class="mb-2 d-flex justify-content-end">
+        <a href="/shop/categories">
+          <?= Yii::t('app', 'Browse all categories') ?>
+          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+        </a>
+      </div>
+    <?php endif ?>
     <div class="row">
       <?php if (count($categories) == 3): ?>
         <div class="col-md-6">

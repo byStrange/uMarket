@@ -60,7 +60,7 @@ class LoginForm extends Model
     if ($this->validate() && $this->getUser()) {
       $user = $this->getUser();
       if (!$user->is_active) {
-        Yii::$app->session->setFlash('error', 'Your account is not activated, Check your inbox or spam folder');
+        Yii::$app->session->setFlash('error', Yii::t('app', 'Your account is not activated, Check your inbox or spam folder'));
         return false;
       }
       if ($user) {

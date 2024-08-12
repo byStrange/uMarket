@@ -15,23 +15,21 @@ use yii\widgets\ActiveForm;
         "method" => "get",
     ]); ?>
 
-    <?= $form->field($model, "id") ?>
+    <?= $form->field($model, "id")->label(Yii::t('app', 'ID')) ?>
 
-    <?= $form->field($model, "created_at") ?>
+    <?= $form->field($model, "created_at")->label(Yii::t('app', 'Created At')) ?>
 
-    <?= $form->field($model, "updated_at") ?>
+    <?= $form->field($model, "updated_at")->label(Yii::t('app', 'Updated At')) ?>
 
-    <?= $form->field($model, "lon") ?>
+    <?= $form->field($model, "lon")->label(Yii::t('app', 'Longitude')) ?>
 
-    <?= $form->field($model, "lat") ?>
+    <?= $form->field($model, "lat")->label(Yii::t('app', 'Latitude')) ?>
 
-    <?php
-// echo $form->field($model, 'address_label')
-?>
+    <?= $form->field($model, 'address_label')->label(Yii::t('app', 'Address Label')) ?>
 
     <div class="form-group">
-        <?= Html::submitButton("Search", ["class" => "btn btn-primary"]) ?>
-        <?= Html::resetButton("Reset", [
+        <?= Html::submitButton(Yii::t('app', 'Search'), ["class" => "btn btn-primary"]) ?>
+        <?= Html::resetButton(Yii::t('app', 'Reset'), [
             "class" => "btn btn-outline-secondary",
         ]) ?>
     </div>

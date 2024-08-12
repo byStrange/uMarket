@@ -20,8 +20,7 @@ use app\models\Product;
 use app\models\RegisterForm;
 use app\models\User;
 use app\models\UserAddress;
-use PDO;
-use yii\helpers\ArrayHelper;
+use yii\web\Cookie;
 
 class SiteController extends Controller
 {
@@ -74,6 +73,12 @@ class SiteController extends Controller
    */
   public function actionIndex()
   {
+    $session = Yii::$app->session;
+    if (!$session->get('lang')) {
+      $session->set('lang', Yii::$app->language);
+    }
+    /*Utils::printAsError(Yii::$app->language);*/
+
 
     $products = Product::find()
       ->active()
@@ -126,6 +131,31 @@ class SiteController extends Controller
     ]);
   }
 
+
+  public function actionLanguage($l = "")
+  {
+    $language = Yii::$app->request->post('language');
+
+    if ($l) {
+      $language = $l;
+    }
+
+    Yii::$app->language = $language;
+
+    $languageCookie = new Cookie([
+      'name' => 'language',
+      'value' => $language,
+      'expire' => time() + 60 * 60 * 24 * 30,
+    ]);
+
+    Yii::$app->response->cookies->add($languageCookie);
+    /*Utils::printAsError('Language: ' . $language);*/
+
+    return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+  }
+
+
+
   public function actionRegister()
   {
     if (!Yii::$app->user->isGuest) {
@@ -133,20 +163,20 @@ class SiteController extends Controller
     }
 
     $model = new RegisterForm();
-    /*Utils::printAsError(Yii::$app->request->post());*/
+
     if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-      /*Utils::printAsError('hellllo');*/
-      Yii::$app->session->setFlash('success', 'Activation Link sent to your email succesffully. Check your inbox or spam folder');
+      Yii::$app->session->setFlash('success', Yii::t('app', 'Activation link sent to your email successfully. Check your inbox or spam folder.'));
       return $this->redirect(['site/login']);
     }
-    /*Utils::printAsError($model->errors);*/
 
     $model->password = "";
     $model->confirmPassword = "";
+
     return $this->render("signup", [
-      "model" => $model
+      "model" => $model,
     ]);
   }
+
 
   public function actionAccount()
   {
@@ -168,38 +198,69 @@ class SiteController extends Controller
     return $this->goHome();
   }
 
+
   public function actionDeleteUseraddress()
   {
     $this->response->format = Response::FORMAT_JSON;
     $id = $this->request->getBodyParam('id');
     $user = Yii::$app->user;
+
     if (!$id) {
-      return ['ok' => false, 'message' => 'id: this field is required', 'action' => 'deleteUserAddress'];
+      return [
+        'ok' => false,
+        'message' => Yii::t('app', 'ID: this field is required'),
+        'action' => 'deleteUserAddress'
+      ];
     }
 
     $user_address = UserAddress::findOne(['id' => $id]);
     if (!$user_address) {
-      return ['ok' => false, 'message' => "user address does not exist with id: $id", 'action' => 'removeUserAddres'];
+      return [
+        'ok' => false,
+        'message' => Yii::t('app', 'User address does not exist with ID: {id}', ['id' => $id]),
+        'action' => 'removeUserAddress'
+      ];
     }
 
     if (!$user_address->user_id) {
-      return ['ok' => false, 'message' => 'this user address does not belong to anyone, you can not perform delete on this object', 'action' => 'removeUserAddres'];
+      return [
+        'ok' => false,
+        'message' => Yii::t('app', 'This user address does not belong to anyone. You cannot perform delete on this object.'),
+        'action' => 'removeUserAddress'
+      ];
     }
 
     if ($user_address->user_id != $user->id) {
-      return ['ok' => false, 'message' => "user address does not belong to you, you can not delete this object $user_address->user_id, $user->id", 'action' => 'removeUserAddres'];
+      return [
+        'ok' => false,
+        'message' => Yii::t('app', 'User address does not belong to you. You cannot delete this object. User address ID: {userId}, Your ID: {userId}', [
+          'userId' => $user_address->user_id,
+          'userId' => $user->id
+        ]),
+        'action' => 'removeUserAddress'
+      ];
     }
 
     $user_address->delete();
-    return ['ok' => true, 'message' => 'user address successfully deleted', 'id' => $user_address->id, 'action' => 'removeUserAddres'];
+    return [
+      'ok' => true,
+      'message' => Yii::t('app', 'User address successfully deleted'),
+      'id' => $user_address->id,
+      'action' => 'removeUserAddress'
+    ];
   }
+
 
   public function actionCheckout()
   {
     $model = new OrderForm();
     $cart = Cart::getOrCreateCurrentInstance();
+
     $cartitems = $cart->cartItems;
     $user = Yii::$app->user->identity;
+    if ($cart->coupon) {
+      $cart->unlink('coupon', $cart->coupon);
+    }
 
     if ($this->request->isPost && $model->load($this->request->post())) {
       $order = new Order();
@@ -207,7 +268,7 @@ class SiteController extends Controller
       if ($model->selectedAddressId) {
         $address = UserAddress::findOne($model->selectedAddressId);
         if (!$address) {
-          Yii::$app->session->setFlash('error', 'Selected address not found.');
+          Yii::$app->session->setFlash('error', Yii::t('app', 'Selected address not found.'));
           return $this->render('checkout', ['cart' => $cart, 'cartitems' => $cartitems, 'model' => $model]);
         }
       } else {
@@ -223,7 +284,7 @@ class SiteController extends Controller
         $address->user_phone_number = $model->phoneNumber;
 
         if (!$address->save()) {
-          Yii::$app->session->setFlash('error', 'Failed to save address.');
+          Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to save address.'));
           return $this->render('checkout', ['cart' => $cart, 'cartitems' => $cartitems, 'model' => $model]);
         }
       }
@@ -237,12 +298,13 @@ class SiteController extends Controller
       $order->user_id = $user ? $user->id : null;
 
       if (!$order->save()) {
-        Yii::$app->session->setFlash('error', 'Failed to save order.');
+        Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to save order.'));
         return $this->render('checkout', ['cart' => $cart, 'cartitems' => $cartitems, 'model' => $model]);
       }
 
       $order->linkAll('cartItems', $cart->cartItems, CartItem::class);
       $order->coupon_id = $cart->coupon ? $cart->coupon->id : null;
+      $cart->unlink('coupon');
       $order->save();
 
       CartItem::updateAll(['cart_id' => null], ['cart_id' => $cart->id]);
@@ -254,6 +316,7 @@ class SiteController extends Controller
   }
 
 
+
   public function actionApplyCoupon()
   {
     $couponCode = $this->request->getBodyParam('coupon');
@@ -261,23 +324,51 @@ class SiteController extends Controller
     $this->response->format = Response::FORMAT_JSON;
 
     if (!$couponCode) {
-      return ['ok' => false, 'data' => "coupon: this field is required", "errorType" => "BadRequest", 'errorCode' => 'RequiredFieldEmpty', 'action' => 'applyCoupon'];
+      return [
+        'ok' => false,
+        'data' => Yii::t('app', 'Coupon: this field is required'),
+        'errorType' => 'BadRequest',
+        'errorCode' => 'RequiredFieldEmpty',
+        'action' => 'applyCoupon'
+      ];
     }
 
     $coupon = Coupon::find()->andWhere(['code' => $couponCode])->one();
     if (!$coupon) {
-      return ['ok' => false, 'data' => "coupon not found with code: $couponCode", "errorType" => "BadRequest", 'errorCode' => 'NotFound', 'action' => 'applyCoupon'];
+      return [
+        'ok' => false,
+        'data' => Yii::t('app', 'Coupon not found with code: {couponCode}', ['couponCode' => $couponCode]),
+        'errorType' => 'BadRequest',
+        'errorCode' => 'NotFound',
+        'action' => 'applyCoupon'
+      ];
     }
 
     if (!$coupon->isActive()) {
-      return ['ok' => false, 'data' => "coupon found with code: $couponCode is expired", "errorType" => "BadRequest", 'errorCode' => 'NotActive', 'action' => 'applyCoupon'];
+      return [
+        'ok' => false,
+        'data' => Yii::t('app', 'Coupon found with code: {couponCode} is expired', ['couponCode' => $couponCode]),
+        'errorType' => 'BadRequest',
+        'errorCode' => 'NotActive',
+        'action' => 'applyCoupon'
+      ];
     }
 
     $cart->coupon_id = $coupon->id;
     $cart->save();
 
-    return ['data' => 'coupon applied successfully', 'ok' => true, 'action' => 'applyCoupon', 'cartGrandTotal' => $cart->totalPriceAsCurrency(), 'cartTotal' => $cart->totalPriceAsCurrency(), 'couponDiscountAmount' => $cart->couponDiscountAmount(), 'couponDiscountAmountAsCurrency' => $cart->couponDiscountAmountAsCurrency(), 'coupon' => $coupon];
+    return [
+      'data' => Yii::t('app', 'Coupon applied successfully'),
+      'ok' => true,
+      'action' => 'applyCoupon',
+      'cartGrandTotal' => $cart->totalPriceAsCurrency(),
+      'cartTotal' => $cart->totalPriceAsCurrency(),
+      'couponDiscountAmount' => $cart->couponDiscountAmount(),
+      'couponDiscountAmountAsCurrency' => $cart->couponDiscountAmountAsCurrency(),
+      'coupon' => $coupon
+    ];
   }
+
 
   public function actionError()
   {
@@ -286,6 +377,7 @@ class SiteController extends Controller
     if ($exception !== null && $exception->statusCode == 404) {
       return $this->render('404');
     } else {
+      Utils::printAsError($exception);
       return  $this->render('400');
     }
   }

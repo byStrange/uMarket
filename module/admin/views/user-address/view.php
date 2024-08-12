@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 
 $this->title = $model->id;
 $this->params["breadcrumbs"][] = [
-  "label" => "User Addresses",
+  "label" => Yii::t('app', "User Addresses"),
   "url" => ["index"],
 ];
 $this->params["breadcrumbs"][] = $this->title;
@@ -20,38 +20,75 @@ $this->params["breadcrumbs"][] = $this->title;
 
   <p>
     <?= Html::a(
-      "Update",
+      Yii::t("app", "Update"),
       ["update", "id" => $model->id],
       ["class" => "btn btn-primary"]
     ) ?>
     <?= Html::a(
-      "Delete",
+      Yii::t('app', "Delete"),
       ["delete", "id" => $model->id],
       [
         "class" => "btn btn-danger",
         "data" => [
-          "confirm" => "Are you sure you want to delete this item?",
+          "confirm" => Yii::t('app', "Are you sure you want to delete this item?"),
           "method" => "post",
         ],
       ]
     ) ?>
   </p>
 
+
   <?= DetailView::widget([
     "model" => $model,
     "attributes" => [
-      "id",
-      "created_at",
-      "updated_at",
-      "label",
-      "city",
-      'user_first_name',
-      'user_last_name',
-      'user_phone_number',
-      'apartment',
-      'street_address',
-      "zip_code",
-      "user_id",
+      [
+        'attribute' => 'id',
+        'label' => Yii::t('app', 'ID'),
+      ],
+      [
+        'attribute' => 'created_at',
+        'label' => Yii::t('app', 'Created At'),
+      ],
+      [
+        'attribute' => 'updated_at',
+        'label' => Yii::t('app', 'Updated At'),
+      ],
+      [
+        'attribute' => 'label',
+        'label' => Yii::t('app', 'Label'),
+      ],
+      [
+        'attribute' => 'city',
+        'label' => Yii::t('app', 'City'),
+      ],
+      [
+        'attribute' => 'user_first_name',
+        'label' => Yii::t('app', 'User First Name'),
+      ],
+      [
+        'attribute' => 'user_last_name',
+        'label' => Yii::t('app', 'User Last Name'),
+      ],
+      [
+        'attribute' => 'user_phone_number',
+        'label' => Yii::t('app', 'User Phone Number'),
+      ],
+      [
+        'attribute' => 'apartment',
+        'label' => Yii::t('app', 'Apartment'),
+      ],
+      [
+        'attribute' => 'street_address',
+        'label' => Yii::t('app', 'Street Address'),
+      ],
+      [
+        'attribute' => 'zip_code',
+        'label' => Yii::t('app', 'Zip Code'),
+      ],
+      [
+        'attribute' => 'user_id',
+        'label' => Yii::t('app', 'User ID'),
+      ],
     ],
   ]) ?>
 

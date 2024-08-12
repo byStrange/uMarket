@@ -247,7 +247,7 @@
         slidesPerView: 4,
         spaceBetween: 30,
         speed: 1500,
-        loop: true,
+        loop: false,
 
         // Navigation arrows
 

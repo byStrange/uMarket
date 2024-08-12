@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\CategoryTranslation $model */
 
-$this->title = "Create Category Translation";
+$this->title = Yii::t('app', 'Create Category Translation');
 $this->params["breadcrumbs"][] = [
-    "label" => "Category Translations",
+    "label" => Yii::t('app', 'Category Translations'),
     "url" => ["index"],
 ];
 $this->params["breadcrumbs"][] = $this->title;

@@ -5,16 +5,18 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\CategoryTranslation $model */
 
-$this->title = "Update Category Translation: " . $model->name;
+$this->title = Yii::t('app', 'Update Category Translation: {id}', [
+    'id' => $model->name,
+]);
 $this->params["breadcrumbs"][] = [
-    "label" => "Category Translations",
+    "label" => Yii::t('app', 'Category Translations'),
     "url" => ["index"],
 ];
 $this->params["breadcrumbs"][] = [
     "label" => $model->name,
     "url" => ["view", "id" => $model->id],
 ];
-$this->params["breadcrumbs"][] = "Update";
+$this->params["breadcrumbs"][] = Yii::t('app', 'Update');
 ?>
 <div class="category-translation-update">
 

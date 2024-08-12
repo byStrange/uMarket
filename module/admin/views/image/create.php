@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\Image $model */
 
-$this->title = "Create Image";
+$this->title = Yii::t('app', "Create Image");
 if (!$popup) {
-    $this->params["breadcrumbs"][] = ["label" => "Images", "url" => ["index"]];
-    $this->params["breadcrumbs"][] = $this->title;
+  $this->params["breadcrumbs"][] = ["label" => Yii::t('app', "Images"), "url" => ["index"]];
+  $this->params["breadcrumbs"][] = $this->title;
 }
 ?>
 <div class="image-create">
@@ -16,7 +16,7 @@ if (!$popup) {
   <h1><?= Html::encode($this->title) ?></h1>
 
   <?= $this->render("_form", [
-      "model" => $model,
+    "model" => $model,
   ]) ?>
 
 </div>

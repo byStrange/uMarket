@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Utils;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
@@ -42,13 +43,13 @@ class Category extends \yii\db\ActiveRecord
   {
     return [
       self::TYPE_NORMAL => [
-        "label" => "Normal",
+        "label" => Yii::t('app', "Normal"),
         "value" => self::TYPE_NORMAL,
-        "description" => "For tagging normal products",
+        "description" => Yii::t('app', "For tagging normal products"),
       ],
       self::TYPE_OFFER => [
-        "label" => "Offer",
-        "description" => "Used to tag products for featured offers",
+        "label" => Yii::t('app', "Offer"),
+        "description" => Yii::t('app', "Used to tag products for featured offers"),
         "value" => self::TYPE_OFFER,
       ],
     ];
@@ -124,10 +125,12 @@ class Category extends \yii\db\ActiveRecord
 
   public function getCategoryTranslationForLanguage($lang = '')
   {
-    return CategoryTranslation::findOne([
+    $category = CategoryTranslation::findOne([
       "category_id" => $this->id,
       "language_code" => $lang ? $lang : Yii::$app->language,
     ]);
+    $empty = new CategoryTranslation([]);
+    return $category ? $category : $empty;
   }
 
   /**
@@ -188,6 +191,7 @@ class Category extends \yii\db\ActiveRecord
   public function __toString()
   {
     $translation = $this->getCategoryTranslationForLanguage();
-    return $translation ? $translation->name : $this->label;
+    $valid = $translation ? $translation->name : $this->label;
+    return $valid ? $valid : $this->id;
   }
 }

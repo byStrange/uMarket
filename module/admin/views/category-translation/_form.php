@@ -19,32 +19,32 @@ use yii\widgets\ActiveForm;
 
   <?= $form->field($model, "name")->textInput(["maxlength" => true]) ?>
 
-
   <?php if (isset($category_id)): ?>
     <?= $form
-        ->field($model, "category_id")
-        ->hiddenInput(["value" => $category_id])
-        ->label("Category Id: $category_id") ?>
+      ->field($model, "category_id")
+      ->hiddenInput(["value" => $category_id])
+      ->label(Yii::t('app', "Category Id: $category_id")) ?>
   <?php else: ?>
     <?= Utils::popupField($form, $model, "category_id", function (
-        $form,
-        $model
+      $form,
+      $model
     ) {
-        return $form
-            ->field($model, "category_id")
-            ->dropDownList(Category::toOptionsList())
-            ->label("Category");
+      return $form
+        ->field($model, "category_id")
+        ->dropDownList(Category::toOptionsList())
+        ->label(Yii::t('app', 'Category'));
     }) ?>
   <?php endif; ?>
+
   <?= Utils::popupField($form, $model, "", function ($form, $model) {
-      return $form
-          ->field($model, "image_id")
-          ->dropDownList(Image::toOptionsList())
-          ->label("Image");
+    return $form
+      ->field($model, "image_id")
+      ->dropDownList(Image::toOptionsList())
+      ->label(Yii::t('app', 'Image'));
   }) ?>
 
   <div class="form-group">
-    <?= Html::submitButton("Save", ["class" => "btn btn-success"]) ?>
+    <?= Html::submitButton(Yii::t('app', 'Save'), ["class" => "btn btn-success"]) ?>
   </div>
 
   <?php ActiveForm::end(); ?>

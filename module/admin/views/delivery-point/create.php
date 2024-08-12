@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\DeliveryPoint $model */
 
-$this->title = "Create Delivery Point";
+$this->title = Yii::t('app', 'Create Delivery Point');
 if (!$popup) {
     $this->params["breadcrumbs"][] = [
-        "label" => "Delivery Points",
+        "label" => Yii::t('app', 'Delivery Points'),
         "url" => ["index"],
     ];
     $this->params["breadcrumbs"][] = $this->title;

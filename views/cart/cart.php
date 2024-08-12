@@ -65,7 +65,7 @@ $this->registerJs($script);
   <?php if (isset($cartitems) && count($cartitems)): ?>
     <div class="cart-main-area pt-100px pb-100px">
       <div class="container">
-        <h3 class="cart-page-title">Your cart items</h3>
+        <h3 class="cart-page-title"><? Yii::t('app', 'Your cart items') ?></h3>
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12 col-12">
             <form action="#">
@@ -73,12 +73,12 @@ $this->registerJs($script);
                 <table>
                   <thead>
                     <tr>
-                      <th>Image</th>
-                      <th>Product Name</th>
-                      <th>Until Price</th>
-                      <th>Qty</th>
-                      <th>Subtotal</th>
-                      <th>Action</th>
+                      <th><?= Yii::t('app', 'Image') ?></th>
+                      <th><?= Yii::t('app', 'Product Name') ?></th>
+                      <th><?= Yii::t('app', 'Unit Price') ?></th>
+                      <th><?= Yii::t('app', 'Qty') ?></th>
+                      <th><?= Yii::t('app', 'Subtotal') ?></th>
+                      <th><?= Yii::t('app', 'Action') ?></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -110,7 +110,7 @@ $this->registerJs($script);
                             hx-target="#cartModal .modal-content"
                             hx-trigger="click" hx-post="<?= Url::toRoute(['cart/remove-cartitem']) ?>"
                             hx-vals='{ "id": <?= $cartitem->product->id ?> }'
-                            hx-on::after-on-load="afterCartItemRemove(event, event)">
+                            hx-on::after-on-load="handleHtmxAfterOnLoad(event)">
                             <i class="fa fa-times"></i>
                           </a>
                         </td>
@@ -123,10 +123,12 @@ $this->registerJs($script);
                 <div class="col-lg-12">
                   <div class="cart-shiping-update-wrapper">
                     <div class="cart-shiping-update">
-                      <a href="/shop">Continue Shopping</a>
+                    <a href="/shop">
+                      <?= Yii::t('app', 'Continue Shopping') ?>
+                    </a>
                     </div>
                     <div class="cart-clear">
-                      <a href="#" hx-post="/cart/clean" hx-swap="none" hx-on::after-on-load="(function() { location.reload() })()">Clear Shopping Cart</a>
+                      <a href="#" hx-post="/cart/clean" hx-swap="none" hx-on::after-on-load="(function() { location.reload() })()"><?= Yii::t('app', 'Clear Shopping Cart') ?></a>
                     </div>
                   </div>
                 </div>
@@ -138,17 +140,17 @@ $this->registerJs($script);
               <div class="col-lg-4 col-md-12 mt-md-30px">
                 <div class="grand-totall">
                   <div class="title-wrap">
-                    <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
+                    <h4 class="cart-bottom-title section-bg-gary-cart"><?= Yii::t('app', 'Cart Total') ?></h4>
                   </div>
-                  <h5>Total products <span id="cartTotalProducts"><?= $cart->totalPriceAsCurrency() ?></span></h5>
+                  <h5><?= Yii::t('app', 'Total products') ?> <span id="cartTotalProducts"><?= $cart->totalPriceAsCurrency() ?></span></h5>
                   <div class="total-shipping">
-                    <h5>Total shipping</h5>
+                    <h5><?= Yii::t('app', 'Total shipping') ?></h5>
                     <ul>
-                      <li>Standard <span>Free</span></li>
+                      <li><?= Yii::t('app', 'Standard') ?> <span><?= Yii::t('app', 'Free') ?></span></li>
                     </ul>
                   </div>
-                  <h4 class="grand-totall-title">Grand Total <span id="cartGrandTotal"><?= $cart->totalPriceAsCurrency() ?></span></h4>
-                  <a href="/site/checkout">Proceed to Checkout</a>
+                  <h4 class="grand-totall-title"><?= Yii::t('app', 'Grand Total') ?> <span id="cartGrandTotal"><?= $cart->totalPriceAsCurrency() ?></span></h4>
+                  <a href="/site/checkout"><?= Yii::t('app', 'Proceed to Checkout') ?></a>
                 </div>
               </div>
             </div>

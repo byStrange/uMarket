@@ -84,18 +84,13 @@ $verified = $verified ? $verified : false;
         <?php endif ?>
       </div>
       <?php if ($verified): ?>
-        <p class="verification-message">Your account has been verified successfully. You will be redirected to the home page in a few seconds.</p>
+        <p class="verification-message"><?= Yii::t('app', 'Your account has been successfully verified. You will be redirected to the home page in a few seconds.') ?></p>
       <?php else: ?>
-        <p class="verification-message">Could not verify your account. The link might be invalid, expired, or already used.</p>
+        <p class="verification-message"><?= Yii::t('app', 'Could not verify your account. The link might be invalid, expired, or already used.') ?>"</p>
       <?php endif ?>
       <div class="verification-button">
-        <a href="/shop" class="go-to-website-btn" title="Go To Website">Go to Website</a>
+        <a href="/shop" class="go-to-website-btn" title="Go To Website"><?= Yii::t('app', 'Go To Website') ?></a>
       </div>
-      <?php if ($verified): ?>
-        <div class="redirect-message">
-          <p>You will be redirected to the home page in a few seconds.</p>
-        </div>
-      <?php endif ?>
     </div>
   </div>
 

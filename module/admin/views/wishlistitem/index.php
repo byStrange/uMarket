@@ -10,36 +10,46 @@ use yii\grid\GridView;
 /** @var app\module\admin\models\WishlistitemSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Wishlistitems';
+$this->title = Yii::t('app', 'Wishlist Items');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="wishlistitem-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Wishlistitem', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+  <p>
+    <?= Html::a(Yii::t('app', 'Create Wishlist Item'), ['create'], ['class' => 'btn btn-success']) ?>
+  </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+  <?php // echo $this->render('_search', ['model' => $searchModel]); 
+  ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+  <?= GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => [
+      ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'cart_id',
-            'product_id',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Wishlistitem $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
-        ],
-    ]); ?>
-
+      [
+        'attribute' => 'id',
+        'label' => Yii::t('app', 'ID'),
+      ],
+      [
+        'attribute' => 'cart_id',
+        'label' => Yii::t('app', 'Cart ID'),
+      ],
+      [
+        'attribute' => 'product_id',
+        'label' => Yii::t('app', 'Product ID'),
+      ],
+      [
+        'class' => ActionColumn::className(),
+        'urlCreator' => function ($action, Wishlistitem $model, $key, $index, $column) {
+          return Url::toRoute([$action, 'id' => $model->id]);
+        },
+        'header' => Yii::t('app', 'Actions'),
+      ],
+    ],
+  ]); ?>
 
 </div>

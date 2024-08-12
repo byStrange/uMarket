@@ -10,52 +10,77 @@ use yii\grid\GridView;
 /** @var app\module\admin\models\search\RatingSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = "Ratings";
+$this->title = Yii::t('app', "Ratings");
 $this->params["breadcrumbs"][] = $this->title;
 ?>
 <div class="rating-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(
-            "Create Rating",
-            ["create"],
-            ["class" => "btn btn-success"]
-        ) ?>
-    </p>
+  <p>
+    <?= Html::a(
+      Yii::t('app', "Create Rating"),
+      ["create"],
+      ["class" => "btn btn-success"]
+    ) ?>
+  </p>
 
-    <?php
-// echo $this->render('_search', ['model' => $searchModel]);
-?>
+  <?php
+  // echo $this->render('_search', ['model' => $searchModel]);
+  ?>
 
-    <?= GridView::widget([
-        "dataProvider" => $dataProvider,
-        "filterModel" => $searchModel,
-        "columns" => [
-            ["class" => "yii\grid\SerialColumn"],
 
-            "id",
-            "created_at",
-            "updated_at",
-            "score",
-            "comment:ntext",
-            //'product_id',
-            //'user_id',
-            [
-                "class" => ActionColumn::className(),
-                "urlCreator" => function (
-                    $action,
-                    Rating $model,
-                    $key,
-                    $index,
-                    $column
-                ) {
-                    return Url::toRoute([$action, "id" => $model->id]);
-                },
-            ],
-        ],
-    ]) ?>
+  <?= GridView::widget([
+    "dataProvider" => $dataProvider,
+    "filterModel" => $searchModel,
+    "columns" => [
+      ["class" => "yii\grid\SerialColumn"],
+
+      [
+        'attribute' => 'id',
+        'label' => Yii::t('app', 'ID'),
+      ],
+      [
+        'attribute' => 'created_at',
+        'label' => Yii::t('app', 'Created At'),
+      ],
+      [
+        'attribute' => 'updated_at',
+        'label' => Yii::t('app', 'Updated At'),
+      ],
+      [
+        'attribute' => 'score',
+        'label' => Yii::t('app', 'Score'),
+      ],
+      [
+        'attribute' => 'comment',
+        'label' => Yii::t('app', 'Comment'),
+        'format' => 'ntext',
+      ],
+      // Uncomment and translate the following columns if needed
+      // [
+      //     'attribute' => 'product_id',
+      //     'label' => Yii::t('app', 'Product ID'),
+      // ],
+      // [
+      //     'attribute' => 'user_id',
+      //     'label' => Yii::t('app', 'User ID'),
+      // ],
+
+      [
+        "class" => ActionColumn::className(),
+        "urlCreator" => function (
+          $action,
+          Rating $model,
+          $key,
+          $index,
+          $column
+        ) {
+          return Url::toRoute([$action, "id" => $model->id]);
+        },
+      ],
+    ],
+  ]) ?>
 
 
 </div>

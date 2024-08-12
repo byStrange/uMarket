@@ -5,7 +5,7 @@ use app\models\Product;
 /** @var Product $product **/
 /** @var yii\web\View $this */
 
-$this->title = "Product detail";
+$this->title = Yii::t('app', 'Product detail');
 $this->params["breadcrumbs"][] = $this->title;
 ?>
 
@@ -14,19 +14,19 @@ $this->params["breadcrumbs"][] = $this->title;
 </div>
 
 <?php if (count($product->toProducts)): ?>
-<div class="product-area related-product">
-  <div class="container">
-    <!-- Section Title & Tab Start -->
-    <div class="row">
-      <div class="col-12">
-        <div class="section-title text-center m-0">
-          <h2 class="title">Related Products</h2>
-          <p>There are many variations of passages of Lorem Ipsum available</p>
+  <div class="product-area related-product">
+    <div class="container">
+      <!-- Section Title & Tab Start -->
+      <div class="row">
+        <div class="col-12">
+          <div class="section-title text-center m-0">
+            <h2 class="title"><?= Yii::t('app', 'Related Products') ?></h2>
+            <p><?= Yii::t('app', 'Check out these products that might interest you') ?></p>
+          </div>
         </div>
       </div>
+      <!-- Section Title & Tab End -->
+      <?= $this->render('@app/components/product/_products_list', ["products" => $product->toProducts, "view" => &$this, "swiperEnabled" => true]); ?>
     </div>
-    <!-- Section Title & Tab End -->
-    <?= $this->render('@app/components/product/_products_list', ["products" => $product->toProducts, "view" => &$this, "swiperEnabled" => true]); ?>
   </div>
-</div>
 <?php endif ?>

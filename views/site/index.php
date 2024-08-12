@@ -10,19 +10,19 @@ $this->title = "My Yii Application";
 ?>
 <div>
 
-  <!-- OffCanvas menus start -->
-  <!-- OffCanvas menus End -->
   <!-- Hero/Intro Slider Start -->
   <?= $this->render("@app/components/home/HeroIntroSlider", [
     "featuredOffers" => $featuredOffers,
   ]) ?>
   <!-- Hero/Intro Slider End -->
+
   <!-- Banner Area Start -->
   <?= $this->render('@app/components/home/PinnedCategoriesList', [
-      "view" => &$this,
-      "categories" => &$pinned_categories
-  ]) ?> 
+    "view" => &$this,
+    "categories" => &$pinned_categories
+  ]) ?>
   <!-- Banner Area End -->
+
   <!-- Product Area Start -->
   <?= $this->render("@app/components/product/HomeProductsList", [
     "products" => $products,
@@ -30,6 +30,7 @@ $this->title = "My Yii Application";
     "view" => &$this,
   ]) ?>
   <!-- Product Area End -->
+
   <!-- Feature product area start -->
   <?= $this->render('@app/components/home/FeaturedOffers', ["featuredOffers" => $featuredOffers, "view" => $this]) ?>
   <!-- Feature product area End -->

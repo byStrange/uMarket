@@ -7,6 +7,8 @@ $params = require __DIR__ . "/params.php";
 $db = require __DIR__ . "/db.php";
 
 $config = [
+  "language" => 'uz-UZ',
+  'sourceLanguage' => 'en-US',
   "id" => "basic",
   "basePath" => dirname(__DIR__),
   "bootstrap" => ["log"],
@@ -45,7 +47,14 @@ $config = [
     "@bower" => "@vendor/bower-asset",
     "@npm" => "@vendor/npm-asset",
   ],
+  'bootstrap' => [
+    [
+      'class' => 'app\components\LanguageSelector',
+      'supportedLanguages' => ['en-US', 'ru-RU', 'uz-UZ'],
+    ],
+  ],
   "components" => [
+
     "formatter" => [
       "class" => "yii\i18n\Formatter",
       "currencyCode" => "USD", // Set your desired currency code here
@@ -87,6 +96,19 @@ $config = [
       "enablePrettyUrl" => true,
       "showScriptName" => false,
       "rules" => [],
+    ],
+    'i18n' => [
+      'translations' => [
+        'app*' => [
+          'class' => 'yii\i18n\PhpMessageSource',
+          'basePath' => '@app/messages',
+          'sourceLanguage' => 'en-US',
+          'fileMap' => [
+            'app' => 'app.php',
+            'app/error' => 'error.php',
+          ],
+        ],
+      ],
     ],
   ],
   "params" => $params,

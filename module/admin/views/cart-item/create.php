@@ -5,13 +5,13 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\CartItem $model */
 
-$this->title = "Create Cart Item";
+$this->title = Yii::t('app', "Create Cart Item");
 if (!$popup) {
-    $this->params["breadcrumbs"][] = [
-        "label" => "Cart Items",
-        "url" => ["index"],
-    ];
-    $this->params["breadcrumbs"][] = $this->title;
+  $this->params["breadcrumbs"][] = [
+    "label" => Yii::t('app', "Cart Items"),
+    "url" => ["index"],
+  ];
+  $this->params["breadcrumbs"][] = $this->title;
 }
 ?>
 <div class="cart-item-create">
@@ -19,7 +19,7 @@ if (!$popup) {
   <h1><?= Html::encode($this->title) ?></h1>
 
   <?= $this->render("_form", [
-      "model" => $model,
+    "model" => $model,
   ]) ?>
 
 </div>

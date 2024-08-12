@@ -27,19 +27,19 @@ $this->registerJs($script);
   <?php if (count($wishlistitems)): ?>
     <div class="cart-main-area pt-100px pb-100px">
       <div class="container">
-        <h3 class="cart-page-title">Your wishlist</h3>
+        <h3 class="cart-page-title"><?= Yii::t('app', 'Your wishlist') ?></h3>
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="table-content table-responsive cart-table-content">
               <table>
                 <thead>
                   <tr>
-                    <th>Image</th>
-                    <th>Product Name</th>
-                    <th>Unit Price</th>
-                    <th>Qty</th>
-                    <th>Subtotal</th>
-                    <th>Add To Cart</th>
+                    <th><?= Yii::t('app', 'Image') ?></th>
+                    <th><?= Yii::t('app', 'Product Name') ?></th>
+                    <th><?= Yii::t('app', 'Unit Price') ?></th>
+                    <th><?= Yii::t('app', 'Qty') ?></th>
+                    <th><?= Yii::t('app', 'Subtotal') ?></th>
+                    <th><?= Yii::t('app', 'Add To Cart') ?></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -74,7 +74,7 @@ $this->registerJs($script);
                           hx-vals='js:{"id": <?= $wishlistitem->product->id ?>, "quantity": parseInt(document.querySelector("tr.wishlistitem-<?= $wishlistitem->product->id ?>").querySelector(".quantity-input").value)}'
                           data-bs-toggle="modal"
                           data-bs-target="#cartModal">
-                          Add to cart
+                          <?= Yii::t('app', 'Add To Cart') ?>
                         </button>
                       </td>
                     </tr>
@@ -90,6 +90,3 @@ $this->registerJs($script);
     <?= $this->render('_wishlist_empty') ?>
   <?php endif ?>
 </section>
-</script>
-</script>
-</script>
