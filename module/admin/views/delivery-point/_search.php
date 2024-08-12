@@ -21,13 +21,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, "updated_at") ?>
 
-    <?= $form->field($model, "label") ?>
+    <?= $form->field($model, "label")->label(Yii::t('app', 'Label')) ?>
 
-    <?= $form->field($model, "location_id") ?>
+    <?= $form->field($model, "location_id")->label(Yii::t('app', 'Location')) ?>
 
     <div class="form-group">
-        <?= Html::submitButton("Search", ["class" => "btn btn-primary"]) ?>
-        <?= Html::resetButton("Reset", [
+        <?= Html::submitButton(Yii::t('app', 'Search'), ["class" => "btn btn-primary"]) ?>
+        <?= Html::resetButton(Yii::t('app', 'Reset'), [
             "class" => "btn btn-outline-secondary",
         ]) ?>
     </div>

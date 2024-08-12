@@ -11,7 +11,6 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\Response;
 
-
 class CartController extends Controller
 {
   public $enableCsrfValidation = false;
@@ -44,6 +43,11 @@ class CartController extends Controller
   public function actionIndex($d = false)
   {
     $cart = Cart::getOrCreateCurrentInstance();
+
+    if ($cart->coupon) {
+      $cart->unlink('coupon', $cart->coupon);
+    }
+
     $cartitems = $cart->cartItems;
 
     if ($d) {
@@ -58,7 +62,6 @@ class CartController extends Controller
    *
    * @return Response|string
    */
-
   public function actionAddToWishlist()
   {
     $id = Yii::$app->request->getBodyParam('id');
@@ -69,7 +72,7 @@ class CartController extends Controller
 
     # product does not exist
     if (!$product) {
-      return $this->renderPartial('@app/components/product/_modal_response', ['message' => "Could not find product with id: $id"]);
+      return $this->renderPartial('@app/components/product/_modal_response', ['message' => Yii::t('app', 'Could not find product with id: {id}', ['id' => $id])]);
     }
 
     # try to get wishlist item associated with this cart and product
@@ -82,7 +85,7 @@ class CartController extends Controller
       return $this->renderPartial(
         '@app/components/product/_modal_response',
         [
-          'message' => 'Added to wishlist successfully',
+          'message' => Yii::t('app', 'Added to wishlist successfully'),
           "dataAttributes" => ['id' => $id, 'action' => 'addToWishlist']
         ]
       );
@@ -93,19 +96,17 @@ class CartController extends Controller
     return $this->renderPartial(
       '@app/components/product/_modal_response',
       [
-        'message' => 'Removed from wishlist successfully',
+        'message' => Yii::t('app', 'Removed from wishlist successfully'),
         'dataAttributes' => ['id' => $id, 'action' => 'removeFromWishList', 'wishlistItemsCount' => count($cart->wishlistitems)]
       ]
     );
   }
-
 
   /**
    * AddToCart action (adds to cart|increments quantity|decrements quantity) 
    *
    * @return string
    */
-
   public function actionAddToCart()
   {
     $req = Yii::$app->request;
@@ -118,7 +119,7 @@ class CartController extends Controller
 
     # product does not exist
     if (!$product) {
-      return $this->renderPartial('@app/components/product/_modal_response', ["message" => "Could not find product with id: $id"]);
+      return $this->renderPartial('@app/components/product/_modal_response', ["message" => Yii::t('app', 'Could not find product with id: {id}', ['id' => $id])]);
     }
 
     $cart = Cart::getOrCreateCurrentInstance();
@@ -146,10 +147,9 @@ class CartController extends Controller
       # user is trying to add this product to cart again, just increase the quantity
       $cart_item->quantity = $cart_item->quantity + $quantity;
       if ($cart_item->save()) {
-        return $this->renderPartial('@app/components/product/_modal_response', ['message' => "Added to cart successfully"]);
+        return $this->renderPartial('@app/components/product/_modal_response', ['message' => Yii::t('app', 'Added to cart successfully!'), 'dataAttributes' => ['id' => $id, 'action' => 'addToCart', 'cartItemsCount' => count($cart->cartItems)]]);
       }
     }
-
 
     # no cart item found, create new one
     $cart_item = new CartItem();
@@ -158,15 +158,24 @@ class CartController extends Controller
     $cart_item->quantity = $quantity;
 
     if ($cart_item->save()) {
-      return $this->renderPartial("@app/components/product/_modal_response", ['message' => 'Added to cart successfully!']);
+      return $this->renderPartial(
+        "@app/components/product/_modal_response",
+        [
+          'message' => Yii::t('app', 'Added to cart successfully!'),
+          'dataAttributes' => [
+            'id' => $id,
+            'action' => 'addToCart',
+            'cartItemsCount' => count($cart->cartItems)
+          ]
+        ]
+      );
     }
   }
 
   /** 
-   * RmoveCartItem action (removes given product from cart)
+   * RemoveCartItem action (removes given product from cart)
    *
    * @return Response|string
-   *
    */
   public function actionRemoveCartitem()
   {
@@ -177,9 +186,8 @@ class CartController extends Controller
 
     # user does not have cart 
     if (!$cart) {
-      return $this->renderPartial('@app/components/product/_modal_response', ['message' => 'You have no cart']);
+      return $this->renderPartial('@app/components/product/_modal_response', ['message' => Yii::t('app', 'You have no cart')]);
     }
-
 
     $product = Product::find()
       ->select(['main_product.id'])
@@ -189,14 +197,14 @@ class CartController extends Controller
 
     # product does not exist
     if (!$product) {
-      return $this->renderPartial('@app/components/product/_modal_response', ["message" => "Could not find product with id: $id"]);
+      return $this->renderPartial('@app/components/product/_modal_response', ["message" => Yii::t('app', 'Could not find product with id: {id}', ['id' => $id])]);
     }
 
     $cartItem = $product->getCartItems()->where(['cart_id' => $cart->id, 'product_id' => $id])->one();
 
     # cart item does not exist
     if (!$cartItem) {
-      return $this->renderPartial('@app/components/product/_modal_response', ['message' => 'There is no cart item with this product']);
+      return $this->renderPartial('@app/components/product/_modal_response', ['message' => Yii::t('app', 'There is no cart item with this product')]);
     }
 
     # delete the cart item
@@ -207,7 +215,6 @@ class CartController extends Controller
 
     return ['id' => $id, 'action' => 'removeFromCart', 'cartItemsCount' => count($cart->cartItems), 'cartGrandTotal' => $cart->totalPriceAsCurrency(), 'cartTotal' => $cart->totalPriceAsCurrency()];
   }
-
 
   public function actionClean()
   {

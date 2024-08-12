@@ -10,7 +10,7 @@ $wishlistitems = $cart->wishlistitems;
 <div id="offcanvas-wishlist" class="offcanvas offcanvas-wishlist">
   <div class="inner">
     <div class="head">
-      <span class="title">Wishlist</span>
+      <span class="title"><?= Yii::t('app', 'Wishlist') ?></span>
       <button class="offcanvas-close">×</button>
     </div>
     <div class="body customScroll">
@@ -18,7 +18,7 @@ $wishlistitems = $cart->wishlistitems;
     </div>
     <div class="foot">
       <div class="buttons">
-        <a href="/cart/wishlist" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
+        <a href="/cart/wishlist" class="btn btn-dark btn-hover-primary mt-30px"><?= Yii::t('app', 'view wishlist') ?></a>
       </div>
     </div>
   </div>

@@ -10,48 +10,36 @@ use yii\widgets\ActiveForm;
 
 <div class="user-search">
 
-    <?php $form = ActiveForm::begin([
-        "action" => ["index"],
-        "method" => "get",
-    ]); ?>
+  <?php $form = ActiveForm::begin([
+    'action' => ['index'],
+    'method' => 'get',
+  ]); ?>
 
-    <?= $form->field($model, "id") ?>
+  <?= $form->field($model, 'id')->label(Yii::t('app', 'ID')) ?>
 
-    <?= $form->field($model, "is_superuser")->checkbox() ?>
+  <?= $form->field($model, 'is_superuser')->checkbox()->label(Yii::t('app', 'Is Superuser')) ?>
 
-    <?= $form->field($model, "username") ?>
+  <?= $form->field($model, 'username')->label(Yii::t('app', 'Username')) ?>
 
-    <?php
-// echo $form->field($model, 'first_name')
-?>
+  <?= $form->field($model, 'first_name')->label(Yii::t('app', 'First Name')) ?>
 
-    <?php
-// echo $form->field($model, 'last_name')
-?>
+  <?= $form->field($model, 'last_name')->label(Yii::t('app', 'Last Name')) ?>
 
-    <?php
-// echo $form->field($model, 'email')
-?>
+  <?= $form->field($model, 'email')->label(Yii::t('app', 'Email')) ?>
 
-    <?php
-// echo $form->field($model, 'is_active')->checkbox()
-?>
+  <?= $form->field($model, 'is_active')->checkbox()->label(Yii::t('app', 'Is Active')) ?>
 
-    <?php
-// echo $form->field($model, 'created_at')
-?>
+  <?= $form->field($model, 'created_at')->label(Yii::t('app', 'Created At')) ?>
 
-    <?php
-// echo $form->field($model, 'updated_at')
-?>
+  <?= $form->field($model, 'updated_at')->label(Yii::t('app', 'Updated At')) ?>
 
-    <div class="form-group">
-        <?= Html::submitButton("Search", ["class" => "btn btn-primary"]) ?>
-        <?= Html::resetButton("Reset", [
-            "class" => "btn btn-outline-secondary",
-        ]) ?>
-    </div>
+  <div class="form-group">
+    <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
+    <?= Html::resetButton(Yii::t('app', 'Reset'), [
+      'class' => 'btn btn-outline-secondary',
+    ]) ?>
+  </div>
 
-    <?php ActiveForm::end(); ?>
+  <?php ActiveForm::end(); ?>
 
 </div>

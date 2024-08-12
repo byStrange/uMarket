@@ -6,8 +6,11 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Coupon $model */
 
-$this->title = $model->id;
-$this->params["breadcrumbs"][] = ["label" => "Coupons", "url" => ["index"]];
+$this->title = Yii::t('app', 'Coupon: {id}', ['id' => $model->id]);
+$this->params["breadcrumbs"][] = [
+    "label" => Yii::t('app', 'Coupons'),
+    "url" => ["index"]
+];
 $this->params["breadcrumbs"][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -17,17 +20,17 @@ $this->params["breadcrumbs"][] = $this->title;
 
     <p>
         <?= Html::a(
-            "Update",
+            Yii::t('app', 'Update'),
             ["update", "id" => $model->id],
             ["class" => "btn btn-primary"]
         ) ?>
         <?= Html::a(
-            "Delete",
+            Yii::t('app', 'Delete'),
             ["delete", "id" => $model->id],
             [
                 "class" => "btn btn-danger",
                 "data" => [
-                    "confirm" => "Are you sure you want to delete this item?",
+                    "confirm" => Yii::t('app', 'Are you sure you want to delete this item?'),
                     "method" => "post",
                 ],
             ]

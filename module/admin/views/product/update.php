@@ -9,55 +9,55 @@ use yii\helpers\Html;
 /** @var app\models\Product $model */
 /** @var app\models\ProductTranslation $translationModel */
 
-$this->title = "Update Product: " . $model->id;
-$this->params["breadcrumbs"][] = ["label" => "Products", "url" => ["index"]];
+$this->title = Yii::t('app', "Update Product: {id}", ['id' => $model->id]);
+$this->params["breadcrumbs"][] = ["label" => Yii::t('app', "Products"), "url" => ["index"]];
 $this->params["breadcrumbs"][] = [
-    "label" => $model->id,
-    "url" => ["view", "id" => $model->id],
+  "label" => $model->id,
+  "url" => ["view", "id" => $model->id],
 ];
-$this->params["breadcrumbs"][] = "Update";
+$this->params["breadcrumbs"][] = Yii::t('app', "Update");
 ?>
 <div class="product-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <?= $this->render("_form", [
-        "model" => $model,
-    ]) ?>
+  <?= $this->render("_form", [
+    "model" => $model,
+  ]) ?>
 
-    <?php echo Button::widget([
-        "label" => "Add translations",
-        "options" => [
-            "class" => "btn btn-primary",
-            "type" => "button",
-            "data-bs-toggle" => "offcanvas",
-            "data-bs-target" => "#form-offcanvas", // Use the same ID from Offcanvas
-        ],
-    ]); ?>
+  <?php echo Button::widget([
+    "label" => Yii::t('app', "Add translations"),
+    "options" => [
+      "class" => "btn btn-primary",
+      "type" => "button",
+      "data-bs-toggle" => "offcanvas",
+      "data-bs-target" => "#form-offcanvas", // Use the same ID from Offcanvas
+    ],
+  ]); ?>
 
-    <?php
-    Offcanvas::begin([
-        "placement" => Offcanvas::PLACEMENT_START,
-        "backdrop" => true,
-        "scrolling" => true,
-        "id" => "form-offcanvas",
-    ]);
+  <?php
+  Offcanvas::begin([
+    "placement" => Offcanvas::PLACEMENT_START,
+    "backdrop" => true,
+    "scrolling" => true,
+    "id" => "form-offcanvas",
+  ]);
 
-    echo CollapsibleTranslations::widget([
-        "translations" => $model->translations,
-        "titleFieldName" => "title",
-        "descriptionFieldName" => "description",
-        "controllerId" => "product-translation",
-    ]);
+  echo CollapsibleTranslations::widget([
+    "translations" => $model->translations,
+    "titleFieldName" => "title",
+    "descriptionFieldName" => "description",
+    "controllerId" => "product-translation",
+  ]);
 
-    echo "<h3 class=" . "pt-4" . ">Add translation</h3>";
+  echo "<h3 class=" . "pt-4" . ">" . Yii::t('app', "Add translation") . "</h3>";
 
-    echo $this->render("../product-translation/_form", [
-        "model" => $translationModel,
-        "product_id" => $model->id,
-    ]);
+  echo $this->render("../product-translation/_form", [
+    "model" => $translationModel,
+    "product_id" => $model->id,
+  ]);
 
-    Offcanvas::end();
-    ?>
+  Offcanvas::end();
+  ?>
 
 </div>

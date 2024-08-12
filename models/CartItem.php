@@ -115,7 +115,8 @@ class CartItem extends \yii\db\ActiveRecord
   {
     if (!$this->product) return;
 
-    $price = $this->product->discount_price ? $this->product->discount_price : $this->product->price;
+    /*$price = $this->product->discount_price ? $this->product->discount_price : $this->product->price;*/
+    $price = intval($this->product->cleanPrice());
     return $price * $this->quantity;
   }
 

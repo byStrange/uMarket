@@ -56,7 +56,7 @@ JS;
 
 $this->registerJs($script);
 
-$this->title = "Account";
+$this->title = Yii::t('app', "Account");
 $this->params["breadcrumbs"][] = $this->title;
 ?>
 <style>
@@ -71,14 +71,21 @@ $this->params["breadcrumbs"][] = $this->title;
         <!-- Nav tabs -->
         <div class="dashboard_tab_button" data-aos="fade-up" data-aos-delay="0">
           <ul role="tablist" class="nav flex-column dashboard-list">
-            <li><a href="#dashboard" data-bs-toggle="tab" class="nav-link active">Dashboard</a></li>
-            <li> <a href="#orders" data-bs-toggle="tab" class="nav-link">Orders</a></li>
-            <li><a href="#address" data-bs-toggle="tab" class="nav-link">Addresses</a></li>
-            <li><a href="#account-details" data-bs-toggle="tab" class="nav-link">Account details</a>
+            <li>
+              <a href="#dashboard" data-bs-toggle="tab" class="nav-link active"><?= Yii::t('app', 'Dashboard') ?></a>
+            </li>
+            <li>
+              <a href="#orders" data-bs-toggle="tab" class="nav-link"><?= Yii::t('app', 'Orders') ?></a>
+            </li>
+            <li>
+              <a href="#address" data-bs-toggle="tab" class="nav-link"><?= Yii::t('app', 'Addreses') ?></a>
+            </li>
+            <li>
+              <a href="#account-details" data-bs-toggle="tab" class="nav-link"><?= Yii::t('app', 'Account details') ?></a>
             </li>
             <li>
               <?= Html::beginForm(["/site/logout"]) .
-                Html::submitButton("Logout", ["class" => "nav-link"]) .
+                Html::submitButton(Yii::t('app', 'Logout'), ["class" => "nav-link"]) .
                 Html::endForm() ?>
             </li>
           </ul>
@@ -88,9 +95,10 @@ $this->params["breadcrumbs"][] = $this->title;
         <!-- Tab panes -->
         <div class="tab-content dashboard_content" data-aos="fade-up" data-aos-delay="200">
           <div class="tab-pane fade show active" id="dashboard">
-            <h4>Dashboard </h4>
-            <p>From your account dashboard. you can easily check &amp; view your <a href="#">recent
-                orders</a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">Edit your password and account details.</a></p>
+            <h4><?= Yii::t('app', 'Dashboard') ?> </h4>
+
+            <p><?= Yii::t('app', 'From your account dashboard. you can easily check &amp; view your <a href="#">recent orders</a>, manage your <a href="#">shipping and billing addresses</a> and <a href="#">Edit your password and account details.</a>') ?></p>
+
           </div>
           <div class="tab-pane fade" id="orders">
             <h4>Orders</h4>
@@ -100,10 +108,10 @@ $this->params["breadcrumbs"][] = $this->title;
                   <thead>
                     <tr>
                       <th>#</th>
-                      <th>Order ID</th>
-                      <th>Date</th>
-                      <th>Status</th>
-                      <th>Total</th>
+                      <th><?= Yii::t('app', 'Order ID') ?></th>
+                      <th><?= Yii::t('app', 'Date') ?></th>
+                      <th><?= Yii::t('app', 'Status') ?></th>
+                      <th><?= Yii::t('app', 'Total') ?></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -121,31 +129,32 @@ $this->params["breadcrumbs"][] = $this->title;
               <?php else: ?>
                 <div class="empty-text-contant text-center">
                   <i class="pe-7s-shopbag"></i>
-                  <h3>You haven't ordered anything yet</h3>
+                  <h3><?= Yii::t('app', "You haven't ordered anything yet") ?></h3>
                   <a class="empty-cart-btn" href="/shop">
-                    <i class="fa fa-arrow-left"> </i> Go to shopping
+                    <i class="fa fa-arrow-left"> </i><?= Yii::t('app', 'Go to shopping') ?>
                   </a>
                 </div>
               <?php endif ?>
             </div>
           </div>
           <div class="tab-pane" id="address">
-            <h4>Billing addresses</h4>
-            <div class="user-address-table-wrapper" style="display: <?= empty($user->userAddresses) ? 'none' : '' ?>">
+            <?= (bool)empty($user->userAddresses) ?>
+            <h4><?= Yii::t('app', 'Billing addresses') ?></h4>
+            <div class="user-address-table-wrapper" style="display: <?= empty($user->userAddresses) ? 'none' : 'block' ?>">
               <div class="table_page table-responsive">
                 <div>
                   <table id="userAddressTable">
                     <thead>
                       <tr>
-                        <th>#</th>
-                        <th>Full Name</th>
-                        <th>City</th>
-                        <th>Apartment</th>
-                        <th>Street Address</th>
-                        <th>Phone number</th>
-                        <th>Label</th>
-                        <th>Zip code</th>
-                        <th>Action</th>
+                        <th><?= Yii::t('app', '#') ?></th>
+                        <th><?= Yii::t('app', 'Full Name') ?></th>
+                        <th><?= Yii::t('app', 'City') ?></th>
+                        <th><?= Yii::t('app', 'Apartment') ?></th>
+                        <th><?= Yii::t('app', 'Street Address') ?></th>
+                        <th><?= Yii::t('app', 'Phone number') ?></th>
+                        <th><?= Yii::t('app', 'Label') ?></th>
+                        <th><?= Yii::t('app', 'Zip code') ?></th>
+                        <th><?= Yii::t('app', 'Action') ?></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -169,21 +178,21 @@ $this->params["breadcrumbs"][] = $this->title;
                 </div>
               </div>
               <button
-                class="btn-primary mt-3"
+                class="btn-secondary mt-3"
                 data-bs-toggle="modal"
                 data-bs-target="#addressModal"
                 hx-get="/admin/user-address/create/?d=true"
                 hx-target="#addressModal .modal-content">
                 <i class="fa fa-plus"> </i>
-                add user address
+                <?= Yii::t('app', 'Add User Address') ?>
               </button>
             </div>
 
+            <div id="billingAddressesEmpty" class="empty-text-contant text-center" style="display: <?= empty($user->userAddresses) ? 'block' : 'none' ?>">
 
-            <div id="billingAddressesEmpty" class="empty-text-contant text-center" style="display: <?= empty($this->userAddresses) ? '' : 'none' ?>">
               <i class="pe-7s-id"></i>
-              <h3 class="mb-2">You do not have any addresses</h3>
-              <p class="text-muted">You can use these billing address information while ordering something</p>
+              <h3 class="mb-2"><?= Yii::t('app', 'You do not have any addresses') ?></h3>
+              <p class="text-muted"><?= Yii::t('app', 'You can use these billing address information while ordering something') ?></p>
               <a
                 href="#"
                 class="empty-cart-btn mt-2"
@@ -191,13 +200,13 @@ $this->params["breadcrumbs"][] = $this->title;
                 data-bs-target="#addressModal"
                 hx-get="/admin/user-address/create/?d=true"
                 hx-target="#addressModal .modal-content">
-                <i class="fa fa-plus"> </i> Create new one
+                <i class="fa fa-plus"> </i> <?= Yii::t('app', 'Create new one') ?>
               </a>
             </div>
           </div>
           <div class="tab-pane fade" id="account-details">
-            <h3>Account details </h3>
-            <p>working on this feature</p>
+            <h3><?= Yii::t('app', 'Account details') ?></h3>
+            <p><?= Yii::t('app', 'working on this feature') ?></p>
           </div>
         </div>
       </div>

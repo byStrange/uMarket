@@ -10,50 +10,73 @@ use yii\grid\GridView;
 /** @var app\module\admin\models\search\ImageSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = "Images";
+$this->title = Yii::t('app', "Images");
 $this->params["breadcrumbs"][] = $this->title;
 ?>
 <div class="image-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(
-            "Create Image",
-            ["create"],
-            ["class" => "btn btn-success"]
-        ) ?>
-    </p>
+  <p>
+    <?= Html::a(
+      Yii::t("app", "Create Image"),
+      ["create"],
+      ["class" => "btn btn-success"]
+    ) ?>
+  </p>
 
-    <?php
-// echo $this->render('_search', ['model' => $searchModel]);
-?>
+  <?php
+  // echo $this->render('_search', ['model' => $searchModel]);
+  ?>
 
-    <?= GridView::widget([
-        "dataProvider" => $dataProvider,
-        "filterModel" => $searchModel,
-        "columns" => [
-            ["class" => "yii\grid\SerialColumn"],
 
-            "id",
-            "created_at",
-            "updated_at",
-            "image",
-            "alt",
-            [
-                "class" => ActionColumn::className(),
-                "urlCreator" => function (
-                    $action,
-                    Image $model,
-                    $key,
-                    $index,
-                    $column
-                ) {
-                    return Url::toRoute([$action, "id" => $model->id]);
-                },
-            ],
-        ],
-    ]) ?>
+  <?= GridView::widget([
+    "dataProvider" => $dataProvider,
+    "filterModel" => $searchModel,
+    "columns" => [
+      ["class" => "yii\grid\SerialColumn"],
+
+      [
+        "attribute" => "id",
+        "label" => Yii::t('app', 'ID'),
+      ],
+
+      [
+        "attribute" => "created_at",
+        "label" => Yii::t('app', 'Created At'),
+      ],
+
+      [
+        "attribute" => "updated_at",
+        "label" => Yii::t('app', 'Updated At'),
+      ],
+
+      [
+        "attribute" => "image",
+        "label" => Yii::t('app', 'Image'),
+      ],
+
+      [
+        "attribute" => "alt",
+        "label" => Yii::t('app', 'Alt Text'),
+      ],
+
+      [
+        "class" => ActionColumn::className(),
+        "urlCreator" => function (
+          $action,
+          Image $model,
+          $key,
+          $index,
+          $column
+        ) {
+          return Url::toRoute([$action, "id" => $model->id]);
+        },
+        "header" => Yii::t('app', 'Actions'),
+      ],
+    ],
+  ]) ?>
+
 
 
 </div>

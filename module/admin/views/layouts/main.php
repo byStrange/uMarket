@@ -9,10 +9,6 @@ use yii\bootstrap5\Breadcrumbs;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\Nav;
 use yii\bootstrap5\NavBar;
-/*use yii\widgets\Collapse;*/
-/*use yii\bootstrap\Collapse;*/
-
-/*use yii\bootstrap;*/
 use yii\bootstrap5\Button;
 use yii\bootstrap5\Offcanvas;
 
@@ -66,31 +62,30 @@ $this->registerJsFile("@web/js/popup/popup.js", [
       "id" => "sidebar-offcanvas",
     ]);
     echo Nav::widget([
-      // Use Nav widget for the navigation items
       "options" => ["class" => "nav flex-column nav-pills"], // Adjust classes for vertical layout
       "items" => [
-        ["label" => "Products", "url" => ["product/index"]],
+        ["label" => Yii::t('app', 'Products'), "url" => ["product/index"]],
         [
-          "label" => "Product Translations",
+          "label" => Yii::t('app', 'Product Translations'),
           "url" => ["product-translation/index"],
         ],
-        ["label" => "Users", "url" => ["user/index"]],
-        ["label" => "Categories", "url" => ["category/index"]],
+        ["label" => Yii::t('app', 'Users'), "url" => ["user/index"]],
+        ["label" => Yii::t('app', 'Categories'), "url" => ["category/index"]],
         [
-          "label" => "Category Translations",
+          "label" => Yii::t('app', 'Category Translations'),
           "url" => ["category-translation/index"],
         ],
-        ["label" => "Images", "url" => ["image/index"]],
-        ["label" => "Carts", "url" => ["cart/index"]],
-        ["label" => "CartItems", "url" => ["cart-item/index"]],
-        ["label" => "Wishlistitems", "url" => ["wishlistitem/index"]],
-        ["label" => "Coupons", "url" => ["coupon/index"]],
-        ["label" => "User addresses", "url" => ["user-address/index"]],
-        ["label" => "Location Points", "url" => ["location-point/index"]],
-        ["label" => "Order", "url" => ["order/index"]],
-        ["label" => "Delivery Points", "url" => ["delivery-point/index"]],
-        ["label" => "Featured Offers", "url" => ["featured-offer/index"]],
-        # ["label" => "Rating", "url" => ["rating/index"]],
+        ["label" => Yii::t('app', 'Images'), "url" => ["image/index"]],
+        ["label" => Yii::t('app', 'Carts'), "url" => ["cart/index"]],
+        ["label" => Yii::t('app', 'CartItems'), "url" => ["cart-item/index"]],
+        ["label" => Yii::t('app', 'Wishlistitems'), "url" => ["wishlistitem/index"]],
+        ["label" => Yii::t('app', 'Coupons'), "url" => ["coupon/index"]],
+        ["label" => Yii::t('app', 'User Addresses'), "url" => ["user-address/index"]],
+        ["label" => Yii::t('app', 'Location Points'), "url" => ["location-point/index"]],
+        ["label" => Yii::t('app', 'Order'), "url" => ["order/index"]],
+        ["label" => Yii::t('app', 'Delivery Points'), "url" => ["delivery-point/index"]],
+        ["label" => Yii::t('app', 'Featured Offers'), "url" => ["featured-offer/index"]],
+        # ["label" => Yii::t('app', 'Rating'), "url" => ["rating/index"]],
       ],
     ]);
     Offcanvas::end();
@@ -105,7 +100,6 @@ $this->registerJsFile("@web/js/popup/popup.js", [
             "label" =>
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 96C0 78.3 14.3 64 32 64l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 128C14.3 128 0 113.7 0 96zM64 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L96 288c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32L32 448c-17.7 0-32-14.3-32-32s14.3-32 32-32l384 0c17.7 0 32 14.3 32 32z"/></svg>',
             "encodeLabel" => false,
-            // Adjust icon class as needed
             "options" => [
               "class" => "btn  p-1 btn-light navbar-toggler",
               "type" => "button",
@@ -115,8 +109,14 @@ $this->registerJsFile("@web/js/popup/popup.js", [
           ]); ?>
           <?= Breadcrumbs::widget([
             "links" => $this->params["breadcrumbs"],
-            "homeLink" => ["url" => "/admin", "label" => "Admin"],
+            "homeLink" => ["url" => "/admin", "label" => Yii::t('app', 'Admin')],
           ]) ?>
+          <div>
+            <?= Html::beginForm(['/site/language'], 'post') ?>
+            <?= Html::dropDownList('language', Yii::$app->language, ['en-US' => 'English', 'ru-RU' => 'Russian', 'uz-UZ' => 'Uzbek']) ?>
+            <?= Html::submitButton(Yii::t('app', 'Change')) ?>
+            <?= Html::endForm() ?>
+          </div>
 
         </div>
       <?php endif; ?>
@@ -124,7 +124,6 @@ $this->registerJsFile("@web/js/popup/popup.js", [
       <?= $content ?>
     </div>
   </main>
-
 
   <?php $this->endBody(); ?>
 </body>

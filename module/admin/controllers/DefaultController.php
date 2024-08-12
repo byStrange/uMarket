@@ -2,10 +2,12 @@
 
 namespace app\module\admin\controllers;
 
+use app\components\Utils;
 use app\models\FeaturedOffer;
 use app\models\Order;
 use app\models\Product;
 use app\models\User;
+use Yii;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 
@@ -20,6 +22,7 @@ class DefaultController extends Controller
    */
   public function actionIndex()
   {
+    /*Utils::printAsError(Yii::$app->language);*/
     $totalOrders = Order::find()->count();
     $totalProducts = Product::find()->active()->count();
     $featuredOffers = FeaturedOffer::find()->count();

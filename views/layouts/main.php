@@ -56,93 +56,7 @@ document.addEventListener('htmx:afterSettle', function(event) {
 });
 JS;
 $this->registerJs($script, View::POS_HEAD);
-
-$script = <<<JS
-$(document).on("htmx:afterOnLoad", function afterCartItemRemove(event) {
-  const contentType = event.detail.xhr
-    .getResponseHeader("Content-Type")
-    .split(";")[0];
-  var response = event.detail.xhr.response;
-  var id, action, cartGrandTotal, cartTotal, cartItemsCount, wishlistItemsCount;
-  if (contentType === "application/json") {
-    var { id, action, cartGrandTotal, cartTotal, cartItemsCount } =
-      JSON.parse(response);
-  } else if (contentType === "text/html") {
-    const parser = new DOMParser();
-    var doc = parser.parseFromString(response, "text/html");
-    var body = $(doc.body);
-    var wrapper = body.children().first();
-    id = wrapper.attr("data-id");
-    action = wrapper.attr("data-action");
-    wishlistItemsCount = wrapper.attr('data-wishlistItemsCount')
-  }
-
-  var heartIconSvg =
-    `<svg class="wishlist-icon-` +
-    id +
-    `" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="red"/>
-</svg>`;
-  var likeButton = $(".wishlist-icon-" + id);
-  console.log(document.querySelectorAll('#wishlist-icon-' + id));
-  console.log(likeButton);
-  var likeButtonHtml =
-    '<i class="pe-7s-like wishlist-icon-' + id + '"' + "></i>";
-
-  switch (action) {
-    case "addToWishlist":
-      likeButton.replaceWith(heartIconSvg);
-      break;
-
-    case "removeFromWishList":
-      likeButton.replaceWith(likeButtonHtml);
-      removeFromWishList({ id, wishlistItemsCount })
-      break;
-
-    case "removeFromCart":
-      var removedCartItem = $(".cartitem-" + id);
-
-      if (window.changeCartTotal)
-        changeCartTotal({ cartGrandTotal, cartTotal }, cartItemsCount);
-
-      removedCartItem.slideUp();
-      break;
-
-    case "applyCoupon":
-      var { coupon, couponDiscountAmountAsCurrency, cartGrandTotal, errorCode } = JSON.parse(response);
-      if (errorCode) {
-        switch (errorCode) {
-          case 'NotFound':
-              alert('Coupon not found');
-              break;
-          case 'NotActive':
-              alert('This coupon is invalid');
-              break;
-      }
-}
-      applyCoupon({ coupon, couponDiscountAmountAsCurrency, cartGrandTotal });
-      break;
-
-    case "createUserAddress":
-      var { ok, model, message } = JSON.parse(response);
-      $('#cartModal .modal-content').html('<div class="modal-body text-center"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="pe-7s-close"></i></button><div class="tt-modal-messages"> <i class="pe-7s-check"></i>' + message + "</div></div>");
-      $('#cartModal').modal('show')
-      if (ok) insertNewBillingAddress(model)
-    break;
-
-    case "removeUserAddres":
-      var { ok, id, message } = JSON.parse(response)
-      $('#cartModal .modal-content').html('<div class="modal-body text-center"><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i class="pe-7s-close"></i></button><div class="tt-modal-messages"> <i class="pe-7s-check"></i>' + message + "</div></div>");
-      $('#cartModal').modal('show');
-      if (ok) removeBillingAddress(id);
-
-    break;
-
-  }
-  window.afterCartItemRemove = afterCartItemRemove;
-});
-JS;
-$this->registerJs($script);
+$this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 
 
 $style = <<<CSS
@@ -151,6 +65,12 @@ $style = <<<CSS
 }
 .breadcrumb-area {
   background: ghostwhite !important;
+}
+body .product-tab-nav .nav-item .nav-link {
+  width: auto ;
+}
+.select-shoing-wrap .shot-product {
+  white-space: nowrap;
 }
 CSS;
 $this->registerCss($style);
@@ -167,7 +87,7 @@ $this->registerCss($style);
 
 <body>
   <?php $this->beginBody(); ?>
-  <?= Header::widget() ?>
+  <?= $this->render('@app/components/home/Header') ?>
   <main class="main-wrapper">
     <?php if (!empty($this->params["breadcrumbs"])): ?>
       <div class="breadcrumb-area">
@@ -183,7 +103,7 @@ $this->registerCss($style);
                 "activeItemTemplate" =>
                 "<li class=\"breadcrumb-item active\">{link}</li>",
                 "links" => $this->params["breadcrumbs"],
-                "homeLink" => ["url" => "/", "label" => "Home"],
+                "homeLink" => ["url" => "/", "label" => Yii::t('app',  "Home")],
               ]) ?>
             </div>
           </div>
@@ -192,7 +112,7 @@ $this->registerCss($style);
     <?php endif; ?>
     <?= $content; ?>
   </main>
-  <?= Footer::widget() ?>
+  <?= $this->render('@app/components/home/Footer') ?>
 
 
   <!-- Modal -->
@@ -251,7 +171,7 @@ $this->registerCss($style);
   <div class="offcanvas-overlay"></div>
   <?= $this->render('@app/components/home/offcanvas/OffCanvasWishList', ['view' => &$this]) ?>
   <?= $this->render('@app/components/home/offcanvas/OffCanvasCart', ['view' => &$this]) ?>
-  <?php echo OffCanvasMobileMenu::widget(); ?>
+  <?= $this->render("@app/components/home/offcanvas/OffCanvasMobileMenu"); ?>
   <?php $this->endBody(); ?>
 </body>
 

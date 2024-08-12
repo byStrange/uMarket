@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\FeaturedOffer $model */
 
-$this->title = "Create Featured Offer";
+$this->title = Yii::t('app', 'Create Featured Offer');
 $this->params["breadcrumbs"][] = [
-    "label" => "Featured Offers",
+    "label" => Yii::t('app', 'Featured Offers'),
     "url" => ["index"],
 ];
 $this->params["breadcrumbs"][] = $this->title;

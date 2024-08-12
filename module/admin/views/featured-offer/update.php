@@ -5,16 +5,16 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\FeaturedOffer $model */
 
-$this->title = "Update Featured Offer: " . $model->id;
+$this->title = Yii::t('app', "Update Featured Offer {id}", ['id' => $model->id]);
 $this->params["breadcrumbs"][] = [
-    "label" => "Featured Offers",
+    "label" => Yii::t('app', "Featured Offers"),
     "url" => ["index"],
 ];
 $this->params["breadcrumbs"][] = [
     "label" => $model->id,
     "url" => ["view", "id" => $model->id],
 ];
-$this->params["breadcrumbs"][] = "Update";
+$this->params["breadcrumbs"][] = Yii::t('app', "Update");
 ?>
 <div class="featured-offer-update">
 

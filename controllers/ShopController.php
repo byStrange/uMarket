@@ -63,4 +63,10 @@ class ShopController extends Controller
     $products = $dataProvider->query->offset($pagination->offset)->limit($pagination->limit)->all();
     return $this->render('category', ["category" => $category, "products" => $products, "pagination" => $pagination, "dataProvider" => $dataProvider, "totalCount" => $totalCount]);
   }
+
+  public function actionCategories()
+  {
+    $categories = Category::find()->where(['parent_id' => null])->all();
+    return $this->render('categories', ['categories' => $categories]);
+  }
 }

@@ -1,51 +1,38 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\DeliveryPoint $model */
-
-$this->title = $model->id;
-$this->params["breadcrumbs"][] = [
-    "label" => "Delivery Points",
-    "url" => ["index"],
-];
-$this->params["breadcrumbs"][] = $this->title;
-\yii\web\YiiAsset::register($this);
+/** @var app\module\admin\models\search\DeliveryPointSearch $model */
+/** @var yii\widgets\ActiveForm $form */
 ?>
-<div class="delivery-point-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="delivery-point-search">
 
-    <p>
-        <?= Html::a(
-            "Update",
-            ["update", "id" => $model->id],
-            ["class" => "btn btn-primary"]
-        ) ?>
-        <?= Html::a(
-            "Delete",
-            ["delete", "id" => $model->id],
-            [
-                "class" => "btn btn-danger",
-                "data" => [
-                    "confirm" => "Are you sure you want to delete this item?",
-                    "method" => "post",
-                ],
-            ]
-        ) ?>
-    </p>
+  <?php $form = ActiveForm::begin([
+    "action" => ["index"],
+    "method" => "get",
+  ]); ?>
 
-    <?= DetailView::widget([
-        "model" => $model,
-        "attributes" => [
-            "id",
-            "created_at",
-            "updated_at",
-            "label",
-            "location_id",
-        ],
+  <?= $form->field($model, "id")->label(Yii::t('app', 'ID')) ?>
+
+  <?= $form->field($model, "created_at")->label(Yii::t('app', 'Created At'))
+  ?>
+
+  <?= $form->field($model, "updated_at")->label(Yii::t('app', 'Updated At')) ?>
+
+  <?= $form->field($model, "label")->label(Yii::t('app', 'Label')) ?>
+
+  <?= $form->field($model, "location_id")->label(Yii::t('app', 'Location')) ?>
+
+  <div class="form-group">
+    <?= Html::submitButton(Yii::t('app', 'Search'), ["class" => "btn btn-primary"]) ?>
+    <?= Html::resetButton(Yii::t('app', 'Reset'), [
+      "class" => "btn btn-outline-secondary",
     ]) ?>
+  </div>
+
+  <?php ActiveForm::end(); ?>
 
 </div>

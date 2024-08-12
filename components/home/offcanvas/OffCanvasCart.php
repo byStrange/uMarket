@@ -10,7 +10,7 @@ $cart_items =  $cart->cartItems;
 <div id="offcanvas-cart" class="offcanvas offcanvas-cart">
   <div class="inner">
     <div class="head">
-      <span class="title">Cart</span>
+      <span class="title"><?= Yii::t('app', 'Cart') ?></span>
       <button class="offcanvas-close">×</button>
     </div>
     <div class="body customScroll">
@@ -18,8 +18,8 @@ $cart_items =  $cart->cartItems;
     </div>
     <div class="foot">
       <div class="buttons mt-30px">
-        <a href="/cart" class="btn btn-dark btn-hover-primary mb-30px">view cart</a>
-        <a href="/site/checkout" class="btn btn-outline-dark current-btn">checkout</a>
+        <a href="/cart" class="btn btn-dark btn-hover-primary mb-30px"><?= Yii::t('app', 'view cart') ?></a>
+        <a href="/site/checkout" class="btn btn-outline-dark current-btn"><?= Yii::t('app', 'checkout') ?></a>
       </div>
     </div>
   </div>

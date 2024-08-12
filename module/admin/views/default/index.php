@@ -1,17 +1,14 @@
 <?php
 
-use app\models\Order;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 use app\widgets\Card;
-use kartik\grid\ActionColumn;
-use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Admin Dashboard';
+$this->title = Yii::t('app', 'Admin Dashboard');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -22,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-3">
       <?php
       echo Card::widget([
-        'title' => 'Total Orders',
+        'title' => Yii::t('app', 'Total Orders'),
         'content' => Html::tag('h2', $totalOrders, ['class' => 'text-center']),
         'options' => ['class' => 'bg-light'],
       ]);
@@ -31,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-3">
       <?php
       echo Card::widget([
-        'title' => 'Total Products',
+        'title' => Yii::t('app', 'Total Products'),
         'content' => Html::tag('h2', $totalProducts, ['class' => 'text-center']),
         'options' => ['class' => 'bg-light'],
       ]);
@@ -40,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-3">
       <?php
       echo Card::widget([
-        'title' => 'Featured Offers',
+        'title' => Yii::t('app', 'Featured Offers'),
         'content' => Html::tag('h2', $featuredOffers, ['class' => 'text-center']),
         'options' => ['class' => 'bg-light'],
       ]);
@@ -49,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="col-md-3">
       <?php
       echo Card::widget([
-        'title' => 'Active Users',
+        'title' => Yii::t('app', 'Active Users'),
         'content' => Html::tag('h2', $activeUsers, ['class' => 'text-center']),
         'options' => ['class' => 'bg-light'],
       ]);
@@ -65,10 +62,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $recentOrdersProvider,
         'columns' => [
           'id',
-          'user.username',
-          'total_amount:currency',
-          'created_at:datetime',
-
+          ["attribute" => "user.username", "label" => Yii::t('app', 'User')],
+          [
+            "attribute" => "total_amount",
+            "label" => Yii::t('app', 'Total'),
+            "value" => function ($model) {
+              return $model->totalPriceAsCurrency();
+            },
+          ],
+          ["attribute" => "created_at", "label" => Yii::t('app', 'Created At')],
           ['class' => 'yii\grid\ActionColumn', 'controller' => 'order',  'template' => '{view}'],
         ],
       ]); ?>
@@ -78,16 +80,16 @@ $this->params['breadcrumbs'][] = $this->title;
       <h3>Quick Actions</h3>
       <div class="row">
         <div class="col-md-6 mb-2">
-          <?= Html::a('Add New Product', ['product/create'], ['class' => 'btn btn-primary btn-block']) ?>
+          <?= Html::a(Yii::t('app', 'Add New Product'), ['product/create'], ['class' => 'btn btn-primary btn-block']) ?>
         </div>
         <div class="col-md-6 mb-2">
-          <?= Html::a('View All Orders', ['order/index'], ['class' => 'btn btn-info btn-block']) ?>
+          <?= Html::a(Yii::t('app', 'View All Orders'), ['order/index'], ['class' => 'btn btn-info btn-block']) ?>
         </div>
         <div class="col-md-6 mb-2">
-          <?= Html::a('Manage Users', ['user/index'], ['class' => 'btn btn-warning btn-block']) ?>
+          <?= Html::a(Yii::t('app', 'Manage Users'), ['user/index'], ['class' => 'btn btn-warning btn-block']) ?>
         </div>
         <div class="col-md-6 mb-2">
-          <?= Html::a('Update Featured Offers', ['featured-offer/index'], ['class' => 'btn btn-success btn-block']) ?>
+          <?= Html::a(Yii::t('app', 'Update Featured Offers'), ['featured-offer/index'], ['class' => 'btn btn-success btn-block']) ?>
         </div>
       </div>
     </div>

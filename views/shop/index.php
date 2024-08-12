@@ -1,4 +1,5 @@
 <?php
+
 use yii\web\View;
 
 
@@ -11,7 +12,7 @@ use yii\web\View;
 
 $sort = $dataProvider->getSort();
 
-$this->title = "Shop All Products";
+$this->title = Yii::t('app', "Shop All Products");
 $this->params["breadcrumbs"][] = $this->title;
 
 ?>
