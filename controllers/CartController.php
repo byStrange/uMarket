@@ -122,6 +122,11 @@ class CartController extends Controller
       return $this->renderPartial('@app/components/product/_modal_response', ["message" => Yii::t('app', 'Could not find product with id: {id}', ['id' => $id])]);
     }
 
+    # check if the product is not out of stock
+    if ($product->status == Product::STATUS_OUT_OF_STOCK) {
+      return $this->renderPartial('@app/components/product/_modal_response', ["message" => Yii::t('app', 'Product is out of stock')]);
+    }
+
     $cart = Cart::getOrCreateCurrentInstance();
 
     # try to get cart item associated with this cart and product
