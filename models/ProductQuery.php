@@ -8,7 +8,7 @@ class ProductQuery extends ActiveQuery
 {
   public function active()
   {
-    return $this->andWhere(['is_deleted' => 0]);
+    return $this->andWhere(['is_deleted' => 0,]);
   }
 
   // Override the all() method to apply the active filter by default

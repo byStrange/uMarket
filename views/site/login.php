@@ -77,10 +77,8 @@ foreach (['success', 'error', 'warning', 'info'] as $type) {
                 <div class="login-toggle-btn">
 
                   <?= $form
-                    ->field($model, "rememberMe")
-                    ->checkbox(
-                      []
-                    ) ?> <a href="#">Forgot Password?</a>
+                    ->field($model, "rememberMe", ['options' => ['class' => 'sdfsd']])
+                    ->checkbox(['class' => 'checkoo']) ?> <a href="#">Forgot Password?</a>
                 </div>
                 <div class="form-group">
                   <div>

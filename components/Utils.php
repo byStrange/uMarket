@@ -21,7 +21,6 @@ class Utils extends Component
     $options = [];
     $existingIds = array_column($existingRelation, "id");
     foreach ($existingIds as $id) {
-      var_dump($id);
       $options[$id] = [
         "selected" => in_array($id, $existingIds),
       ];

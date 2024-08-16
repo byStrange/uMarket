@@ -57,7 +57,7 @@ use yii\widgets\ActiveForm;
   </div>
 
   <?php if ($d) : ?>
-    <button class="btn btn-primary mt-3" hx-post="/admin/user-address/create/?d=true" hx-trigger='click' hx-swap="none" data-bs-dismiss="modal">
+    <button class="text-decoration-underline mt-3" hx-post="/admin/user-address/create/?d=true" hx-trigger='click' hx-swap="none" data-bs-dismiss="modal">
       <?= Yii::t('app', 'Save') ?>
     </button>
   <?php else: ?>

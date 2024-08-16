@@ -24,7 +24,7 @@ $cart_items_count = count($cart_items);
             <ul>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Language
+                  Language <?= explode('-', Yii::$app->language)[0] ?>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark flex-column" style="display: none" aria-labelledby="navbarDarkDropdownMenuLink">
                   <li class="w-100 m-0 p-1"><a class="dropdown-item" href="/site/language?l=uz-UZ">Uz</a></li>
@@ -39,7 +39,7 @@ $cart_items_count = count($cart_items);
                   <li><a href="/admin"><i class="fa fa-wrench"></i> <?= Yii::t('app', 'Admin panel') ?></a></li>
                 <?php endif; ?>
               <?php else: ?>
-                <li><a href="site/login"><?= Yii::t('app', 'Login') ?></a></li>
+                <li><a href="/site/login"><?= Yii::t('app', 'Login') ?></a></li>
               <?php endif; ?>
             </ul>
           </div>

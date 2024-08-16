@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Utils;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
@@ -177,12 +178,18 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
    *
    * @return \yii\db\ActiveQuery
    */
-  public function getViewedProducts()
+  public function getViewedProducts($exclude = [])
   {
-    return $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
+    $query = $this->hasMany(Product::class, ["id" => "product_id"])->viaTable(
       "main_product_viewers",
       ["user_id" => "id"]
     );
+
+    if (!empty($exclude)) {
+      $query->andWhere(['not in', 'main_product.id', $exclude]);
+    }
+
+    return $query;
   }
 
   public static function toOptionsList()
@@ -196,6 +203,53 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return (string) $model;
       }
     );
+  }
+
+  public function getRatings()
+  {
+    return $this->hasMany(Rating::class, ["user_id" => "id"]);
+  }
+
+
+  public static function getRecentlySeenProducts($limit = 5, $exclude = [])
+  {
+    Utils::printAsError($exclude);
+    $user = Yii::$app->user->identity;
+    $query = Product::find()->where(['is_deleted' => false]);
+
+    if ($user) {
+      // Fetch recently viewed products for logged-in user from database
+      $query->innerJoin('product_viewers pv', 'pv.product_id = product.id')
+        ->where(['pv.user_id' => $user->id]);
+
+      if ($exclude) {
+        $query->andWhere(['not in', 'product.id', $exclude]);
+      }
+
+      return $query->limit($limit)->all();
+    }
+
+    // If user is not logged in, fetch from session
+    $session = Yii::$app->session;
+    $user_recently_viewed = $session->get('user_recently_viewed');
+
+    if ($user_recently_viewed) {
+      $query->andWhere(['id' => $user_recently_viewed]);
+
+      if ($exclude) {
+        $query->andWhere(['not in', 'id', $exclude]);
+      }
+
+      return $query->limit($limit)->all();
+    }
+
+    return []; // Return an empty array if no recently viewed products are found
+  }
+
+
+  public function hasRated($product_id)
+  {
+    return $this->getRatings()->andWhere(["product_id" => $product_id])->exists();
   }
 
   public function __toString()

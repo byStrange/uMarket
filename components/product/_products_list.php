@@ -25,12 +25,11 @@ $css = <<<CSS
 }
 CSS;
 $view->registerCss($css);
-
 if (isset($sort)) {
   global $currentFilterDisplay;
-  $currentFilterDisplay = $sort->getAttributeOrders() ? array_keys($sort->getAttributeOrders())[0] : '';
-}
-?>
+  $currentFilterDisplay = $sort->getAttributeOrders() ?
+    array_keys($sort->getAttributeOrders())[0] : '';
+} ?>
 
 <div class="container">
   <div class="row">
@@ -38,7 +37,10 @@ if (isset($sort)) {
       <!-- Shop Top Area Start -->
       <div class="shop-top-bar d-flex">
         <?php if (isset($totalCount)): ?>
-          <p class="compare-product"><?= Yii::t('app', '{count} Product Found of {totalCount}', ['count' => count($products), 'totalCount' => $totalCount]) ?></p>
+          <p class="compare-product">
+            <?= Yii::t('app', '{count} Product Found of {totalCount}', ['count' =>
+            count($products), 'totalCount' => $totalCount]) ?>
+          </p>
         <?php endif ?>
         <!-- Left Side End -->
         <!-- Right Side Start -->
@@ -51,13 +53,26 @@ if (isset($sort)) {
 
             <!-- Single Wedge End -->
             <div class="header-bottom-set dropdown">
-              <button class="dropdown-toggle header-action-btn" data-bs-toggle="dropdown"><?= $currentFilterDisplay ? ucwords($currentFilterDisplay) : Yii::t('app', 'Default') ?><i class="fa fa-angle-down"></i></button>
+              <button
+                class="dropdown-toggle header-action-btn"
+                data-bs-toggle="dropdown">
+                <?= $currentFilterDisplay ? ucwords($currentFilterDisplay) : Yii::t('app', 'Default') ?><i
+                  class="fa fa-angle-down"></i>
+              </button>
 
               <ul class="dropdown-menu dropdown-menu-right">
-                <li><?= Utils::renderSortLink('price', '', Yii::t('app', 'Price, low to high'), $sort, SORT_DESC) ?></li>
-                <li><?= Utils::renderSortLink('price', Yii::t('app',  'Price, high to low'), '', $sort, SORT_ASC) ?></li>
-                <li><?= Utils::renderSortLink('id', Yii::t('app', 'Sort By old'), '', $sort, SORT_ASC) ?></li>
-                <li><?= Utils::renderSortLink('id', '', Yii::t('app',  'Sort By new'), $sort, SORT_DESC) ?></li>
+                <li>
+                  <?= Utils::renderSortLink('price', '', Yii::t('app', 'Price, low to high'), $sort, SORT_DESC) ?>
+                </li>
+                <li>
+                  <?= Utils::renderSortLink('price', Yii::t('app',  'Price, high to low'), '', $sort, SORT_ASC) ?>
+                </li>
+                <li>
+                  <?= Utils::renderSortLink('id', Yii::t('app', 'Sort By old'), '', $sort, SORT_ASC) ?>
+                </li>
+                <li>
+                  <?= Utils::renderSortLink('id', '', Yii::t('app',  'Sort By new'), $sort, SORT_DESC) ?>
+                </li>
               </ul>
             </div>
             <!-- Single Wedge Start -->
@@ -76,7 +91,10 @@ if (isset($sort)) {
                 <div class="swiper-wrapper">
                   <?php foreach ($products as $product) : ?>
                     <div class="swiper-slide">
-                      <?= $this->render("@app/components/product/_product_card", ["product" => $product, "wrappedInCol" => false]); ?>
+                      <?= $this->render(
+                        "@app/components/product/_product_card",
+                        ["product" => $product, "wrappedInCol" => false]
+                      ); ?>
                     </div>
                   <?php endforeach ?>
                 </div>
@@ -89,7 +107,9 @@ if (isset($sort)) {
         <?php else: ?>
           <div class="row mb-n-30px">
             <?php foreach ($products as $product) {
-                echo $this->render("@app/components/product/_product_card", ["product" => $product]);
+                echo
+                $this->render("@app/components/product/_product_card", ["product" =>
+                $product]);
               } ?>
           </div>
         <?php endif ?>
@@ -97,21 +117,24 @@ if (isset($sort)) {
       </div>
     </div>
   </div>
-  <!-- Tab Content Area End -->
-  <!--  Pagination Area Start -->
-  <style>
-    .pro-pagination-style li.active a {
-      color: #266bf9;
-      border-color: #266bf9;
-      background: #fff;
-    }
-  </style>
-  <?php if (isset($pagination)): ?>
-    <div class="pro-pagination-style text-center text-lg-end" data-aos="fade-up" data-aos-delay="200">
-      <div class="pages">
-        <?= LinkPager::widget(["pagination" => $pagination,]) ?>
-      </div>
-    </div>
-  <?php endif ?>
-  <!--  Pagination Area End -->
 </div>
+<!-- Tab Content Area End -->
+<!--  Pagination Area Start -->
+<style>
+  .pro-pagination-style li.active a {
+    color: #266bf9;
+    border-color: #266bf9;
+    background: #fff;
+  }
+</style>
+<?php if (isset($pagination)): ?>
+  <div
+    class="pro-pagination-style text-center text-lg-end"
+    data-aos="fade-up"
+    data-aos-delay="200">
+    <div class="pages">
+      <?= LinkPager::widget(["pagination" => $pagination,]) ?>
+    </div>
+  </div>
+<?php endif ?>
+<!--  Pagination Area End --><!--  Pagination Area End --><!--  Pagination Area End --><!--  Pagination Area End --><!--  Pagination Area End --><!--  Pagination Area End --><!--  Pagination Area End --><!--  Pagination Area End -->

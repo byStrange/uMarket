@@ -456,13 +456,38 @@
     /*---------------------
         Countdown
     --------------------- */
-    $("[data-countdown]").each(function() {
-        var $this = $(this),
-            finalDate = $(this).data("countdown");
-        $this.countdown(finalDate, function(event) {
-            $this.html(event.strftime('<span class="cdown hour"><span class="cdown-1">%-H</span><p>Hrs</p></span> <span class="cdown minutes"><span class="cdown-1">%M</span> <p>Min</p></span> <span class="cdown second"><span class="cdown-1"> %S</span> <p>Sec</p></span>'));
-        });
-    });
+    
+$("[data-countdown]").each(function() {
+    var $this = $(this),
+        countdownTime = $(this).data("countdown"),
+        timeParts = countdownTime.split(':'),
+        hours = parseInt(timeParts[0], 10),
+        minutes = parseInt(timeParts[1], 10),
+        seconds = parseInt(timeParts[2], 10),
+        totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+
+    // Start countdown
+    var countdownInterval = setInterval(function() {
+        if (totalSeconds <= 0) {
+            clearInterval(countdownInterval);
+            $this.html('<span class="cdown end">Time Up!</span>');
+            return;
+        }
+
+        totalSeconds--;
+
+        var displayHours = Math.floor(totalSeconds / 3600),
+            displayMinutes = Math.floor((totalSeconds % 3600) / 60),
+            displaySeconds = totalSeconds % 60;
+
+        // Update the display
+        $this.html(
+            '<span class="cdown hour"><span class="cdown-1">' + displayHours + '</span><p>Hrs</p></span> ' +
+            '<span class="cdown minutes"><span class="cdown-1">' + displayMinutes + '</span> <p>Min</p></span> ' +
+            '<span class="cdown second"><span class="cdown-1">' + displaySeconds + '</span> <p>Sec</p></span>'
+        );
+    }, 1000); // Update every second
+});
 
     /*-----------------------------
         Blog Gallery Slider 

@@ -153,11 +153,21 @@ class FeaturedOffer extends \yii\db\ActiveRecord
 
   public function upload()
   {
-    $this->image_banner = Utils::uploadImage($this->image_banner_file);
-    $this->image_small_landscape = Utils::uploadImage(
-      $this->image_small_landscape_file
-    );
-    $this->image_portrait = Utils::uploadImage($this->image_portrait_file);
+    $uploadedBannerPath = Utils::uploadImage($this->image_banner_file);
+    if ($uploadedBannerPath) {
+      $this->image_banner = $uploadedBannerPath;
+    }
+
+    $uploadedSmallLandscapePath = Utils::uploadImage($this->image_small_landscape_file);
+    if ($uploadedSmallLandscapePath) {
+      $this->image_small_landscape = $uploadedSmallLandscapePath;
+    }
+
+    $uploadedPortraitPath = Utils::uploadImage($this->image_portrait_file);
+    if ($uploadedPortraitPath) {
+      $this->image_portrait = $uploadedPortraitPath;
+    }
+
     return true;
   }
 
@@ -229,6 +239,30 @@ class FeaturedOffer extends \yii\db\ActiveRecord
         ['and', ['IS', 'start_time', null], ['>=', 'end_time', $now]],
         ['and', ['<=', 'start_time', $now], ['IS', 'end_time', null]]
       ]);
+  }
+
+  public function timeOffset()
+  {
+
+    // Ensure start_time and end_time are valid timestamps
+    $startTimestamp = is_numeric($this->start_time) ? (int)$this->start_time : strtotime($this->start_time);
+    $endTimestamp = is_numeric($this->end_time) ? (int)$this->end_time : strtotime($this->end_time);
+
+    // Check if start_time is greater than end_time
+    if ($startTimestamp > $endTimestamp) {
+      throw new \Exception('Start time cannot be greater than end time.');
+    }
+
+    // Calculate the difference in seconds
+    $differenceInSeconds = $endTimestamp - $startTimestamp;
+
+    // Convert the difference to hours, minutes, and seconds
+    $hours = floor($differenceInSeconds / 3600);
+    $minutes = floor(($differenceInSeconds % 3600) / 60);
+    $seconds = $differenceInSeconds % 60;
+
+    // Format the result as "hours:min:sec"
+    return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
   }
 
   public function __toString()

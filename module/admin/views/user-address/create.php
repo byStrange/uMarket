@@ -20,7 +20,7 @@ if (!$popup) {
 
   <?= $this->render("_form", [
     "model" => $model,
-    "d" => $d
+    "d" => isset($d) ? $d : false
   ]) ?>
 
 </div>

@@ -138,7 +138,6 @@ $this->params["breadcrumbs"][] = $this->title;
             </div>
           </div>
           <div class="tab-pane" id="address">
-            <?= (bool)empty($user->userAddresses) ?>
             <h4><?= Yii::t('app', 'Billing addresses') ?></h4>
             <div class="user-address-table-wrapper" style="display: <?= empty($user->userAddresses) ? 'none' : 'block' ?>">
               <div class="table_page table-responsive">
