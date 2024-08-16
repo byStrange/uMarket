@@ -9,7 +9,8 @@ use app\models\User;
 /** @var Rating $review_model */
 
 if (Yii::$app->user->identity) {
-  $viewedProducts = Yii::$app->user->identity->viewedProducts;
+
+  $viewedProducts = Yii::$app->user->identity->getViewedProducts([$product->id])->all();
 } else {
   $viewedProducts = User::getRecentlySeenProducts(5, [$product->id]);
   /*Utils::printAsError($viewedProducts);*/

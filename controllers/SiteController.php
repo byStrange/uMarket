@@ -117,6 +117,7 @@ class SiteController extends Controller
         $product = Product::findOne(["id" => $value, "is_deleted" => false]);
         $product->link('viewers', Yii::$app->user->identity);
       }
+      Yii::$app->session->remove('user_recently_viewed');
     }
 
     $model = new LoginForm();
@@ -306,7 +307,9 @@ class SiteController extends Controller
 
       $order->linkAll('cartItems', $cart->cartItems, CartItem::class);
       $order->coupon_id = $cart->coupon ? $cart->coupon->id : null;
-      $cart->unlink('coupon');
+      if ($cart->coupon) {
+        $cart->unlink('coupon', $cart->coupon);
+      }
       $order->save();
 
       CartItem::updateAll(['cart_id' => null], ['cart_id' => $cart->id]);
