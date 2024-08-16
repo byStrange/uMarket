@@ -39,7 +39,7 @@ $cart_items_count = count($cart_items);
                   <li><a href="/admin"><i class="fa fa-wrench"></i> <?= Yii::t('app', 'Admin panel') ?></a></li>
                 <?php endif; ?>
               <?php else: ?>
-                <li><a href="site/login"><?= Yii::t('app', 'Login') ?></a></li>
+                <li><a href="/site/login"><?= Yii::t('app', 'Login') ?></a></li>
               <?php endif; ?>
             </ul>
           </div>

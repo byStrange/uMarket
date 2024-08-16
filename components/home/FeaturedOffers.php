@@ -30,8 +30,8 @@ function renderOffer($offer, $type, $view)
       <div class="row">
         <div class="col-12">
           <div class="section-title text-center">
-            <h2 class="title">Featured Offers</h2>
-            <p>Check out our latest featured products and categories</p>
+            <h2 class="title"><?= Yii::t('app', 'Featured Offers') ?></h2>
+            <p><?= Yii::t('app', 'Check out our latest featured products and categories') ?>></p>
           </div>
         </div>
       </div>

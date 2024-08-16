@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Utils;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
@@ -196,6 +197,31 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
         return (string) $model;
       }
     );
+  }
+
+  public function getRatings()
+  {
+    return $this->hasMany(Rating::class, ["user_id" => "id"]);
+  }
+
+  public static function getRecentlySeenProducts($limit = 5, $exclude = [])
+  {
+    $session = Yii::$app->session;
+    $user_recently_viewed = $session->get('user_recently_viewed');
+    /*Utils::printAsError($user_recently_viewed);*/
+
+    if ($user_recently_viewed) {
+      $query = Product::find()->where(["id" => $user_recently_viewed])->andWhere(["is_deleted" => false]);
+      if ($exclude) {
+        $query->andWhere(["not in", "id", $exclude]);
+      }
+      return $query->limit($limit)->all();
+    }
+  }
+
+  public function hasRated($product_id)
+  {
+    return $this->getRatings()->andWhere(["product_id" => $product_id])->exists();
   }
 
   public function __toString()

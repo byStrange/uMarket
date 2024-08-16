@@ -64,18 +64,19 @@ $this->params["breadcrumbs"][] = $this->title;
         ],
         */
       [
-        'class' => ActionColumn::className(),
+        'class' => ActionColumn::class,
         'urlCreator' => function (
           $action,
           ProductTranslation $model,
-          $key,
-          $index,
-          $column
+          // $key,
+          // $index,
+          // $column
         ) {
           return Url::toRoute([$action, 'id' => $model->id]);
         },
         'header' => Yii::t('app', 'Actions'),
       ],
+
     ],
   ]) ?>
 

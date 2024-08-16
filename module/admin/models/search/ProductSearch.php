@@ -41,11 +41,13 @@ class ProductSearch extends Product
    *
    * @return ActiveDataProvider
    */
-  public function search($params)
+  public function search($params, $showAll = false)
   {
-    $query = Product::find()->active()->joinWith('categories');
+    $query = Product::find()->joinWith('categories');
 
-    // add conditions that should always apply here
+    if (!$showAll) {
+      $query->andWhere(['is_deleted' => false, 'status' => [Product::STATUS_PUBLISHED, Product::STATUS_OUT_OF_STOCK]]);
+    }
 
     $dataProvider = new ActiveDataProvider([
       "query" => $query,
@@ -54,12 +56,12 @@ class ProductSearch extends Product
 
     if ($this->category_id) {
       $query->andWhere(['main_category.id' => $this->category_id]);
+      /*Utils::printAsError($query->all());*/
     }
 
     $this->load($params);
 
     if (!$this->validate()) {
-      Utils::printAsError('fuckjl');
       // uncomment the following line if you do not want to return any records when validation fails
       // $query->where('0=1');
       return $dataProvider;

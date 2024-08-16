@@ -73,16 +73,10 @@ class SiteController extends Controller
    */
   public function actionIndex()
   {
-    $session = Yii::$app->session;
-    if (!$session->get('lang')) {
-      $session->set('lang', Yii::$app->language);
-    }
-    /*Utils::printAsError(Yii::$app->language);*/
-
-
     $products = Product::find()
       ->active()
       ->orderBy(["created_at" => SORT_DESC])
+      ->andWhere(["status" => [Product::STATUS_PUBLISHED, Product::STATUS_OUT_OF_STOCK]])
       ->limit(8)
       ->all();
 
@@ -115,6 +109,14 @@ class SiteController extends Controller
   {
     if (!Yii::$app->user->isGuest) {
       return $this->goHome();
+    }
+
+    $user_recently_viewed = Yii::$app->session->get('user_recently_viewed');
+    if ($user_recently_viewed && !Yii::$app->user->isGuest) {
+      foreach ($user_recently_viewed as $key => $value) {
+        $product = Product::findOne(["id" => $value, "is_deleted" => false]);
+        $product->link('viewers', Yii::$app->user->identity);
+      }
     }
 
     $model = new LoginForm();

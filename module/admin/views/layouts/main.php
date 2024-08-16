@@ -48,6 +48,7 @@ $this->registerJsFile("@web/js/popup/popup.js", [
 <head>
   <title><?= Html::encode($this->title) ?></title>
   <?php $this->head(); ?>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body class="d-flex flex-column h-100">
@@ -85,7 +86,7 @@ $this->registerJsFile("@web/js/popup/popup.js", [
         ["label" => Yii::t('app', 'Order'), "url" => ["order/index"]],
         ["label" => Yii::t('app', 'Delivery Points'), "url" => ["delivery-point/index"]],
         ["label" => Yii::t('app', 'Featured Offers'), "url" => ["featured-offer/index"]],
-        # ["label" => Yii::t('app', 'Rating'), "url" => ["rating/index"]],
+        ["label" => Yii::t('app', 'Rating'), "url" => ["rating/index"]],
       ],
     ]);
     Offcanvas::end();
@@ -125,6 +126,29 @@ $this->registerJsFile("@web/js/popup/popup.js", [
     </div>
   </main>
 
+  <div class="modal fade" id="pricingModal" tabindex="-1" aria-labelledby="pricingModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="pricingModalLabel"><?= Yii::t('app', 'Product Pricing Rules') ?></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="<?= Yii::t('app', 'Close') ?>"></button>
+        </div>
+        <div class="modal-body">
+          <h6><strong><?= Yii::t('app', 'Pricing Priority:') ?></strong></h6>
+          <ol>
+            <li><strong><?= Yii::t('app', 'Featured Offer (Product Type):') ?></strong> <?= Yii::t('app', 'The discount price from a featured offer specific to this product takes precedence.') ?></li>
+            <li><strong><?= Yii::t('app', 'Featured Offer (Category Type):') ?></strong> <?= Yii::t('app', 'If a featured offer targets the category of this product, its discount price is used.') ?></li>
+            <li><strong><?= Yii::t('app', 'Discount Price:') ?></strong> <?= Yii::t('app', 'If no featured offer applies, the available discount price will be used.') ?></li>
+            <li><strong><?= Yii::t('app', 'Regular Price:') ?></strong> <?= Yii::t('app', 'In the absence of any featured offers or discount prices, the regular price is applied.') ?></li>
+          </ol>
+          <p><strong><?= Yii::t('app', 'Note:') ?></strong> <?= Yii::t('app', 'The final price shown (`cleanPrice`) is the most applicable based on these priority rules.') ?></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
+        </div>
+      </div>
+    </div>
+  </div>
   <?php $this->endBody(); ?>
 </body>
 

@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Utils;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
@@ -29,6 +30,7 @@ use yii\helpers\ArrayHelper;
  * @property CartItem[] $cartItems
  * @property Wishlistitem[] $wishlistitems
  * @property Product[] $toProducts
+ * @property ProductSpecification[] $specifications
  * @property User[] $likedUsers
  * @property User[] $viewers
  * @property Rating[] $ratings
@@ -37,6 +39,12 @@ use yii\helpers\ArrayHelper;
  */
 class Product extends \yii\db\ActiveRecord
 {
+  const STATUS_DRAFT = "draft";
+  const STATUS_PUBLISHED = "published";
+  const STATUS_DISABLED = "disabled";
+  const STATUS_ARCHIVED = "archived";
+  const STATUS_OUT_OF_STOCK = "out_of_stock";
+
   /**
    * {@inheritdoc}
    */
@@ -105,9 +113,22 @@ class Product extends \yii\db\ActiveRecord
     ];
   }
 
+  public static function getStatusOptions()
+  {
+    return [
+      self::STATUS_DRAFT => "Draft",
+      self::STATUS_PUBLISHED => "Published",
+      self::STATUS_DISABLED => "Disabled",
+      self::STATUS_ARCHIVED => "Archived",
+      self::STATUS_OUT_OF_STOCK => "Out of Stock",
+    ];
+  }
+
   public static function getMostFamous8()
   {
     return self::find()
+      ->active()
+      ->andWhere(["status" => [self::STATUS_PUBLISHED, self::STATUS_OUT_OF_STOCK]])
       /*->select(['id', 'average_rating', 'total_ratings'])*/
       ->orderBy([
         "total_ratings" => SORT_DESC,
@@ -246,6 +267,16 @@ class Product extends \yii\db\ActiveRecord
   }
 
   /**
+   * Gets query for [[ProductSpecifications]].
+   *
+   * @return \yii\db\ActiveQuery
+   */
+  public function getSpecifications()
+  {
+    return $this->hasMany(ProductSpecification::class, ['product_id' => 'id']);
+  }
+
+  /**
    * Gets all related_products of the product
    *
    *
@@ -287,18 +318,45 @@ class Product extends \yii\db\ActiveRecord
     );
   }
 
+  // product price has a few priority checks. Priority goes as following:
+  // 1. featured offer (type product)
+  // 2. featured offer (type category)
+  // 3. discount price
+  // 4. price
+  // 
+  // statement 1 states that if there is a featured offer targeting specifically that product the discount price from that featured offer will be used no matter what.
+  // statement 2 states that if there is a featured offer targeting a single category and a product is a part of that category the discount price from that featured offer will be used..
+  // if there no featured offer then the discount price will be used if it is set, otherwise the price will be used.
+  // so cleanPrice is the real value of a product in the platform 
   public function cleanPrice()
   {
     $featuredOffer = $this->featuredOffer;
     if ($featuredOffer && $featuredOffer->isActive()) {
       return $featuredOffer->dicount_price;
     }
+
+    $categories = $this->categories;
+    $discount_price_from_categories = 0;
+    if (count($categories)) {
+      global $discount_price_from_categories;
+      /** @var Category $category */
+      foreach ($categories as $category) {
+        if ($category->featuredOffer && $category->featuredOffer->isActive()) {
+          $discount_price_from_categories = $category->featuredOffer->dicount_price;
+        }
+      }
+    }
+
+    if ($discount_price_from_categories) {
+      return $discount_price_from_categories;
+    }
+
     return $this->discount_price ? $this->discount_price : $this->price;
   }
 
   public function priceAsCurrency()
   {
-    return Yii::$app->formatter->asCurrency((integer)$this->cleanPrice());
+    return Yii::$app->formatter->asCurrency((int)$this->cleanPrice());
   }
 
   public function discountPriceAsCurrency()
@@ -333,7 +391,9 @@ class Product extends \yii\db\ActiveRecord
   public function isOnTheWishlist()
   {
     $session = Yii::$app->session;
-    $cart_id = $session->get('cart_id');
+    $user_cart = Yii::$app->user->identity ? Yii::$app->user->identity->cart : null;
+
+    $cart_id = $user_cart ? Yii::$app->user->identity->cart->id : $session->get('cart_id');
     if (!$cart_id) return false;
 
     $wishlistitem = $this->getWishlistitems()->where(['cart_id' => $cart_id])->one();
@@ -353,17 +413,35 @@ class Product extends \yii\db\ActiveRecord
     }
   }
 
-  public static function toOptionsList()
+  public function markAs($status)
   {
-    return ArrayHelper::map(
-      Product::find()->active()
-        ->select(["created_by_id", "id"])
-        ->all(),
-      "id",
-      function ($model) {
-        return (string) $model;
+    if (!in_array($status, array_keys(self::getStatusOptions()))) {
+      throw new \Exception("Invalid status");
+    }
+    $this->status = $status;
+
+    if (!$this->save()) {
+      throw new \Exception("Failed when saving. Could not mark product as " . $status);
+    }
+  }
+
+  public static function toOptionsList($includeDescription = false)
+  {
+    $products = Product::find()->active()->all();
+    $options = [];
+
+    foreach ($products as $product) {
+      if ($includeDescription) {
+        $options[$product->id] = [
+          'label' => (string) $product,
+          'description' => Yii::$app->formatter->asCurrency($product->price)
+        ];
+      } else {
+        $options[$product->id] = (string) $product;
       }
-    );
+    }
+
+    return $options;
   }
 
   public function categoriesListAsDisplay()
@@ -377,7 +455,7 @@ class Product extends \yii\db\ActiveRecord
 
   public function __toString()
   {
-    return $this->getProductTranslationForLanguage()
+    return $this->getProductTranslationForLanguage()->title
       ? $this->getProductTranslationForLanguage()->title
       : $this->createdBy->username . " -> " . $this->id;
   }

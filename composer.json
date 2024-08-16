@@ -26,7 +26,9 @@
     "yiisoft/yii2-jui": "*",
     "ramsey/uuid": "^4.7",
     "mootensai/yii2-enhanced-gii": "dev-master",
-    "kartik-v/yii2-mpdf": "dev-master"
+    "kartik-v/yii2-mpdf": "dev-master",
+    "kartik-v/yii2-widget-datetimepicker": "dev-master",
+    "by-strange/datetime-picker": "^0.1.1"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

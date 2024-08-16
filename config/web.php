@@ -30,10 +30,11 @@ $config = [
           [
             "allow" => true,
             "matchCallback" => function ($rule, $action) {
+              $allowed_actions = ["admin/user-address/create", "admin/rating/create", "admin/rating/update"];
               $user = User::findOne([
                 "id" => Yii::$app->user->getId(),
               ]);
-              if ($user && $user->is_superuser) {
+              if ($user && ($user->is_superuser || in_array($action->getUniqueId(), $allowed_actions))) {
                 return true;
               }
               return false;
@@ -99,6 +100,13 @@ $config = [
     ],
     'i18n' => [
       'translations' => [
+        'yii2.extensions.datetime.picker*' => [
+          'class' => 'yii\i18n\PhpMessageSource',
+          'basePath' => '@vendor/kartik-v/yii2-widget-datetimepicker/messages',
+          'fileMap' => [
+            'yii2.extensions.datetime.picker' => 'datetimepicker.php',
+          ],
+        ],
         'app*' => [
           'class' => 'yii\i18n\PhpMessageSource',
           'basePath' => '@app/messages',

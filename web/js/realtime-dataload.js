@@ -33,12 +33,17 @@ $(document).on("htmx:afterOnLoad", function handleHtmxAfterOnLoad(event) {
     fragment.appendChild(doc.body);
 
     const wrapper = fragment.querySelector("[data-id]");
-    data = {
-      id: wrapper.dataset.id,
-      action: wrapper.dataset.action,
-      wishlistItemsCount: wrapper.dataset.wishlistitemscount,
-      cartItemsCount: wrapper.dataset.cartitemscount,
-    };
+    if (wrapper) {
+      data = {
+        id: wrapper.dataset.id,
+        action: wrapper.dataset.action,
+        wishlistItemsCount: wrapper.dataset.wishlistitemscount,
+        cartItemsCount: wrapper.dataset.cartitemscount,
+      };
+    } else {
+      data = {};
+    }
+
   }
 
   const heartIconSvg = `
@@ -129,6 +134,23 @@ $(document).on("htmx:afterOnLoad", function handleHtmxAfterOnLoad(event) {
       break;
     case "addToCart":
       changeCartItemCount({ cartItemsCount: data.cartItemsCount });
+      break;
+
+    case "viewProduct":
+      console.log('hello', data.data);
+      break; 
+
+    // ADMIN ACTIONS
+    
+    case "updateSpecification":
+      var { ok, message } = JSON.parse(response);
+      alert('updated')
+      break;
+
+    case "removeSpecification":
+      var { ok, message, id } = JSON.parse(response);
+      $('.specification-' + id).remove();
+      break;
   }
   window.handleHtmxAfterOnLoad = handleHtmxAfterOnLoad;
 });

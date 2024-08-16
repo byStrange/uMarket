@@ -14,7 +14,7 @@ use yii\helpers\Html;
       <?php if ($offer->type === 'category'): ?>
         <?= Html::a($offer->title, ['category/view', 'id' => $offer->category_id]) ?>
       <?php else: ?>
-        <?= Html::a($offer->title, ['product/view', 'id' => $offer->product_id]) ?>
+        <?= Html::a($offer->title, ['shop/product', 'id' => $offer->product_id]) ?>
       <?php endif; ?>
     </h4>
     <?php if ($offer->type !== 'category'): ?>
@@ -27,7 +27,7 @@ use yii\helpers\Html;
     <?php endif; ?>
   </div>
   <div class="bottom-content">
-    <div class="deal-timing" data-countdown="<?= $offer->end_time ?>"></div>
+    <div class="deal-timing" data-countdown="<?= $offer->timeOffset() ?>"></div>
     <?php if ($offer->type === 'category'): ?>
       <?= Html::a('Shop Now', ['category/view', 'id' => $offer->category_id], ['class' => 'btn btn-primary m-auto']) ?>
     <?php else: ?>

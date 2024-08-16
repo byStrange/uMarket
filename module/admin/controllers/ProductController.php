@@ -2,6 +2,7 @@
 
 namespace app\module\admin\controllers;
 
+use app\components\Utils;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -11,9 +12,12 @@ use yii\helpers\ArrayHelper;
 use app\models\Category;
 use app\models\Image;
 use app\models\Product;
+use app\models\ProductSpecification;
 use app\models\ProductTranslation;
 use app\models\User;
 use app\module\admin\models\search\ProductSearch;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * ProductController implements the CRUD actions for Product model.
@@ -44,7 +48,7 @@ class ProductController extends Controller
   public function actionIndex()
   {
     $searchModel = new ProductSearch();
-    $dataProvider = $searchModel->search($this->request->queryParams);
+    $dataProvider = $searchModel->search($this->request->queryParams, true);
 
     return $this->render("index", [
       "searchModel" => $searchModel,
@@ -137,7 +141,9 @@ class ProductController extends Controller
         } else {
           $model->save();
 
-          $this->linkAllProductRelations($this->request->post(), $model);
+          Utils::printAsError("create" . $this->request->post('ProductSpecification'));
+          $this->saveSpecifications($model->id, $this->request->post('ProductSpecification', []));
+
           if ($popup) {
             return $this->renderPartial(
               "@app/module/admin/views/_popup_response",
@@ -171,6 +177,7 @@ class ProductController extends Controller
 
     if ($this->request->isPost) {
       if ($model->load($this->request->post()) && $model->save()) {
+        $this->saveSpecifications($model->id, $this->request->post('ProductSpecification', []));
         $this->unlinkAllProductRelations($model);
         $this->linkAllProductRelations($this->request->post(), $model);
         return $this->redirect(["view", "id" => $model->id]);
@@ -218,5 +225,91 @@ class ProductController extends Controller
     }
 
     throw new NotFoundHttpException("The requested page does not exist.");
+  }
+
+  protected function saveSpecifications($productId, $specificationsData)
+  {
+    ProductSpecification::deleteAll(['product_id' => $productId]);
+
+    foreach ($specificationsData as $specData) {
+      if (!empty($specData['spec_key']) && !empty($specData['spec_value'])) {
+
+        $specification = new ProductSpecification();
+        $specification->product_id = $productId;
+        $specification->spec_key = $specData['spec_key'];
+        $specification->spec_value = $specData['spec_value'];
+        $specification->save();
+      }
+    }
+  }
+
+  public function actionRemoveSpecification($id)
+  {
+    $this->response->format = Response::FORMAT_JSON;
+    $specification = ProductSpecification::findOne($id);
+    $specification->delete();
+    if (!$specification) {
+      $this->response->statusCode = 404;
+      return ['ok' => false, 'error' => "Specification not found", "errorCode" => "NotFound", 'action' => "removeSpecification", 'data' => null];
+    }
+
+    return ['ok' => true, 'action' => "removeSpecification", "id" => $id];
+  }
+
+  public function actionUpdateSpecification($id)
+  {
+    $this->response->format = Response::FORMAT_JSON;
+    $specification = ProductSpecification::findOne($id);
+
+    if (!$specification) {
+      $this->response->statusCode = 404;
+      return ['ok' => false, 'error' => "Specification not found", "errorCode" => "NotFound", 'action' => "updateSpecification", 'data' => null];
+    }
+
+    $data = $this->request->getBodyParams();
+
+    $specification->spec_key = $data['spec_key'];
+    $specification->spec_value = $data['spec_value'];
+
+    if (!$specification->save()) {
+      $this->response->statusCode = 400;
+      return ['ok' => false, 'error' => "Specification not updated", "errorCode" => "BadRequest", 'action' => "updateSpecification", 'data' => null];
+    }
+
+    $this->response->statusCode = 201;
+    return ['ok' => true, 'action' => "updateSpecification", "id" => $id, 'data' => $specification];
+  }
+
+  public function actionMarkAsPublished($id)
+  {
+    $product = Product::findOne($id);
+    if (!$product) {
+      return $this->render('404');
+    }
+
+    $product->markAs(Product::STATUS_PUBLISHED);
+
+    return $this->redirect(['index']);
+  }
+
+  public function actionMarkAsDisabled($id)
+  {
+    $product = Product::findOne($id);
+    if (!$product) {
+      return $this->render('404');
+    }
+
+    $product->markAs(Product::STATUS_DISABLED);
+    return $this->redirect(['index']);
+  }
+
+  public function actionAddSpecification()
+  {
+    $model = new ProductSpecification();
+    return $this->renderPartial('_spec_form', [
+      'form' => ActiveForm::begin(),
+      'model' => $model,
+      'index' => Yii::$app->request->get('index'),
+    ]);
   }
 }

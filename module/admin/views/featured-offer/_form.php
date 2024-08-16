@@ -7,6 +7,7 @@ use app\models\Product;
 use app\widgets\RadioItem;
 use yii\helpers\Html;
 use yii\web\View as WebView;
+use Yii2\Extensions\DateTimePicker\DateTimePicker;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -19,6 +20,12 @@ use yii\widgets\ActiveForm;
     margin-top: 8px;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  #featuredoffer-product_id {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 24px;
   }
 </style>
@@ -52,15 +59,35 @@ use yii\widgets\ActiveForm;
     )->label(Yii::t('app', 'Type')) ?>
 
   <div id="selectProductWrapper">
-    <?= Utils::popupField($form, $model, "", function ($form, $model) {
-      return $form
-        ->field($model, "product_id")
-        ->dropDownList(Product::toOptionsList())
-        ->label(Yii::t('app', 'Product'));
-    }) ?>
 
-    <?= $form->field($model, "dicount_price")->textInput()->label(Yii::t('app', 'Discount Price')) ?>
+    <?php $productOptionList = Product::toOptionsList(true); ?>
+
+    <?= $form->field($model, 'product_id')->radioList(
+      array_map(
+        function ($item) {
+          return $item['label']; // Use the label as the value for radio buttons
+        },
+        $productOptionList
+      ),
+      [
+        'item' => function ($index, $label, $name, $checked, $value) use ($productOptionList) {
+          $options = $productOptionList;
+          $description = isset($options[$value]['description']) ? $options[$value]['description'] : '';
+          return RadioItem::widget([
+            'name' => $name,
+            'description' => $description,
+            'value' => $value,
+            'id' => $index . $label,
+            'label' => $label,
+            'checked' => $checked,
+          ]);
+        }
+      ]
+    )->label(Yii::t('app', 'Select a product')) ?>
+
   </div>
+  <?= $form->field($model, "dicount_price")->textInput()->label(Yii::t('app', 'Discount Price'))->hint(Yii::t('app', 'Given price will be the price, it wont get discounted')) ?>
+
 
   <?= Utils::popupField($form, $model, "", function ($form, $model) {
     return $form
@@ -75,9 +102,8 @@ use yii\widgets\ActiveForm;
   </div>
 
   <div style="display: none" id="timeField">
-    <?= $form->field($model, "start_time")->input("datetime-local")->label(Yii::t('app', 'Start Time')) ?>
-
-    <?= $form->field($model, "end_time")->input("datetime-local")->label(Yii::t('app', 'End Time')) ?>
+    <?= $form->field($model, 'start_time')->widget(DateTimePicker::class, ["id" => "start_timasdfasdfdsfe", "config" => ["display" => ["theme" => 'light']], 'icon' => '<i class="fa fa-calendar"></i>']) ?>
+    <?= $form->field($model, 'end_time')->widget(DateTimePicker::class, ["id" => "end_asdfadsft", "config" => ["display" => ["theme" => 'light']], 'icon' => '<i class="fa fa-calendar"></i>']) ?>
   </div>
 
   <div class="container mt-5">
@@ -147,6 +173,8 @@ use yii\widgets\ActiveForm;
 
   <?php
   $type = $model->type;
+  $start_date = $model->start_time;
+  $end_date = $model->end_time;
   $jsCode = <<<javascript
   $(function () {
     function handleFileSelect(input, previewId) {
@@ -184,7 +212,14 @@ use yii\widgets\ActiveForm;
       }
     });
 
+    if ("{$start_date}" || "{$end_date}") {
+      specifyTime.prop('checked', true);
+      $('#timeField').slideDown();
+    }
+
     specifyTime.on('change', function (event)  {
+      $('#featuredoffer-start_time').val('');
+      $('#featuredoffer-end_time').val('');
       if ($(this).prop('checked')) {
        $('#timeField').slideDown(); 
       } else {

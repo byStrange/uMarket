@@ -2,6 +2,7 @@
 
 namespace app\module\admin\controllers;
 
+use app\components\Utils;
 use app\models\FeaturedOffer;
 use app\module\admin\models\search\FeaturedOfferSearch;
 use yii\web\Controller;
@@ -128,13 +129,11 @@ class FeaturedOfferController extends Controller
       ) $model->upload();
       if ($model->type == 'category') {
         $model->product_id = null;
-        $model->dicount_price = null;
       } else if ($model->type == 'product') {
         $model->category_id = null;
       }
       if ($model->save()) return $this->redirect(["view", "id" => $model->id]);
       else var_dump($model->errors);
-      die();
     }
 
     return $this->render("update", [

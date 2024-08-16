@@ -10,9 +10,34 @@ use yii\helpers\Url;
 $translatedProduct = $product->getProductTranslationForLanguage(
   Yii::$app->language
 );
+$js = <<<JS
+function initRatingField() {
+  $(document).ready(function() {
+      $('.rating-product .fa-star').on('click', function() {
+          var rating = $(this).data('rating');
+          $('#rating-score').val(rating);
+          $('.rating-product .fa-star').removeClass('active');
+          $(this).prevAll().addBack().addClass('active');
+      });
+  });
+}
+window.initRatingField = initRatingField;
+JS;
+$this->registerJs($js);
 
+/** @var User $user */
+$user = Yii::$app->user->identity;
 ?>
+<style>
+  .rating-product .rating-star.fa-star {
+    cursor: pointer;
+    color: gray !important;
+  }
 
+  .rating-product .fa-star.active {
+    color: #f8d000 !important;
+  }
+</style>
 
 <div class="container product-details-area">
   <div class="row">
@@ -127,7 +152,13 @@ $translatedProduct = $product->getProductTranslationForLanguage(
       <?php if ($detailed): ?>
         <div class="description-review-wrapper">
           <div class="description-review-topbar nav">
+
+            <?php if (count($product->specifications)): ?>
+              <button data-bs-toggle="tab" data-bs-target="#des-details2"><?= Yii::t('app', 'Specifications') ?></button>
+            <?php endif ?>
+
             <button class="active" data-bs-toggle="tab" data-bs-target="#des-details1"><?= Yii::t('app', 'Description') ?></button>
+            <button data-bs-toggle="tab" data-bs-target="#des-details3"><?= Yii::t('app', 'Reviews') ?></button>
           </div>
           <div class="tab-content description-review-bottom">
             <div id="des-details1" class="tab-pane active">
@@ -135,6 +166,17 @@ $translatedProduct = $product->getProductTranslationForLanguage(
                 <p><?= $translatedProduct->description ?></p>
               </div>
             </div>
+            <?php if (count($product->specifications)): ?>
+              <div id="des-details2" class="tab-pane">
+                <div class="product-anotherinfo-wrapper text-start">
+                  <ul>
+                    <?php foreach ($product->specifications as $specification): ?>
+                      <li><span><?= $specification->spec_key ?>:</span> <span><?= $specification->spec_value ?></span></li>
+                    <?php endforeach ?>
+                  </ul>
+                </div>
+              </div>
+            <?php endif ?>
             <div id="des-details3" class="tab-pane">
               <div class="row">
                 <div class="col-lg-12">
@@ -169,49 +211,32 @@ $translatedProduct = $product->getProductTranslationForLanguage(
                             <p><?= $rating->comment ?></p>
                           </div>
                         </div>
+                        <?php if ($user && $user->id === $rating->user_id): ?>
+                          <div style="margin-left: 24px;">
+                            <button
+                              data-bs-toggle="modal"
+                              data-bs-target="#cartModal"
+                              hx-get="<?= Url::to(['admin/rating/update', 'id' => $rating->id, 'd' => true]) ?>"
+                              hx-target="#cartModal .modal-content"
+                              class="text-decoration-underline">
+                              <?= Yii::t('app', 'Edit') ?>
+                            </button>
+                          </div>
+                        <?php endif ?>
                       </div>
                     <?php endforeach; ?>
                   </div>
                 </div>
-                <div class="col-lg-12">
+                <div class=" col-lg-12">
                   <div class="ratting-form-wrapper pl-50 pt-0">
                     <h3><?= Yii::t('app', 'Add a Review') ?></h3>
                     <?php if (Yii::$app->user->isGuest): ?>
                       <p class="my-3"><?= Yii::t('app', 'You must be logged in to be able to write reviews ') ?></p>
                       <a href="/site/login"><?= Yii::t('app', 'Login') ?></a>
+                    <?php elseif ($user->hasRated($product->id)): ?>
+                      <p class="my-3"><?= Yii::t('app', 'You have already rated this product') ?></p>
                     <?php else: ?>
-                      <div class="ratting-form">
-                        <form action="#">
-                          <div class="star-box">
-                            <span><?= Yii::t('app', 'Your rating') ?>:</span>
-                            <div class="rating-product">
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col-md-6">
-                              <div class="rating-form-style">
-                                <input placeholder="Name" type="text">
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div class="rating-form-style">
-                                <input placeholder="Email" type="email">
-                              </div>
-                            </div>
-                            <div class="col-md-12">
-                              <div class="rating-form-style form-submit">
-                                <textarea name="Your Review" placeholder="Message"></textarea>
-                                <button class="btn btn-primary btn-hover-color-primary " type="submit" value="Submit"><?= Yii::t('app', 'Submit') ?></button>
-                              </div>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
+                      <?= $this->render('@app/components/product/_product_detail_section__rating_form', ["review_model" => $review_model]) ?>
                     <?php endif ?>
                   </div>
                 </div>

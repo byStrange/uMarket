@@ -158,7 +158,7 @@ class Category extends \yii\db\ActiveRecord
 
   public function getFeaturedOffer()
   {
-    return $this->hasOne(FeaturedOffer::class, ['id' => 'category_id']);
+    return $this->hasOne(FeaturedOffer::class, ['category_id' => 'id']);
   }
 
   public function startingFromPrice()
@@ -191,7 +191,7 @@ class Category extends \yii\db\ActiveRecord
   public function __toString()
   {
     $translation = $this->getCategoryTranslationForLanguage();
-    $valid = $translation ? $translation->name : $this->label;
+    $valid = $translation->name ? $translation->name : $this->label;
     return $valid ? $valid : $this->id;
   }
 }
