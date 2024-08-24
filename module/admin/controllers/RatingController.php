@@ -2,9 +2,11 @@
 
 namespace app\module\admin\controllers;
 
+use app\components\Utils;
 use app\models\Rating;
 use yii\web\Controller;
 use app\module\admin\models\search\RatingSearch;
+use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -25,6 +27,7 @@ class RatingController extends Controller
           "delete" => ["POST"],
         ],
       ],
+      Utils::crudActionsDisableOnly(['create', 'update'])
     ]);
   }
 

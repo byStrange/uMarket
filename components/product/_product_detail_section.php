@@ -186,7 +186,7 @@ $user = Yii::$app->user->identity;
                         <div class="review-img">
                           <?= Html::img(
                             $rating->user->profile_picture
-                              ? $rating->user->profile_picture
+                              ? '/' . $rating->user->profile_picture
                               : "/images/review-image/1.png"
                           ) ?>
                         </div>

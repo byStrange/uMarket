@@ -55,6 +55,7 @@ $this->params["breadcrumbs"][] = $this->title;
       [
         "class" => ActionColumn::className(),
         "header" => Yii::t('app', 'Actions'),
+        "template" => "{view}",
         "urlCreator" => function (
           $action,
           CartItem $model,

@@ -213,7 +213,6 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
 
   public static function getRecentlySeenProducts($limit = 5, $exclude = [])
   {
-    Utils::printAsError($exclude);
     $user = Yii::$app->user->identity;
     $query = Product::find()->where(['is_deleted' => false]);
 
@@ -318,5 +317,14 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
   public function generateAccessLink()
   {
     return Url::toRoute(['site/verify-access-token', 'accesstoken' => $this->accesstoken], true);
+  }
+
+  public function upload()
+  {
+    $uploaded_file = Utils::uploadImage($this->profile_picture);
+    if ($uploaded_file) {
+      $this->profile_picture = $uploaded_file;
+    }
+    return true;
   }
 }

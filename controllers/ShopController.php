@@ -94,7 +94,6 @@ class ShopController extends Controller
       if ($review_model->save()) {
         return $this->redirect(['product', 'id' => $product->id]);
       } else {
-        Utils::printAsError($review_model->errors);
         return $this->redirect(['product', 'id' => $product->id]);
       }
     } else {

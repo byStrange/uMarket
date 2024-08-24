@@ -2,6 +2,7 @@
 
 namespace app\module\admin\controllers;
 
+use app\components\Utils;
 use app\models\UserAddress;
 use app\module\admin\models\search\UserAddressSearch;
 use Yii;
@@ -27,6 +28,7 @@ class UserAddressController extends Controller
           "delete" => ["POST"],
         ],
       ],
+      Utils::crudActionsDisableOnly(['delete'])
     ]);
   }
 

@@ -59,7 +59,7 @@ class RegisterForm extends Model
     $user->setAuthKey();
     $user->setAccessToken();
 
-    Utils::sendEmail('qosimovrahmatullo006@gmail.com', 'Your verification token', "$user->first_name welcome to our platform. Open this link in your browser: " . $user->generateAccessLink());
+    $sent = Utils::sendEmailFr('qosimovrahmatullo006@gmail.com', 'Your verification token', "$user->first_name welcome to our platform. Open this link in your browser: " . $user->generateAccessLink());
     return $user->save() ? $user : null;
   }
 

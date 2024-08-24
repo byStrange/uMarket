@@ -36,7 +36,19 @@ $this->params["breadcrumbs"][] = $this->title;
 
   <?= DetailView::widget([
     "model" => $model,
-    "attributes" => ["id", "quantity", "cart_id", "product_id"],
+    "attributes" =>
+    [
+      "id",
+      "quantity",
+      [
+        "attribute" => "cart_id",
+        "label" => Yii::t("app", "Cart"),
+        "value" => function ($model) {
+          return $model->cart ? (string)$model->cart : Yii::t("app", "no cart item set, this item is moved to order");
+        }
+      ],
+      "product_id"
+    ],
   ]) ?>
 
 </div>

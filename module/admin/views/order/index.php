@@ -17,14 +17,6 @@ $this->params["breadcrumbs"][] = $this->title;
 
   <h1><?= Html::encode($this->title) ?></h1>
 
-  <p>
-    <?= Html::a(
-      Yii::t('app', "Create Order"),
-      ["create"],
-      ["class" => "btn btn-success"]
-    ) ?>
-  </p>
-
   <?php
   // echo $this->render('_search', ['model' => $searchModel]);
   ?>
@@ -52,14 +44,8 @@ $this->params["breadcrumbs"][] = $this->title;
         'attribute' => 'status',
         'label' => Yii::t('app', 'Status'),
         'value' => function ($model) {
-          $statuses = [
-            1 => Yii::t('app', 'Pending'),
-            2 => Yii::t('app', 'Processing'),
-            3 => Yii::t('app', 'Shipped'),
-            4 => Yii::t('app', 'Delivered'),
-            5 => Yii::t('app', 'Cancelled'),
-          ];
-          return $statuses[$model->status] ?? Yii::t('app', 'Unknown');
+          $statusOptions = Order::getStatusOptions();
+          return $statusOptions[$model->status] ?? Yii::t('app', 'Unknown');
         },
       ],
       [
@@ -85,6 +71,7 @@ $this->params["breadcrumbs"][] = $this->title;
       // ],
       [
         "class" => ActionColumn::className(),
+        "template" => "{view} {cancel} {sent}",
         "urlCreator" => function (
           $action,
           Order $model,
@@ -94,6 +81,32 @@ $this->params["breadcrumbs"][] = $this->title;
         ) {
           return Url::toRoute([$action, "id" => $model->id]);
         },
+        "buttons" => [
+          "cancel" => function ($url, $model, $key) {
+            return Html::a(
+              '<i class="fa fa-times" aria-hidden="true"></i>',
+              ["order/cancel", "id" => $model->id],
+              [
+                "title" => Yii::t("app", "Cancel order"),
+                "data" => [
+                  "confirm" => Yii::t("app", "Are you sure you want to cancel this order?"),
+                  "method" => "post",
+                ],
+              ],
+
+            );
+          },
+          "sent" => function ($url, $model, $key) {
+            return Html::a(
+              '<i class="fa fa-truck" aria-hidden="true"></i>',
+              ["order/ship", "id" => $model->id],
+              [
+                "title" => Yii::t("app", "Mark it as shipped"),
+              ],
+            );
+          }
+
+        ]
       ],
     ],
   ]) ?>

@@ -2,6 +2,7 @@
 
 namespace app\module\admin\controllers;
 
+use app\components\Utils;
 use app\models\Image;
 use app\module\admin\models\search\ImageSearch;
 use yii\web\Controller;
@@ -21,11 +22,12 @@ class ImageController extends Controller
   {
     return array_merge(parent::behaviors(), [
       "verbs" => [
-        "class" => VerbFilter::className(),
+        "class" => VerbFilter::class,
         "actions" => [
           "delete" => ["POST"],
         ],
       ],
+      Utils::crudActionsDisableOnly(['update'])
     ]);
   }
 

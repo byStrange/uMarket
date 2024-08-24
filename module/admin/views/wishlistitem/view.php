@@ -37,14 +37,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'attribute' => 'cart_id',
         'label' => Yii::t('app', 'Cart'),
         'value' => function ($model) {
-          return $model->cart ? $model->cart->name : Yii::t('app', 'N/A');
+          return $model->cart ? (string)$model->cart : Yii::t('app', 'N/A');
         },
       ],
       [
         'attribute' => 'product_id',
         'label' => Yii::t('app', 'Product'),
         'value' => function ($model) {
-          return $model->product ? $model->product->name : Yii::t('app', 'N/A');
+          return $model->product ? (string)$model->product : Yii::t('app', 'N/A');
         },
       ],
     ],
