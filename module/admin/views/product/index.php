@@ -98,7 +98,7 @@ $this->params["breadcrumbs"][] = $this->title;
           'publish' => function ($url, $model, $key) {
             return Html::a(
               '<i class="fa fa-upload" aria-hidden="true"></i>',
-              Url::toRoute(['product/mark-as-published', 'id' => $model->id]),
+              ['product/mark-as-published', 'id' => $model->id],
               [
                 'title' => Yii::t('app', 'Mark as Published'),
                 'data-pjax' => '0',
@@ -108,7 +108,7 @@ $this->params["breadcrumbs"][] = $this->title;
           'disable' => function ($url, $model, $key) {
             return Html::a(
               '<i class="fa fa-ban" aria-hidden="true"></i>',
-              Url::toRoute(['product/mark-as-disabled', 'id' => $model->id]),
+              ['product/mark-as-disabled', 'id' => $model->id],
               [
                 'title' => Yii::t('app', 'Mark as Disabled'),
                 'data-pjax' => '0',

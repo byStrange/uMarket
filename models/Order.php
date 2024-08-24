@@ -218,12 +218,24 @@ class Order extends \yii\db\ActiveRecord
   {
     return Yii::$app->formatter->asCurrency($this->totalPrice());
   }
+
   public static function getPaymentTypeOptions()
   {
     return [
       self::PAYMENT_TYPE_CASH => 'Cash',
       self::PAYMENT_TYPE_CLICK => 'Click',
       self::PAYMENT_TYPE_PAYME => 'PayMe'
+    ];
+  }
+
+  public static function getStatusOptions()
+  {
+    return [
+      self::STATUS_CONFIRMED => Yii::t('app', 'Confirmed'),
+      self::STATUS_PENDING => Yii::t('app', 'Pending'),
+      self::STATUS_SHIPPED => Yii::t('app', 'Shipped'),
+      self::STATUS_DELIVERED => Yii::t('app', 'Delivered'),
+      self::STATUS_CANCELED => Yii::t('app', 'Canceled'),
     ];
   }
 

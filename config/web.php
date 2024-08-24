@@ -74,15 +74,14 @@ $config = [
     "errorHandler" => [
       "errorAction" => "site/error",
     ],
-    "mailer" => [
-      "class" => \yii\symfonymailer\Mailer::class,
-      "viewPath" => "@app/mail",
-      // send all mails to a file by default.
-      "useFileTransport" => true,
-      "transport" => [
-        "dsn" => "smtp://qosimovrahmatullo006@gmail.com:ejvw enpz nsqp sgjb@smtp.gmail.com:587"
-      ]
+    'mailer' => [
+      'class' => 'yii\symfonymailer\Mailer',
+      'useFileTransport' => false,
+      'transport' => [
+        'dsn' => 'smtp://7317d9b0329664:ff8927073202bf@sandbox.smtp.mailtrap.io:2525',
+      ],
     ],
+
     "log" => [
       "traceLevel" => YII_DEBUG ? 3 : 0,
       "targets" => [

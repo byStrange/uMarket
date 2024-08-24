@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\jui\Accordion;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
@@ -44,7 +45,29 @@ $this->params["breadcrumbs"][] = $this->title;
       "last_name",
       "email:email",
       "is_active:boolean",
-      "profile_picture_id",
+      [
+        "attribute" => "image_small_landscape",
+        "label" => Yii::t('app', 'Small Landscape Image'),
+        'value' => function ($model) {
+          if (!$model->profile_picture) {
+            return '<span class="not-set">(not set)</span>';
+          }
+          return Accordion::widget([
+            'items' => [
+              [
+                'header' => 'Click to view',
+                'label' => Yii::t('app', 'Small Landscape Image'),
+                'content' => Html::img('/' . $model->profile_picture, ['style' => 'max-height: 400px; max-width: 100%;'])
+              ],
+            ],
+            'clientOptions' => [
+              'collapsible' => true,
+              'active' => true,
+            ],
+          ]);
+        },
+        'format' => 'raw'
+      ],
       "created_at",
       "updated_at",
     ],

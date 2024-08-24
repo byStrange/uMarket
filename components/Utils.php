@@ -5,6 +5,7 @@ namespace app\components;
 use Exception;
 use Yii;
 use yii\base\Component;
+use yii\filters\AccessControl;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -187,6 +188,7 @@ class Utils extends Component
   {
     try {
       $result = Yii::$app->mailer->compose()
+        ->setFrom('qosimovrahmatullo006@gmail.com')
         ->setTo($to)
         ->setSubject($subject)
         ->setHtmlBody($content)
@@ -198,8 +200,29 @@ class Utils extends Component
 
       return $result;
     } catch (\Exception $e) {
+      Utils::printAsError($e);
       Yii::error("Error sending email to {$to}: " . $e->getMessage(), 'email');
       return false;
     }
+  }
+
+  public static function crudActionsDisableOnly($actions, $extraActions = [])
+  {
+    $crud_actions = ['create', 'view', 'update', 'delete', 'index'];
+    $crud_actions = array_merge($crud_actions, $extraActions);
+    $remaining = array_diff($crud_actions, $actions);
+    return [
+      "class" => AccessControl::class,
+      "rules" => [
+        [
+          "allow" => false,
+          "actions" => $actions
+        ],
+        [
+          "allow" => true,
+          "actions" => $remaining,
+        ]
+      ]
+    ];
   }
 }

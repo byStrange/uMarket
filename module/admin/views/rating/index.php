@@ -69,6 +69,7 @@ $this->params["breadcrumbs"][] = $this->title;
 
       [
         "class" => ActionColumn::className(),
+        "template" => "{view} {delete}",
         "urlCreator" => function (
           $action,
           Rating $model,

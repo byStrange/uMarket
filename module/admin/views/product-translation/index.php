@@ -65,6 +65,7 @@ $this->params["breadcrumbs"][] = $this->title;
         */
       [
         'class' => ActionColumn::class,
+        'template' => '{update} {create} {view}',
         'urlCreator' => function (
           $action,
           ProductTranslation $model,

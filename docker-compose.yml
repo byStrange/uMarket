@@ -1,9 +1,33 @@
-version: "2"
+version: '3.8'
+
 services:
-  php:
-    image: yiisoftware/yii2-php:7.4-apache
-    volumes:
-      - ~/.composer-docker/cache:/root/.composer/cache:delegated
-      - ./:/app:delegated
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yii2-app
     ports:
-      - "8000:80"
+      - "8080:9000"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    environment:
+      - DB_DSN=pgsql:host=db;dbname=yii2_db
+      - DB_USERNAME=yii2_user
+      - DB_PASSWORD=yii2_password
+
+  db:
+    image: postgres:13
+    container_name: yii2-db
+    environment:
+      POSTGRES_DB: yii2_db
+      POSTGRES_USER: yii2_user
+      POSTGRES_PASSWORD: yii2_password
+    ports:
+      - "5434:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
