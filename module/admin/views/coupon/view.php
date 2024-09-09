@@ -46,6 +46,8 @@ $this->params["breadcrumbs"][] = $this->title;
             "code",
             "discount_percentage",
             "discount_price",
+            "start_date",
+            "end_date",
             "is_active:boolean",
         ],
     ]) ?>

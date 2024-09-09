@@ -67,7 +67,6 @@ class CouponController extends Controller
     $model = new Coupon();
 
     if ($this->request->isPost) {
-      var_dump($this->request->post());
       if ($model->load($this->request->post()) && $model->save()) {
         if ($popup) {
           return $this->renderPartial(

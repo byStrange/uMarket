@@ -6,7 +6,7 @@
 /** @var app\models\RegisterForm $model */
 
 
-$this->title = "Register";
+$this->title = Yii::t("app", "Register");
 $this->params["breadcrumbs"][] = $this->title;
 
 use yii\bootstrap5\Alert;
@@ -39,10 +39,10 @@ foreach (['success', 'error', 'warning', 'info'] as $type) {
         <div class="login-register-wrapper">
           <div class="login-register-tab-list nav">
             <a href="/site/login">
-              <h4>login</h4>
+              <h4><?= Yii::t("app", "Login") ?></h4>
             </a>
             <a href="/site/register" class="active">
-              <h4>register</h4>
+              <h4><?= Yii::t("app", "Register") ?></h4>
             </a>
           </div>
           <div class="login-form-container">

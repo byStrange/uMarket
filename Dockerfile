@@ -24,8 +24,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Install application dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Expose port 9000
-EXPOSE 9000
+EXPOSE 8080
 
 # Start PHP-FPM server
-CMD ["php-fpm"]
+CMD ["php yii serve"]

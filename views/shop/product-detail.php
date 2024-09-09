@@ -8,9 +8,12 @@ use app\models\User;
 /** @var yii\web\View $this */
 /** @var Rating $review_model */
 
-if (Yii::$app->user->identity) {
+/** @var User $user */
+$user = Yii::$app->user->identity;
 
-  $viewedProducts = Yii::$app->user->identity->getViewedProducts([$product->id])->all();
+if ($user) {
+
+  $viewedProducts = $user->getViewedProducts([$product->id])->all();
 } else {
   $viewedProducts = User::getRecentlySeenProducts(5, [$product->id]);
   /*Utils::printAsError($viewedProducts);*/
@@ -31,7 +34,7 @@ $this->params["breadcrumbs"][] = $this->title;
   <?= $this->render('@app/components/product/_product_detail_section', ["product" => $product, "detailed" => true, "review_model" => $review_model]) ?>
 </div>
 
-<?php if (count($product->toProducts)): ?>
+<?php if (count($product->getToProducts()->where(['status' => Product::VISIBLE_STATUSES])->all())): ?>
   <div class="product-area related-product">
     <div class="container">
       <!-- Section Title & Tab Start -->

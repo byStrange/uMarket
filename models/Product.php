@@ -7,6 +7,7 @@ use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "main_product".
@@ -44,6 +45,7 @@ class Product extends \yii\db\ActiveRecord
   const STATUS_DISABLED = "disabled";
   const STATUS_ARCHIVED = "archived";
   const STATUS_OUT_OF_STOCK = "out_of_stock";
+  const VISIBLE_STATUSES = [Product::STATUS_OUT_OF_STOCK, Product::STATUS_PUBLISHED];
 
   /**
    * {@inheritdoc}
@@ -92,13 +94,13 @@ class Product extends \yii\db\ActiveRecord
   {
     return [
       "id" => "ID",
-      "created_at" => "Created At",
-      "updated_at" => "Updated At",
-      "price" => "Price",
-      "discount_price" => "Discount Price",
-      "status" => "Status",
-      "views" => "Views",
-      "created_by_id" => "Created By ID",
+      "created_at" => Yii::t('app', "Created At"),
+      "updated_at" => Yii::t('app', "Updated At"),
+      "price" => Yii::t('app', "Price"),
+      "discount_price" => Yii::t("app", "Discount Price"),
+      "status" => Yii::t("app", "Status"),
+      "views" => Yii::t("app", "Views"),
+      "created_by_id" => Yii::t("app", "Created By ID"),
     ];
   }
 
@@ -116,11 +118,11 @@ class Product extends \yii\db\ActiveRecord
   public static function getStatusOptions()
   {
     return [
-      self::STATUS_DRAFT => "Draft",
-      self::STATUS_PUBLISHED => "Published",
-      self::STATUS_DISABLED => "Disabled",
-      self::STATUS_ARCHIVED => "Archived",
-      self::STATUS_OUT_OF_STOCK => "Out of Stock",
+      self::STATUS_DRAFT =>  Yii::t('app', 'Draft'),
+      self::STATUS_PUBLISHED => Yii::t("app", "Published"),
+      self::STATUS_DISABLED => Yii::t("app", "Disabled"),
+      self::STATUS_ARCHIVED => Yii::t("app", "Archived"),
+      self::STATUS_OUT_OF_STOCK => Yii::t("app", "Out of Stock"),
     ];
   }
 
@@ -443,6 +445,45 @@ class Product extends \yii\db\ActiveRecord
 
     return $options;
   }
+
+  public function upload($images)
+  {
+    foreach ($images as $image) {
+      $path = Utils::uploadImage($image);
+      $image = new Image();
+      $image->image = $path;
+      $image->alt = "alt";
+      $image->save();
+      /*Utils::printAsError($image->errors);*/
+      $this->link('images', $image);
+    }
+  }
+
+  public function _getImagesAsHTMLMarkup()
+  {
+    $initialPreview = [];
+    $initialPreviewConfig = [];
+    $images = $this->images;
+
+    $images = $this->images;
+
+    foreach ($images as $image) {
+      $initialPreview[] = Yii::getAlias('@web') . '/' . $image->image; // URL to the image
+      $initialPreviewConfig[] = [
+        'caption' => basename($image->image), // Display filename
+        'size' => filesize(Yii::getAlias('@webroot') . '/' . $image->image), // File size
+        'url' => Url::to(['delete-image']), // URL to delete action
+        'key' => $image->id, // Unique identifier for the file
+      ];
+    }
+
+    return [
+      "initialPreview" => $initialPreview,
+      "initialPreviewConfig" => $initialPreviewConfig
+    ];
+  }
+
+
 
   public function categoriesListAsDisplay()
   {

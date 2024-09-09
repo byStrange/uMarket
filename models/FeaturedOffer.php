@@ -3,6 +3,9 @@
 namespace app\models;
 
 use app\components\Utils;
+use DateTime;
+use DateTimeZone;
+use PhpOffice\PhpSpreadsheet\Shared\TimeZone;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -199,30 +202,41 @@ class FeaturedOffer extends \yii\db\ActiveRecord
 
   public function isActive()
   {
+
     $currentTime = new \DateTime(); // Get the current time
 
-    $startTime = $this->start_time ? new \DateTime($this->start_time) : null;
-    $endTime = $this->end_time ? new \DateTime($this->end_time) : null;
+    $asiaTimeZone = new DateTimeZone('Asia/Samarkand');
+
+    $_startTime = $this->start_time ? new \DateTime($this->start_time) : null;
+    $startTime = new DateTime($_startTime->format('Y-m-d H:i:s'), $asiaTimeZone);
+
+    $_endTime = $this->end_time ? new \DateTime($this->end_time) : null;
+    $endTime = new DateTime($_endTime->format('Y-m-d H:i:s'), $asiaTimeZone);
+
 
     // If neither start_time nor end_time is set, consider it always active
     if (!$startTime && !$endTime) {
       return true;
     }
 
+
     // If only start_time is set, it's active if the current time is after the start time
     if ($startTime && !$endTime) {
       return $currentTime >= $startTime;
     }
+
 
     // If only end_time is set, it's active if the current time is before the end time
     if (!$startTime && $endTime) {
       return $currentTime <= $endTime;
     }
 
+
     // If both start_time and end_time are set, it's active if the current time is between the two
     if ($startTime && $endTime) {
       return $currentTime >= $startTime && $currentTime <= $endTime;
     }
+
 
     return false; // Fallback, in case something unexpected happens
   }

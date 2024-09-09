@@ -21,6 +21,7 @@ use app\models\RegisterForm;
 use app\models\User;
 use app\models\UserAddress;
 use yii\web\Cookie;
+use Firebase\JWT\JWT;
 
 class SiteController extends Controller
 {
@@ -261,8 +262,11 @@ class SiteController extends Controller
 
     $cartitems = $cart->cartItems;
     $user = Yii::$app->user->identity;
-    if ($cart->coupon) {
-      $cart->unlink('coupon', $cart->coupon);
+
+    if ($this->request->isGet) {
+      if ($cart->coupon) {
+        $cart->unlink('coupon', $cart->coupon);
+      }
     }
 
     if ($this->request->isPost && $model->load($this->request->post())) {
@@ -306,13 +310,21 @@ class SiteController extends Controller
       }
 
       $order->linkAll('cartItems', $cart->cartItems, CartItem::class);
-      $order->coupon_id = $cart->coupon ? $cart->coupon->id : null;
+
+
+      Yii::debug('FUCK THIS COUPON FROM ACTION ECHECKOUT' . (string)$cart->coupon, 'fuck');
       if ($cart->coupon) {
+        $order->link('coupon', $cart->coupon);
+
+
         $cart->unlink('coupon', $cart->coupon);
       }
+
       $order->save();
 
       CartItem::updateAll(['cart_id' => null], ['cart_id' => $cart->id]);
+
+
 
       return $this->render('thank-you');
     }
@@ -359,8 +371,14 @@ class SiteController extends Controller
       ];
     }
 
-    $cart->coupon_id = $coupon->id;
-    $cart->save();
+
+    Yii::debug('THAT FUCK COUPON ID' . (string)$coupon->id, 'fuck');
+    Yii::debug('CART FUCK ID' . (string)$cart->id, 'fuck');
+
+    $cart->link('coupon', $coupon);
+    Yii::debug('CART COUPON AFTER LINK SHIT' . (string)$cart->coupon_id, 'fuck');
+
+
 
     return [
       'data' => Yii::t('app', 'Coupon applied successfully'),
@@ -370,7 +388,7 @@ class SiteController extends Controller
       'cartTotal' => $cart->totalPriceAsCurrency(),
       'couponDiscountAmount' => $cart->couponDiscountAmount(),
       'couponDiscountAmountAsCurrency' => $cart->couponDiscountAmountAsCurrency(),
-      'coupon' => $coupon
+      'coupon' => $cart->coupon
     ];
   }
 

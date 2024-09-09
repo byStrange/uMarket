@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
   <?php $form = ActiveForm::begin(); ?>
 
-  <?= $form->field($model, 'language_code')->textInput(['maxlength' => true])->label(Yii::t('app', 'Language Code')) ?>
+  <?= $form->field($model, 'language_code')->textInput(['maxlength' => true, 'placeholder' => Yii::t("app", "for example uz-UZ")])->label(Yii::t('app', 'Language Code')) ?>
 
   <?= $form->field($model, 'title')->textInput(['maxlength' => true])->label(Yii::t('app', 'Title')) ?>
 

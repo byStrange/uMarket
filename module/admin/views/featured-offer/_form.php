@@ -101,9 +101,9 @@ use yii\widgets\ActiveForm;
     <label class="form-check-label" for="specifyTime"><?= Yii::t('app', 'Specify Time') ?></label>
   </div>
 
-  <div style="display: none" id="timeField">
-    <?= $form->field($model, 'start_time')->widget(DateTimePicker::class, ["id" => "start_timasdfasdfdsfe", "config" => ["display" => ["theme" => 'light']], 'icon' => '<i class="fa fa-calendar"></i>']) ?>
-    <?= $form->field($model, 'end_time')->widget(DateTimePicker::class, ["id" => "end_asdfadsft", "config" => ["display" => ["theme" => 'light']], 'icon' => '<i class="fa fa-calendar"></i>']) ?>
+  <div style="display: none; max-width: 400px;" id="timeField">
+    <?= $form->field($model, 'start_time')->widget(DateTimePicker::class, ["id" => "start_time", "config" => ["display" => ["theme" => 'light']], 'icon' => '<i class="fa fa-calendar"></i>'])->label(Yii::t('app', 'Start time')) ?>
+    <?= $form->field($model, 'end_time')->widget(DateTimePicker::class, ["id" => "end_time", "config" => ["display" => ["theme" => 'light']], 'icon' => '<i class="fa fa-calendar"></i>'])->label(Yii::t('app', 'End Time')) ?>
   </div>
 
   <div class="container mt-5">

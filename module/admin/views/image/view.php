@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\jui\Accordion;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
@@ -53,8 +54,31 @@ $this->params["breadcrumbs"][] = $this->title;
         "label" => Yii::t('app', 'Updated At')
       ],
       [
+        "attribute" => "image_small_landscape",
+        "label" => Yii::t('app', 'Image'),
+        'value' => function ($model) {
+          if (!$model->image) {
+            return '<span class="not-set">(not set)</span>';
+          }
+          return Accordion::widget([
+            'items' => [
+              [
+                'header' => 'Click to view',
+                'label' => Yii::t('app', 'Small Landscape Image'),
+                'content' => Html::img('/' . $model->image, ['style' => 'max-height: 400px; max-width: 100%;'])
+              ],
+            ],
+            'clientOptions' => [
+              'collapsible' => true,
+              'active' => true,
+            ],
+          ]);
+        },
+        'format' => 'raw'
+      ],
+      [
         "attribute" => "image",
-        "label" => Yii::t('app', 'Image')
+        "label" => Yii::t('app', 'Url')
       ],
       [
         "attribute" => "alt",

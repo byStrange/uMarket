@@ -17,6 +17,7 @@ use app\models\ProductTranslation;
 use app\models\User;
 use app\module\admin\models\search\ProductSearch;
 use yii\web\Response;
+use yii\web\UploadedFile as WebUploadedFile;
 use yii\widgets\ActiveForm;
 
 /**
@@ -86,9 +87,6 @@ class ProductController extends Controller
       "Product.categories"
     );
 
-    $submittedImages = ArrayHelper::getValue($post, "Product.images");
-
-
 
     $submittedToProducts = ArrayHelper::getValue(
       $post,
@@ -103,7 +101,6 @@ class ProductController extends Controller
     $model->linkAll("viewers", $submittedViewers, User::class);
     $model->linkAll("likedUsers", $submittedLikedUsers, User::class);
     $model->linkAll("categories", $submittedCategories, Category::class);
-    $model->linkAll("images", $submittedImages, Image::class);
     $model->linkAll("toProducts", $submittedToProducts, Product::class);
   }
 
@@ -114,7 +111,6 @@ class ProductController extends Controller
   public function unlinkAllProductRelations($model)
   {
     $model->unlinkAll("categories", true);
-    $model->unlinkAll("images", true);
     $model->unlinkAll("toProducts", true);
     $model->unlinkAll("toProducts", true);
     $model->unlinkAll("viewers", true);
@@ -132,16 +128,15 @@ class ProductController extends Controller
 
     if ($this->request->isPost) {
 
-      $submittedImages = ArrayHelper::getValue($this->request->post(), "Product.images");
-      $submittedImages = $submittedImages ? $submittedImages : [];
+      $submittedImages = WebUploadedFile::getInstances($model, 'images');
 
       if ($model->load($this->request->post())) {
         if (count($submittedImages) < 5) {
-          $model->addError('images', 'minimum 5 images required');
+          $model->addError('images', 'minimum 5 images required, but only ' . (string)count($submittedImages));
         } else {
           $model->save();
+          $model->upload($submittedImages);
 
-          Utils::printAsError("create" . $this->request->post('ProductSpecification'));
           $this->saveSpecifications($model->id, $this->request->post('ProductSpecification', []));
 
           if ($popup) {
@@ -163,6 +158,19 @@ class ProductController extends Controller
     ]);
   }
 
+  public function actionDeleteImage()
+  {
+    $this->response->format = Response::FORMAT_JSON;
+    $id = $this->request->post('key');
+
+    $image = Image::findOne($id);
+    $image->delete();
+
+    if (!$image) {
+      return ['error' => true, 'reason' => "Image with id $id Found"];
+    }
+  }
+
   /**
    * Updates an existing Product model.
    * If update is successful, the browser will be redirected to the 'view' page.
@@ -177,8 +185,13 @@ class ProductController extends Controller
 
     if ($this->request->isPost) {
       if ($model->load($this->request->post()) && $model->save()) {
+        $images = WebUploadedFile::getInstances($model, 'images');
+        $model->upload($images);
+
         $this->saveSpecifications($model->id, $this->request->post('ProductSpecification', []));
+
         $this->unlinkAllProductRelations($model);
+
         $this->linkAllProductRelations($this->request->post(), $model);
         return $this->redirect(["view", "id" => $model->id]);
       } elseif (

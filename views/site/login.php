@@ -8,7 +8,7 @@
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = "Login";
+$this->title = Yii::t("app", "Login");
 $this->params["breadcrumbs"][] = $this->title;
 
 use yii\bootstrap5\Alert;
@@ -34,10 +34,10 @@ foreach (['success', 'error', 'warning', 'info'] as $type) {
         <div class="login-register-wrapper">
           <div class="login-register-tab-list nav">
             <a class="active" href="/site/login">
-              <h4>login</h4>
+              <h4><?= Yii::t("app", "login") ?></h4>
             </a>
             <a href="/site/register">
-              <h4>register</h4>
+              <h4><?= Yii::t("app", "register") ?></h4>
             </a>
           </div>
           <div class="login-form-container">
@@ -65,25 +65,28 @@ foreach (['success', 'error', 'warning', 'info'] as $type) {
                 ->field($model, "username")
                 ->textInput([
                   "autofocus" => true,
-                ]) ?>
+                ])->label(Yii::t('app', 'username')) ?>
 
 
               <?= $form
                 ->field($model, "password")
-                ->passwordInput() ?>
+                ->passwordInput()->label(Yii::t(
+                  'app',
+                  'password'
+                )) ?>
 
 
               <div class="button-box">
                 <div class="login-toggle-btn">
 
                   <?= $form
-                    ->field($model, "rememberMe", ['options' => ['class' => 'sdfsd']])
-                    ->checkbox(['class' => 'checkoo']) ?> <a href="#">Forgot Password?</a>
+                    ->field($model, "rememberMe")->label(Yii::t('app', 'Remember me'))
+                    ->checkbox(['class' => 'checkoo']) ?> <a href="#"><?= Yii::t("app", "Forgot Password?") ?></a>
                 </div>
                 <div class="form-group">
                   <div>
                     <?= Html::submitButton(
-                      "Login",
+                      Yii::t("app", "Login"),
                       [
                         "class" =>
                         "btn btn-primary",

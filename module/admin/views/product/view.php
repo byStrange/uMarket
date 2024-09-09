@@ -1,6 +1,6 @@
 <?php
 
-use app\components\Utils;
+use app\models\Product;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -95,7 +95,8 @@ $this->params["breadcrumbs"][] = $this->title;
         'label' => Yii::t('app', 'Discount Price'),
         'value' => function ($model) {
           return Yii::$app->formatter->asCurrency($model->discount_price);
-        }
+        },
+        'format' => 'raw'
       ],
       [
         'attribute' => 'offered',
@@ -128,6 +129,12 @@ $this->params["breadcrumbs"][] = $this->title;
       [
         'attribute' => 'status',
         'label' => Yii::t('app', 'Status'),
+        'value' => function ($model) {
+          $statusOptions = Product::getStatusOptions();
+          $option = $statusOptions[$model->status] ?? Yii::t('app', 'Unknown');
+
+          return $option;
+        }
       ],
       [
         'attribute' => 'views',
@@ -141,4 +148,5 @@ $this->params["breadcrumbs"][] = $this->title;
   ]) ?>
 
 
+</div>
 </div>

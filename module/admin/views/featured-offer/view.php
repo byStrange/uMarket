@@ -46,8 +46,12 @@ $this->params["breadcrumbs"][] = $this->title;
       ["attribute" => "created_at", "label" => Yii::t('app', 'Created At')],
       ["attribute" => "updated_at", "label" => Yii::t('app', 'Updated At')],
       ["attribute" => "dicount_price", "label" => Yii::t('app', 'Discount Price')],
-      ["attribute" => "start_time", "label" => Yii::t('app', 'Start Time')],
-      ["attribute" => "end_time", "label" => Yii::t('app', 'End Time')],
+      ["attribute" => "start_time", "label" => Yii::t('app', 'Start Time'), "value" => function ($model) {
+        return Yii::$app->formatter->asDatetime($model->start_time);
+      }],
+      ["attribute" => "end_time", "label" => Yii::t('app', 'End Time'), "value" => function ($model) {
+        return Yii::$app->formatter->asDatetime($model->end_time);
+      }],
       ["attribute" => "product_id", "label" => Yii::t('app', 'Product'), 'value' => function ($model) {
         return $model->product;
       }],

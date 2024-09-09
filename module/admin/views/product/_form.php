@@ -5,6 +5,8 @@ use app\models\Category;
 use app\models\Image;
 use app\models\Product;
 use app\models\User;
+use app\widgets\CheckBoxItem;
+use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\jui\Accordion;
 use yii\widgets\ActiveForm;
@@ -25,6 +27,13 @@ $specifications = $model->specifications;
 $this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\JqueryAsset::className()]]);
 ?>
 
+<style>
+  #product-toproducts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+</style>
 <div class="product-form">
 
   <?php $form = ActiveForm::begin(); ?>
@@ -39,39 +48,40 @@ $this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\Jq
           ])->label(Yii::t('app', 'Categories'));
       }) ?>
 
-      <?= Utils::popupField($form, $model, "image", function ($form, $model) use ($imageOptionsList) {
-        return $form->field($model, "images[]")->dropDownList($imageOptionsList, [
-          "multiple" => true,
-          "options" => Utils::preSelectOptions($model->images),
-        ])->label(Yii::t('app', 'Images'));
-      }) ?>
 
-      <?= Utils::popupField($form, $model, "product", function ($form, $model) use ($toProductsOptionsList) {
-        return $form
-          ->field($model, "toProducts[]")
-          ->dropDownList($toProductsOptionsList, [
-            "multiple" => true,
-            "options" => Utils::preSelectOptions($model->toProducts),
-          ])
-          ->label(Yii::t('app', 'Related Products'));
-      }) ?>
+      <?php echo $form->field($model, 'images[]')->widget(FileInput::classname(), [
+        'options' => ['accept' => 'image/*', 'multiple' => true, 'class' => 'no-preview-image-on-upload'],
+        'pluginOptions' => [
+          'showUpload' => false,
+          'showRemove' => false,
+          'initialPreview' => $model->_getImagesAsHTMLMarkup()["initialPreview"],
+          'initialPreviewAsData' => true,
+          'initialPreviewConfig' => $model->_getImagesAsHTMLMarkup()["initialPreviewConfig"]
+        ],
+      ]); ?>
+
 
       <?php if ($actionId != "create"): ?>
 
         <?=
-        Utils::popupField($form, $model, "user", function ($form, $model) use ($usersOptionList) {
-          return $form
-            ->field($model, "viewers[]")
-            ->dropDownList($usersOptionList, [
-              "multiple" => true,
-              "options" => Utils::preSelectOptions($model->viewers),
-            ])->label(Yii::t('app', 'Viewers'));
-        })
+        /*Utils::popupField($form, $model, "user", function ($form, $model) use ($usersOptionList) {*/
+        /*  return $form*/
+        /*    ->field($model, "viewers[]")*/
+        /*    ->dropDownList($usersOptionList, [*/
+        /*      "multiple" => true,*/
+        /*      "options" => Utils::preSelectOptions($model->viewers),*/
+        /*    ])->label(Yii::t('app', 'Viewers'));*/
+        /*})*/
+        ''
         ?>
 
-        <?= $form->field($model, 'views')->input('number', [
-          'class' => 'form-control', 'readonly' => true
-        ])->label(Yii::t('app', 'Views')); ?>
+        <?=
+        ''
+        /*$form->field($model, 'views')->input('number', [*/
+        /*          'class' => 'form-control',*/
+        /*          'readonly' => true*/
+        /*])->label(Yii::t('app', 'Views')); */
+        ?>
 
         <?=
         // Utils::popupField($form, $model, "user", function ($form, $model) use ($usersOptionList) {
@@ -100,6 +110,57 @@ $this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\Jq
       ])->label(Yii::t('app', 'Discount Price')); ?>
 
       <?= $form->field($model, 'status')->dropDownList($model->getStatusOptions(), ['class' => 'form-select'])->label(Yii::t('app', 'Status')); ?>
+
+      <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#selectProductWrapperModal"><?= Yii::t("app", "Related products") ?></button>
+
+      <div class="modal fade" id="selectProductWrapperModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"><?= Yii::t("app", "Related Products") ?></h5>
+            </div>
+            <div class="modal-body">
+
+              <p class="text-muted">Related products is list of products that will be shown in detail page of a single product</p>
+
+              <div id="selectProductWrapper">
+
+                <?php $productOptionList = Product::toOptionsList(true); ?>
+
+                <?= $form->field($model, 'toProducts[]')->checkboxList(
+                  array_map(
+                    function ($item) {
+                      return $item['label']; // Use the label as the value for radio buttons
+                    },
+                    $productOptionList
+                  ),
+                  [
+                    'item' => function ($index, $label, $name, $checked, $value) use ($productOptionList) {
+                      $options = $productOptionList;
+                      $description = isset($options[$value]['description']) ? $options[$value]['description'] : '';
+                      return CheckBoxItem::widget([
+                        'name' => $name,
+                        'description' => $description,
+                        'value' => $value,
+                        'id' => $index . $label,
+                        'label' => $label,
+                        'checked' => $checked,
+                      ]);
+                    },
+                    "value" => array_map(function ($product) {
+                      return  $product['id'];
+                    }, $model->toProducts)
+                  ]
+                ) ?>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" data-bs-toggle="modal" data-bs-target="#selectProductWrapperModal" class="btn btn-primary">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
     <div class="row">
@@ -141,9 +202,6 @@ $this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\Jq
       <?= Html::submitButton(Yii::t('app', 'Save'), ["class" => "btn btn-success"]) ?>
     </div>
   </div>
-
-
-
 
   <?php ActiveForm::end(); ?>
 

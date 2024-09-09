@@ -1,5 +1,5 @@
 $(function () {
-  $('input[type="file"]').each(function () {
+  $('input[type="file"]:not(.no-preview-image-on-upload)').each(function () {
     $(this).on('change', function (event) {
       const file = event.target.files[0];
       if (file) {

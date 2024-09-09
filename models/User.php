@@ -9,6 +9,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use yii\web\IdentityInterface;
+use Firebase\JWT\JWT;
 
 /**
  * This is the model class for table "main_user".
@@ -309,9 +310,35 @@ class User extends \yii\db\ActiveRecord implements IdentityInterface
   {
     $this->accesstoken = Yii::$app->security->generateRandomString();
   }
+
+  public function generateJWTPayload()
+  {
+    $issuedAt = time();
+    $expirationTime = $issuedAt + 3600;
+    $payload = [
+      'iss' => 'umarket',
+      'aud' => 'umarket-frontend-client',
+      'iat' => $issuedAt,
+      'exp' => $expirationTime,
+      'sub' => $this->id,
+      'jti' => bin2hex(random_bytes(16)),
+      'data' => [
+        'id' => $this->id,
+        'username' => $this->username,
+        'is_active' => $this->is_active,
+        'is_superuser' => $this->is_superuser,
+      ]
+    ];
+
+    return $payload;
+  }
   public function setAuthKey()
   {
-    $this->authkey = Yii::$app->security->generateRandomString();
+    $secretKey = "secretKey";
+    $payload = $this->generateJWTPayload();
+    $jwt = JWT::encode($payload, $secretKey, 'HS256');
+
+    $this->authkey = $jwt;
   }
 
   public function generateAccessLink()

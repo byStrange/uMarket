@@ -67,19 +67,19 @@ class RegisterForm extends Model
   {
     ob_start();
     $form = ActiveForm::begin();
-    
 
-    echo $form->field($model, 'first_name')->textInput();
-    echo $form->field($model, 'last_name')->textInput();
-    echo $form->field($model, 'username')->textInput();
-    echo $form->field($model, 'email')->input('email');
-    echo $form->field($model, 'phone_number')->textInput();
-    echo $form->field($model, 'password')->passwordInput();
-    echo $form->field($model, 'confirmPassword')->passwordInput();
+
+    echo $form->field($model, 'first_name')->textInput()->label(Yii::t('app', 'First name'));
+    echo $form->field($model, 'last_name')->textInput()->label(Yii::t('app', 'Last name'));
+    echo $form->field($model, 'username')->textInput()->label(Yii::t('app', 'Username'));
+    echo $form->field($model, 'email')->input('email')->label(Yii::t('app', 'email'));
+    echo $form->field($model, 'phone_number')->textInput()->label(Yii::t('app', 'Phone number'));
+    echo $form->field($model, 'password')->passwordInput()->label(Yii::t('app', 'Password'));
+    echo $form->field($model, 'confirmPassword')->passwordInput()->label(Yii::t('app', 'Confirm password'));
 
 
     echo "<div class='button-box'>";
-    echo Html::submitButton('Register');
+    echo Html::submitButton(Yii::t("app", "Register"));
     echo "</div>";
 
     ActiveForm::end();

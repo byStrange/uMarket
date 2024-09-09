@@ -42,7 +42,7 @@ class ShopController extends Controller
   {
     $this->response->format = \yii\web\Response::FORMAT_JSON;
     $user = Yii::$app->user->identity;
-    $product = Product::findOne(["id" => $id, "is_deleted" => false]);
+    $product = Product::findOne(["id" => $id, "is_deleted" => false, "status" => Product::VISIBLE_STATUSES]);
 
     if (!$product) {
       $this->response->statusCode = 404;
@@ -76,7 +76,7 @@ class ShopController extends Controller
 
   public function actionProduct($id, $d = false)
   {
-    $product = Product::findOne(["id" => $id, "is_deleted" => false]);
+    $product = Product::findOne(["id" => $id, "is_deleted" => false, "status" => Product::VISIBLE_STATUSES]);
     $review_model = new Rating();
 
     /** @var User $user */
