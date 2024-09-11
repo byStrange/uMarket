@@ -4,11 +4,43 @@ use app\components\Utils;
 use app\models\Category;
 use app\models\FeaturedOffer;
 use app\models\Product;
+use app\widgets\CheckBoxItem;
 use app\widgets\RadioItem;
 use yii\helpers\Html;
 use yii\web\View as WebView;
 use Yii2\Extensions\DateTimePicker\DateTimePicker;
 use yii\widgets\ActiveForm;
+
+
+$script = <<<JS
+$(function () {
+  var discountPercentageField = $('.field-featuredoffer-discount_percentage')
+  var discountPriceField = $('.field-featuredoffer-dicount_price')
+  var type = $('[name="FeaturedOffer[price_type]"]');
+
+  type.each(function () {
+   if ($(this).attr('checked')) toggleDiscountVal($(this).val(), 0) 
+  })
+
+  type.on('change', function () {
+      toggleDiscountVal($(this).val()) 
+  })
+
+  function toggleDiscountVal(value, speed) {
+    console.log(value)
+    if (value === 'raw') {
+      discountPercentageField.slideUp(speed);
+      discountPriceField.slideDown(speed)
+    }  else if (value === 'percentage') {
+      discountPercentageField.slideDown(speed);
+      discountPriceField.slideUp(speed);
+    }
+  }
+});
+JS;
+
+$this->registerJs($script)
+
 
 /** @var yii\web\View $this */
 /** @var app\models\FeaturedOffer $model */
@@ -16,14 +48,15 @@ use yii\widgets\ActiveForm;
 ?>
 
 <style>
-  #featuredoffer-type {
+  #featuredoffer-type,
+  #featuredoffer-price_type {
     margin-top: 8px;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
   }
 
-  #featuredoffer-product_id {
+  #featuredoffer-products {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 24px;
@@ -57,12 +90,18 @@ use yii\widgets\ActiveForm;
         ],
       ]
     )->label(Yii::t('app', 'Type')) ?>
+  <?= Utils::popupField($form, $model, "", function ($form, $model) {
+    return $form
+      ->field($model, "category_id")
+      ->dropDownList(Category::toOptionsList(), ['prompt' => Yii::t('app', '--- Select a Category ---'),])
+      ->label(Yii::t('app', 'Category'));
+  }) ?>
 
   <div id="selectProductWrapper">
 
     <?php $productOptionList = Product::toOptionsList(true); ?>
 
-    <?= $form->field($model, 'product_id')->radioList(
+    <?= $form->field($model, 'products[]')->checkboxList(
       array_map(
         function ($item) {
           return $item['label']; // Use the label as the value for radio buttons
@@ -73,7 +112,7 @@ use yii\widgets\ActiveForm;
         'item' => function ($index, $label, $name, $checked, $value) use ($productOptionList) {
           $options = $productOptionList;
           $description = isset($options[$value]['description']) ? $options[$value]['description'] : '';
-          return RadioItem::widget([
+          return CheckBoxItem::widget([
             'name' => $name,
             'description' => $description,
             'value' => $value,
@@ -81,20 +120,41 @@ use yii\widgets\ActiveForm;
             'label' => $label,
             'checked' => $checked,
           ]);
-        }
+        },
+        "value" => array_map(function ($product) {
+          return  $product['id'];
+        }, $model->products)
       ]
     )->label(Yii::t('app', 'Select a product')) ?>
 
   </div>
-  <?= $form->field($model, "dicount_price")->textInput()->label(Yii::t('app', 'Discount Price'))->hint(Yii::t('app', 'Given price will be the price, it wont get discounted')) ?>
+
+  <?= $form->field($model, 'price_type')->radioList([
+    'percentage' => Yii::t('app', 'Percentage'),
+    'raw' => Yii::t('app', 'Discount price')
+  ], [
+    "value" => $model->dicount_price ? 'raw' : 'percentage',
+    "item" => function ($index, $label, $name, $checked, $value) {
+      return RadioItem::widget([
+        "name" => $name,
+        "value" => $value,
+        "id" => $index . $label,
+        "label" => $label,
+        "checked" => $checked
+      ]);
+    }
+  ]) ?>
+
+  <?= $form->field($model, 'discount_percentage', [
+    'template' => "{label}\n<div class='input-group'>{input}<span class='input-group-text'>%</span></div>\n{hint}\n{error}"
+  ])->textInput()->label(Yii::t('app', 'Discount Percentage')) ?>
+
+  <?= $form->field($model, "dicount_price", [
+    'template' => "{label}\n<div class='input-group'>{input}<span class='input-group-text'>$</span></div>\n{hint}\n{error}"
+  ])->textInput()->label(Yii::t('app', 'Discount Price'))->hint(Yii::t('app', 'Given price will be the price, it wont get discounted')) ?>
 
 
-  <?= Utils::popupField($form, $model, "", function ($form, $model) {
-    return $form
-      ->field($model, "category_id")
-      ->dropDownList(Category::toOptionsList())
-      ->label(Yii::t('app', 'Category'));
-  }) ?>
+
 
   <div class="form-check form-switch mb-3">
     <input class="form-check-input" type="checkbox" id="specifyTime">

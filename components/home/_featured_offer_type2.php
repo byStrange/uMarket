@@ -21,9 +21,9 @@ use yii\helpers\Html;
     <div class="prize-content">
       <h5 class="title">
         <?php if ($offer->type === 'category'): ?>
-          <?= Html::a($offer->title, ['shop/category/', 'id' => $offer->category_id]) ?>
+          <?= Html::a($offer->title, ['shop/category', 'id' => $offer->category_id]) ?>
         <?php else: ?>
-          <?= Html::a($offer->title, ['shop/product/', 'id' => $offer->product_id]) ?>
+          <?= Html::a($offer->title, ['shop/offer', 'id' => $offer->id]) ?>
         <?php endif; ?>
       </h5>
       <?php if ($offer->type !== 'category'): ?>
@@ -38,7 +38,7 @@ use yii\helpers\Html;
         <?php if ($offer->type === 'category'): ?>
           <li>Category: <span><?= Html::encode($offer->category) ?></span></li>
         <?php else: ?>
-          <li>Discount: <span><?= number_format((1 - $offer->dicount_price / $offer->product->price) * 100, 0) ?>% OFF</span></li>
+          <li>Discount: <span><?= $offer->percentage ?>% OFF</span></li>
         <?php endif; ?>
         <li>Available Until: <span><?= Yii::$app->formatter->asDate($offer->end_time, 'php:F j, Y') ?></span></li>
       </ul>

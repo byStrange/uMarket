@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\components\Utils;
 use app\models\Category;
+use app\models\FeaturedOffer;
 use app\models\Product;
 use app\models\Rating;
 use app\models\User;
@@ -133,6 +134,13 @@ class ShopController extends Controller
     $products = $dataProvider->getModels();
 
     return $this->render('category', ["category" => $category, "products" => $products, "pagination" => $dataProvider->pagination, "dataProvider" => $dataProvider, "totalCount" => $totalCount]);
+  }
+
+  public function actionOffer($id)
+  {
+    $offer = FeaturedOffer::findOne($id);
+
+    return $this->render('offer', ['offer' => $offer]);
   }
 
   public function actionCategories()

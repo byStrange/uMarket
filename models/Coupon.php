@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\components\Utils;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
@@ -106,6 +107,7 @@ class Coupon extends \yii\db\ActiveRecord
 
     $now = new \DateTime();
     $startDate = new \DateTime($this->start_date);
+
     $endDate = new \DateTime($this->end_date);
 
     return $startDate <= $now && $endDate >= $now;

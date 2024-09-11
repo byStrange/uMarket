@@ -107,9 +107,10 @@ if (isset($sort)) {
         <?php else: ?>
           <div class="row mb-n-30px">
             <?php foreach ($products as $product) {
-                echo
-                $this->render("@app/components/product/_product_card", ["product" =>
-                $product]);
+                if (in_array($product->status, Product::VISIBLE_STATUSES))
+                  echo
+                  $this->render("@app/components/product/_product_card", ["product" =>
+                  $product]);
               } ?>
           </div>
         <?php endif ?>

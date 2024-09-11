@@ -1,38 +1,40 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\module\admin\models\search\DeliveryPointSearch $model */
-/** @var yii\widgets\ActiveForm $form */
+/** @var app\models\DeliveryPoint $model */
+
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => Yii::t("app",  'Delivery Points'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+\yii\web\YiiAsset::register($this);
 ?>
+<div class="delivery-point-view">
 
-<div class="delivery-point-search">
+  <h1><?= Html::encode($this->title) ?></h1>
 
-  <?php $form = ActiveForm::begin([
-    "action" => ["index"],
-    "method" => "get",
-  ]); ?>
-
-  <?= $form->field($model, "id")->label(Yii::t('app', 'ID')) ?>
-
-  <?= $form->field($model, "created_at")->label(Yii::t('app', 'Created At'))
-  ?>
-
-  <?= $form->field($model, "updated_at")->label(Yii::t('app', 'Updated At')) ?>
-
-  <?= $form->field($model, "label")->label(Yii::t('app', 'Label')) ?>
-
-  <?= $form->field($model, "location_id")->label(Yii::t('app', 'Location')) ?>
-
-  <div class="form-group">
-    <?= Html::submitButton(Yii::t('app', 'Search'), ["class" => "btn btn-primary"]) ?>
-    <?= Html::resetButton(Yii::t('app', 'Reset'), [
-      "class" => "btn btn-outline-secondary",
+  <p>
+    <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+    <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+      'class' => 'btn btn-danger',
+      'data' => [
+        'confirm' => Yii::t("app",  'Are you sure you want to delete this item?'),
+        'method' => Yii::t("app",  'post'),
+      ],
     ]) ?>
-  </div>
+  </p>
 
-  <?php ActiveForm::end(); ?>
+  <?= DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+      'id',
+      'created_at',
+      'updated_at',
+      'label',
+      'location_id',
+    ],
+  ]) ?>
 
 </div>

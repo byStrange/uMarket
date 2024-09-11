@@ -245,7 +245,9 @@ class Order extends \yii\db\ActiveRecord
       return;
     }
     foreach ($ids_list as $id) {
-      $this->link($relation, $relation_model::findOne(["id" => $id]));
+      if ($id) {
+        $this->link($relation, $relation_model::findOne(["id" => $id]));
+      }
     }
   }
 }

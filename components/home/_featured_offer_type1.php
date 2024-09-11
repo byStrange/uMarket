@@ -14,15 +14,15 @@ use yii\helpers\Html;
       <?php if ($offer->type === 'category'): ?>
         <?= Html::a($offer->title, ['category/view', 'id' => $offer->category_id]) ?>
       <?php else: ?>
-        <?= Html::a($offer->title, ['shop/product', 'id' => $offer->product_id]) ?>
+        <?= Html::a($offer->title, ['shop/offer', 'id' => $offer->id]) ?>
       <?php endif; ?>
     </h4>
     <?php if ($offer->type !== 'category'): ?>
       <span class="price">
         <span class="old">
-          <del>$<?= number_format($offer->product->price, 2) ?></del>
+          <del>$<?= $offer->startingFromPriceAsCurrency() ?></del>
         </span>
-        <span class="new">$<?= number_format($offer->dicount_price, 2) ?></span>
+        <span class="new">$<?= number_format($offer->startingFromPrice(), 2) ?></span>
       </span>
     <?php endif; ?>
   </div>
@@ -31,7 +31,7 @@ use yii\helpers\Html;
     <?php if ($offer->type === 'category'): ?>
       <?= Html::a('Shop Now', ['category/view', 'id' => $offer->category_id], ['class' => 'btn btn-primary m-auto']) ?>
     <?php else: ?>
-      <?= Html::a('Shop Now', ['product/view', 'id' => $offer->product_id], ['class' => 'btn btn-primary m-auto']) ?>
+      <?= Html::a('Shop Now', ['shop/offer', 'id' => $offer->id], ['class' => 'btn btn-primary m-auto']) ?>
     <?php endif; ?>
   </div>
 </div>

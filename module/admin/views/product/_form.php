@@ -49,6 +49,11 @@ $this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\Jq
       }) ?>
 
 
+      <?= $form->field($model, 'title')->textInput()->label(Yii::t("app", "Title"))->hint(Yii::t("app", "Used as a default title (may be overwritten by translations)")) ?>
+
+      <?= $form->field($model, 'description')->textarea()->label(Yii::t("app", "Description"))->hint(Yii::t("app", "Used as a default description (may be overwritten by translations)")) ?>
+
+
       <?php echo $form->field($model, 'images[]')->widget(FileInput::classname(), [
         'options' => ['accept' => 'image/*', 'multiple' => true, 'class' => 'no-preview-image-on-upload'],
         'pluginOptions' => [
