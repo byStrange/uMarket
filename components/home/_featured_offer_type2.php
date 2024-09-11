@@ -7,38 +7,30 @@ use yii\helpers\Html;
 <div class="feature-right-content">
   <div class="image-side">
     <?= Html::img('https://placehold.co/270x380', ['alt' => $offer->title]) ?>
-    <?php if ($offer->type !== 'category'): ?>
-      <button title="Add To Cart" class="action add-to-cart" data-bs-toggle="modal" data-bs-target="#exampleModal-Cart">
-        <i class="pe-7s-shopbag"></i>
-      </button>
-    <?php endif; ?>
   </div>
   <div class="content-side">
     <div class="deal-timing">
-      <span>End In:</span>
-      <div data-countdown="<?= $offer->end_time ?>"></div>
+      <div data-countdown="<?= $offer->offerOffset() ?>"></div>
     </div>
     <div class="prize-content">
       <h5 class="title">
         <?php if ($offer->type === 'category'): ?>
           <?= Html::a($offer->title, ['shop/category', 'id' => $offer->category_id]) ?>
         <?php else: ?>
-          <?= Html::a($offer->title, ['shop/offer', 'id' => $offer->id]) ?>
+          <?php if (count($offer->products) === 1): ?>
+            <?= Html::a($offer->title, ['shop/product', 'id' => $offer->products[0]->id]) ?>
+          <?php else: ?>
+            <?= Html::a($offer->title, ['shop/offer', 'id' => $offer->id]) ?>
+          <?php endif ?>
         <?php endif; ?>
       </h5>
-      <?php if ($offer->type !== 'category'): ?>
-        <span class="price">
-          <span class="old">$<?= number_format($offer->product->price, 2) ?></span>
-          <span class="new">$<?= number_format($offer->dicount_price, 2) ?></span>
-        </span>
-      <?php endif; ?>
     </div>
     <div class="product-feature">
       <ul>
         <?php if ($offer->type === 'category'): ?>
           <li>Category: <span><?= Html::encode($offer->category) ?></span></li>
         <?php else: ?>
-          <li>Discount: <span><?= $offer->percentage ?>% OFF</span></li>
+          <li>Discount: <span><?= $offer->discount_percentage ? (string)$offer->discount_percentage . '%' : Yii::$app->formatter->asCurrency($offer->dicount_price)  ?>&nbsp; OFF</span></li>
         <?php endif; ?>
         <li>Available Until: <span><?= Yii::$app->formatter->asDate($offer->end_time, 'php:F j, Y') ?></span></li>
       </ul>

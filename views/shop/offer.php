@@ -17,4 +17,3 @@ $this->params["breadcrumbs"][] = $this->title;
 <div class="shop-category-area pt-100px pb-100px">
   <?= $this->render('@app/components/product/_products_list', ["view" => &$this, "products" => $offer->products]) ?>
 </div>
-

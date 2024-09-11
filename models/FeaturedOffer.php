@@ -252,7 +252,7 @@ class FeaturedOffer extends \yii\db\ActiveRecord
   public function isActive()
   {
 
-    $currentTime = new \DateTime(); // Get the current time
+    $currentTime = new \DateTime('now', new \DateTimeZone('UTC')); // Get the current time
 
 
     $startTime = $this->start_time ? new \DateTime($this->start_time) : null;
@@ -303,6 +303,31 @@ class FeaturedOffer extends \yii\db\ActiveRecord
       ->where($condition);
   }
 
+
+  public function offerOffset()
+  {
+    // Get the current time in UTC
+    $currentTimestamp = time(); // You can use time() as it's already in UTC
+
+    // Ensure end_time is a valid timestamp
+    $endTimestamp = is_numeric($this->end_time) ? (int)$this->end_time : strtotime($this->end_time);
+
+    // Check if current time is greater than end_time
+    if ($currentTimestamp > $endTimestamp) {
+      throw new \Exception('Current time cannot be greater than end time.');
+    }
+
+    // Calculate the difference in seconds
+    $differenceInSeconds = $endTimestamp - $currentTimestamp;
+
+    // Convert the difference to hours, minutes, and seconds
+    $hours = floor($differenceInSeconds / 3600);
+    $minutes = floor(($differenceInSeconds % 3600) / 60);
+    $seconds = $differenceInSeconds % 60;
+
+    // Format the result as "hours:min:sec"
+    return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
+  }
   public function timeOffset()
   {
 

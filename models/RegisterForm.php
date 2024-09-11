@@ -25,14 +25,14 @@ class RegisterForm extends Model
   {
     return [
       [['username', 'email', 'password', 'confirmPassword', 'first_name', 'last_name'], 'required'],
-      ['username', 'unique', 'targetClass' => User::class, 'message' => 'This username has already been taken.'],
+      ['username', 'unique', 'targetClass' => User::class, 'message' => Yii::t("app",  'This username has already been taken.')],
       ['email', 'email'],
-      ['email', 'unique', 'targetClass' => User::class, 'message' => 'This email address has already been taken.'],
+      ['email', 'unique', 'targetClass' => User::class, 'message' => Yii::t("app",  'This email address has already been taken.')],
       ['password', 'string', 'min' => 6],
-      ['confirmPassword', 'compare', 'compareAttribute' => 'password', 'message' => 'Passwords don\'t match.'],
+      ['confirmPassword', 'compare', 'compareAttribute' => 'password', 'message' => Yii::t("app",  'Passwords don\'t match.')],
       [['first_name', 'last_name'], 'string', 'max' => 255],
       ['phone_number', 'string', 'max' => 13],
-      ['phone_number', 'unique', 'targetClass' => User::class, 'message' => 'This phone number has already been taken.'],
+      ['phone_number', 'unique', 'targetClass' => User::class, 'message' => Yii::t("app",  'This phone number has already been taken.')],
     ];
   }
 
@@ -43,9 +43,7 @@ class RegisterForm extends Model
    */
   public function signup()
   {
-    if (!$this->validate()) {
-      return null;
-    }
+
 
     $user = new User();
     $user->username = $this->username;
@@ -59,8 +57,8 @@ class RegisterForm extends Model
     $user->setAuthKey();
     $user->setAccessToken();
 
-    $sent = Utils::sendEmailFr('qosimovrahmatullo006@gmail.com', 'Your verification token', "$user->first_name welcome to our platform. Open this link in your browser: " . $user->generateAccessLink());
-    return $user->save() ? $user : null;
+    Utils::sendEmailFr('qosimovrahmatullo006@gmail.com', 'Your verification token', "$user->first_name welcome to our platform. Open this link in your browser: " . $user->generateAccessLink());
+    return $user->save();
   }
 
   public function render($model)

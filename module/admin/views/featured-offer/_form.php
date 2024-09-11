@@ -162,8 +162,35 @@ $this->registerJs($script)
   </div>
 
   <div style="display: none; max-width: 400px;" id="timeField">
-    <?= $form->field($model, 'start_time')->widget(DateTimePicker::class, ["id" => "start_time", "config" => ["display" => ["theme" => 'light']], 'icon' => '<i class="fa fa-calendar"></i>'])->label(Yii::t('app', 'Start time')) ?>
-    <?= $form->field($model, 'end_time')->widget(DateTimePicker::class, ["id" => "end_time", "config" => ["display" => ["theme" => 'light']], 'icon' => '<i class="fa fa-calendar"></i>'])->label(Yii::t('app', 'End Time')) ?>
+    <?= $form->field($model, 'start_time')->widget(
+      DateTimePicker::class,
+      [
+        "id" => "start_time",
+        "config" => [
+          "display" => [
+            "theme" => 'dark',
+
+            "value" => Yii::$app->formatter->asDatetime($model->start_time)
+          ]
+        ],
+        'icon' => '<i class="fa fa-calendar"></i>'
+      ]
+    )->label(Yii::t('app', 'Start time')) ?>
+
+    <?= $form->field($model, 'end_time')->widget(
+      DateTimePicker::class,
+      [
+        "id" => "end_time",
+        "config" => [
+          "display" => [
+            "theme" => 'dark',
+            "value" => Yii::$app->formatter->asDatetime($model->end_time)
+          ]
+        ],
+        'icon' => '<i class="fa fa-calendar"></i>'
+      ]
+    )->label(Yii::t('app', 'End Time')) ?>
+
   </div>
 
   <div class="container mt-5">
