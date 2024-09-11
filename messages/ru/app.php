@@ -400,6 +400,7 @@ return [
   'view wishlist' => 'Просмотреть список желаемого',
   'working on this feature' => 'Работаем над этой функцией',
   '{count} Product Found of {totalCount}' => 'Найдено {count} продукт(ов) из {totalCount}',
+  'See more' => 'Смотреть больше',
   'post' => '',
   'End Date' => '@@Дата окончания@@',
   'Only' => '@@Только@@',

@@ -79,7 +79,12 @@ $this->registerJs($script)
     DateTimePicker::class,
     [
       "id" => "start_time",
-      "config" => ["display" => ["theme" => 'light']],
+      "config" => [
+        "display" => [
+          "theme" => 'light',
+          "value" => Yii::$app->formatter->asDatetime($model->start_date,)
+        ],
+      ],
       'icon' => '<i class="fa fa-calendar"></i>'
     ]
   )
@@ -89,7 +94,13 @@ $this->registerJs($script)
     DateTimePicker::class,
     [
       "id" => "end_time",
-      "config" => ["display" => ["theme" => 'light']],
+      "config" => [
+        "display" => [
+          "theme" => 'light',
+          "value" => Yii::$app->formatter->asDatetime($model->end_date)
+        ],
+      ],
+
       'icon' => '<i class="fa fa-calendar"></i>'
     ]
   )

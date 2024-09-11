@@ -28,11 +28,13 @@ use yii\helpers\Url;
                   <?php
                   $url =
                     $offer->type == "product"
-                    ? ["shop/offer", "id" => $offer->id]
+                    ? (count($offer->products) == 1
+                      ?
+                      ["shop/product", "id" => $offer->products[0]->id] : ["shop/offer", "id" => $offer->id])
                     : ($offer->type == "category"
                       ? ["shop/category", "id" => $offer->category->id]
                       : "#");
-                  echo Html::a(Yii::t('app', 'Shop'), Url::toRoute($url), [
+                  echo Html::a(Yii::t('app', 'See more'), Url::toRoute($url), [
                     "class" => "btn btn-primary text-capitalize",
                   ]);
                   ?>
