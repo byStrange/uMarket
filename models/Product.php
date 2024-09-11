@@ -13,6 +13,8 @@ use yii\helpers\Url;
  * This is the model class for table "main_product".
  *
  * @property int $id
+ * @property string $title
+ * @property string $description
  * @property string $created_at
  * @property string $updated_at
  * @property float $price
@@ -36,7 +38,7 @@ use yii\helpers\Url;
  * @property User[] $viewers
  * @property Rating[] $ratings
  * @property ProductTranslation[] $translations
- * @property FeaturedOffer $featuredOffer
+ * @property FeaturedOffer $featuredOffers
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -66,7 +68,8 @@ class Product extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      [["price", "status"], "required"],
+      [["price", "status", "title"], "required"],
+      [["title", "description"], "string", "max" => 255],
       [["created_at", "updated_at"], "safe"],
       [
         ["price", "discount_price", "average_rating", "total_ratings"],
@@ -205,18 +208,17 @@ class Product extends \yii\db\ActiveRecord
     ]);
   }
 
-  public function getFeaturedOffer()
+  public function getFeaturedOffers()
   {
-    return $this->hasOne(FeaturedOffer::class, ['product_id' => 'id']);
+    return $this->hasMany(FeaturedOffer::class, ['id' => 'featured_offer_id'])->viaTable('main_featuredoffer_main_products', ['product_id' => 'id']);
   }
-
   public function getProductTranslationForLanguage($lang = "")
   {
     $translations = ProductTranslation::findOne([
       "product_id" => $this->id,
       "language_code" => $lang ? $lang : Yii::$app->language,
     ]);
-    $newTr = new ProductTranslation(['title' => '', "description" => '']);
+    $newTr = new ProductTranslation(['title' => $this->title, "description" => $this->description]);
     return $translations ? $translations : $newTr;
   }
 
@@ -227,7 +229,13 @@ class Product extends \yii\db\ActiveRecord
       return false;
     }
 
-    $offer = $this->featuredOffer;
+    $offers = $this->getFeaturedOffers()->andWhere(FeaturedOffer::activeOffers(true))->orderBy(['created_at' => SORT_DESC])->all();
+    if (count($offers) > 1) {
+      // handle the warning
+    }
+
+    $offer = count($offers) ? $offers[0] : null;
+
     if ($offer && $offer->isActive()) {
       return $offer->dicount_price
         ? ($offer->dicount_price / $this->price) * 100 - 100
@@ -332,19 +340,27 @@ class Product extends \yii\db\ActiveRecord
   // so cleanPrice is the real value of a product in the platform 
   public function cleanPrice()
   {
-    $featuredOffer = $this->featuredOffer;
-    if ($featuredOffer && $featuredOffer->isActive()) {
-      return $featuredOffer->dicount_price;
+    $offers = $this->getFeaturedOffers()->andWhere(FeaturedOffer::activeOffers(true))->orderBy(['created_at' => SORT_DESC])->all();
+
+    if (count($offers) > 1) {
+      // handle the warning
     }
 
-    $categories = $this->categories;
+    $featuredOffer = count($offers) ? $offers[0] : null;
+
+    if ($featuredOffer && $featuredOffer->isActive()) {
+      return $featuredOffer->dicount_price ? $featuredOffer->dicount_price : $this->price - (($this->price / 100) * $featuredOffer->discount_percentage);
+    }
+
+    $categories = $this->getCategories()->orderBy(['created_at' => SORT_DESC])->all();
     $discount_price_from_categories = 0;
+
     if (count($categories)) {
       global $discount_price_from_categories;
       /** @var Category $category */
       foreach ($categories as $category) {
         if ($category->featuredOffer && $category->featuredOffer->isActive()) {
-          $discount_price_from_categories = $category->featuredOffer->dicount_price;
+          $discount_price_from_categories = $category->featuredOffer->dicount_price ? $category->featuredOffer->dicount_price : $this->price - (($this->price / 100) * $category->featuredOffer->discount_percentage);
         }
       }
     }
@@ -411,7 +427,9 @@ class Product extends \yii\db\ActiveRecord
       return;
     }
     foreach ($ids_list as $id) {
-      $this->link($relation, $relation_model::findOne(["id" => $id]));
+      if ($id) {
+        $this->link($relation, $relation_model::findOne(["id" => $id]));
+      }
     }
   }
 
@@ -429,7 +447,7 @@ class Product extends \yii\db\ActiveRecord
 
   public static function toOptionsList($includeDescription = false)
   {
-    $products = Product::find()->active()->all();
+    $products = Product::find()->active()->andWhere(['status' => Product::VISIBLE_STATUSES])->all();
     $options = [];
 
     foreach ($products as $product) {

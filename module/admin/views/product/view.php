@@ -44,6 +44,14 @@ $this->params["breadcrumbs"][] = $this->title;
         'label' => Yii::t('app', 'ID'),
       ],
       [
+        'attribute' => 'title',
+        'label' => Yii::t('app', 'Title'),
+        'filter' => false,
+        'value' => function ($model) {
+          return $model->getProductTranslationForLanguage()->title;
+        }
+      ],
+      [
         'attribute' => 'created_at',
         'label' => Yii::t('app', 'Created At'),
       ],
@@ -103,7 +111,7 @@ $this->params["breadcrumbs"][] = $this->title;
         'label' => Yii::t('app', 'Offered'),
         'format' => 'boolean',
         'value' => function ($model) {
-          return $model->featuredOffer ? true : false;
+          return count($model->featuredOffers) ? true : false;
         }
       ],
       [

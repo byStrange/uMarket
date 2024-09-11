@@ -4,10 +4,12 @@ namespace app\module\admin\controllers;
 
 use app\components\Utils;
 use app\models\FeaturedOffer;
+use app\models\Product;
 use app\module\admin\models\search\FeaturedOfferSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 
 /**
@@ -70,6 +72,9 @@ class FeaturedOfferController extends Controller
 
     if ($this->request->isPost) {
       if ($model->load($this->request->post())) {
+
+        $products = ArrayHelper::getValue($this->request->post(), 'FeaturedOffer.products');
+
         $model->image_banner_file = UploadedFile::getInstance(
           $model,
           "image_banner_file"
@@ -83,6 +88,7 @@ class FeaturedOfferController extends Controller
           "image_small_landscape_file"
         );
         if ($model->upload() && $model->save()) {
+          $model->linkAll('products', $products, Product::class);
           return $this->redirect(["view", "id" => $model->id]);
         }
       }
@@ -110,6 +116,15 @@ class FeaturedOfferController extends Controller
       $this->request->isPost &&
       $model->load($this->request->post())
     ) {
+
+      $price_type = ArrayHelper::getValue($this->request->post(), 'FeaturedOffer.price_type');
+
+      $products = ArrayHelper::getValue($this->request->post(), 'FeaturedOffer.products');
+
+      $model->unlinkAll('products', true);
+
+      $model->linkAll('products', $products, Product::class);
+
       $model->image_banner_file = UploadedFile::getInstance(
         $model,
         "image_banner_file"
@@ -127,13 +142,20 @@ class FeaturedOfferController extends Controller
         || $model->image_portrait_file
         || $model->image_small_landscape_file
       ) $model->upload();
+
       if ($model->type == 'category') {
-        $model->product_id = null;
+        $model->unlinkAll('products', true);
       } else if ($model->type == 'product') {
         $model->category_id = null;
       }
+
+      if ($price_type == 'raw') {
+        $model->discount_percentage = null;
+      } else if ($price_type == 'percentage') {
+        $model->dicount_price = null;
+      }
+
       if ($model->save()) return $this->redirect(["view", "id" => $model->id]);
-      else var_dump($model->errors);
     }
 
     return $this->render("update", [

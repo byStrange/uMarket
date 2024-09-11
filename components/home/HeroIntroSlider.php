@@ -21,18 +21,14 @@ use yii\helpers\Url;
                   <h2 class="title-1"><?= $offer->title ?></h2>
                   <span class="price">
                     <span class="mini-title">
-                      <?= $offer->type == "product"
-                        ? Yii::t('app', "Only")
-                        : ($offer->type == "category"
-                          ?  Yii::t('app', "Starting from")
-                          : "") ?>
+                      <?= Yii::t('app', "Starting from") ?>
                     </span>
-                    <span class="amount"><?= $offer->discountPriceAsCurrency() ?></span>
+                    <span class="amount"><?= $offer->startingFromPriceAsCurrency() ?></span>
                   </span>
                   <?php
                   $url =
                     $offer->type == "product"
-                    ? ["shop/product", "id" => $offer->product->id]
+                    ? ["shop/offer", "id" => $offer->id]
                     : ($offer->type == "category"
                       ? ["shop/category", "id" => $offer->category->id]
                       : "#");

@@ -20,9 +20,8 @@ class FeaturedOfferSearch extends FeaturedOffer
             [
                 [
                     "id",
-                    "product_id",
-                    "category_id",
                     "image_banner",
+                    "category_id",
                     "image_portrait",
                     "image_small_landscape",
                 ],
@@ -78,7 +77,6 @@ class FeaturedOfferSearch extends FeaturedOffer
             "dicount_price" => $this->dicount_price,
             "start_time" => $this->start_time,
             "end_time" => $this->end_time,
-            "product_id" => $this->product_id,
             "category_id" => $this->category_id,
             "image_banner" => $this->image_banner,
             "image_portrait" => $this->image_portrait,

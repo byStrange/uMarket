@@ -43,20 +43,24 @@ $this->params["breadcrumbs"][] = $this->title;
     "model" => $model,
     "attributes" => [
       ["attribute" => "id", "label" => Yii::t('app', 'ID')],
-      ["attribute" => "created_at", "label" => Yii::t('app', 'Created At')],
-      ["attribute" => "updated_at", "label" => Yii::t('app', 'Updated At')],
+      ["attribute" => "created_at", "label" => Yii::t('app', 'Created At'), "value" => function ($model) {
+        return Yii::$app->formatter->asDatetime($model->created_at);
+      }],
+      ["attribute" => "updated_at", "label" => Yii::t('app', 'Updated At'), "value" => function ($model) {
+        return Yii::$app->formatter->asDatetime($model->updated_at);
+      }],
       ["attribute" => "dicount_price", "label" => Yii::t('app', 'Discount Price')],
       ["attribute" => "start_time", "label" => Yii::t('app', 'Start Time'), "value" => function ($model) {
         return Yii::$app->formatter->asDatetime($model->start_time);
-      }],
+      }, "format" => 'raw'],
       ["attribute" => "end_time", "label" => Yii::t('app', 'End Time'), "value" => function ($model) {
         return Yii::$app->formatter->asDatetime($model->end_time);
-      }],
-      ["attribute" => "product_id", "label" => Yii::t('app', 'Product'), 'value' => function ($model) {
-        return $model->product;
-      }],
+      }, "format" => "raw"],
       ["attribute" => "category_id", "label" => Yii::t('app', 'Category'), 'value' => function ($model) {
         return $model->category;
+      }],
+      ["attribute" => "products", "label" => Yii::t('app', 'Products'), "value" => function ($model) {
+        return count(($model->products));
       }],
       ["attribute" => "image_banner", "label" => Yii::t('app', 'Banner Image'), 'value' => function ($model) {
         if (!$model->image_banner) {

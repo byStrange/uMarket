@@ -1,6 +1,7 @@
 <?php
 
 use app\widgets\RadioItem;
+use Yii2\Extensions\DateTimePicker\DateTimePicker;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -32,7 +33,7 @@ $(function () {
       discountPriceField.slideUp(speed);
     }
   }
-})
+});
 JS;
 
 $this->registerJs($script)
@@ -74,9 +75,26 @@ $this->registerJs($script)
 
   <?= $form->field($model, "label")->textInput()->label(Yii::t('app',  "Label")) ?>
 
-  <?= $form->field($model, "start_date")->input('datetime-local')->label(Yii::t('app',  "Start Date")) ?>
+  <?= $form->field($model, 'start_date')->widget(
+    DateTimePicker::class,
+    [
+      "id" => "start_time",
+      "config" => ["display" => ["theme" => 'light']],
+      'icon' => '<i class="fa fa-calendar"></i>'
+    ]
+  )
+    ->label(Yii::t('app', 'Start time')) ?>
 
-  <?= $form->field($model, "end_date")->input('datetime-local')->label(Yii::t('app',  "End Date")) ?>
+  <?= $form->field($model, 'end_date')->widget(
+    DateTimePicker::class,
+    [
+      "id" => "end_time",
+      "config" => ["display" => ["theme" => 'light']],
+      'icon' => '<i class="fa fa-calendar"></i>'
+    ]
+  )
+    ->label(Yii::t('app', 'End Time')) ?>
+
 
   <?= $form->field($model, "is_active")->checkbox()->label(Yii::t('app',  "Is Active")) ?>
 

@@ -28,12 +28,15 @@ class DefaultController extends Controller
     $featuredOffers = FeaturedOffer::find()->count();
     $activeUsers = User::find()->where(['is_active' => true])->count();
 
+
     $recentOrdersProvider = new ActiveDataProvider([
       'query' => Order::find()->orderBy(['created_at' => SORT_DESC]),
       'pagination' => [
         'pageSize' => 5,
       ],
     ]);
+    
+    $offer_inconsisties = FeaturedOffer::_inconsisties();
 
     return $this->render('index', [
       'totalOrders' => $totalOrders,
@@ -41,6 +44,7 @@ class DefaultController extends Controller
       'featuredOffers' => $featuredOffers,
       'activeUsers' => $activeUsers,
       'recentOrdersProvider' => $recentOrdersProvider,
+      'offer_inconsisties' => $offer_inconsisties
     ]);
   }
 }

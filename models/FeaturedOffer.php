@@ -6,6 +6,7 @@ use app\components\Utils;
 use DateTime;
 use DateTimeZone;
 use PhpOffice\PhpSpreadsheet\Shared\TimeZone;
+use PhpParser\Node\Stmt\Continue_;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
@@ -17,6 +18,7 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property string $created_at
  * @property string $updated_at
+ * @property float $discount_percentage
  * @property float $dicount_price
  * @property string $start_time
  * @property string $end_time
@@ -28,6 +30,7 @@ use yii\helpers\ArrayHelper;
  * @property string $type
  * @property string $title
  *
+ * @property Product[] $products
  * @property Category $category
  * @property Product $product
  */
@@ -35,9 +38,13 @@ class FeaturedOffer extends \yii\db\ActiveRecord
 {
   const TYPE_PRODUCT = "product";
   const TYPE_CATEGORY = "category";
+  const INCONSISTY_INACTIVE_PRODUCT_INCLUDED = 'inactive_product_included';
+  const INCONSISTY_DUPLICATE_OFFER_FOR_A_PRODUCT = 'duplicate_offer_for_a_product';
+
   public $image_banner_file;
   public $image_portrait_file;
   public $image_small_landscape_file;
+  public $price_type;
   /**
    * {@inheritdoc}
    */
@@ -52,11 +59,20 @@ class FeaturedOffer extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      [["type"], "required"],
+      [["type", "title"], "required"],
+      [["category_id"], "required", "when" => function ($model) {
+        return $model->type === 'category';
+      }, "whenClient" => "function(attribute, value) { return $('[name=\"FeaturedOffer[type]\"]:checked').val() === 'category' }"],
+      [["dicount_price"], "required", "when" => function ($model) {
+        return $model->price_type === 'raw';
+      },  "whenClient" => "(attribute, value) => $('[name=\"FeaturedOffer[price_type]\"]:checked').val() === 'raw'"],
+      [["discount_percentage"], "required", "when" => function ($model) {
+        return $model->price_type === 'percentage';
+      }, "whenClient" => "(attribute, value) => $('[name=\"FeaturedOffer[price_type]\"]:checked').val() === 'percentage'"],
       [["created_at", "updated_at", "start_time", "end_time"], "safe"],
-      [["dicount_price"], "number"],
-      [["product_id", "category_id"], "default", "value" => null],
-      [["product_id", "category_id"], "integer"],
+      [["dicount_price", "discount_percentage"], "number"],
+      [["category_id"], "default", "value" => null],
+      [["category_id"], "integer"],
       [
         ["image_banner", "image_small_landscape", "image_portrait"],
         "file",
@@ -75,13 +91,6 @@ class FeaturedOffer extends \yii\db\ActiveRecord
         "targetClass" => Category::class,
         "targetAttribute" => ["category_id" => "id"],
       ],
-      [
-        ["product_id"],
-        "exist",
-        "skipOnError" => true,
-        "targetClass" => Product::class,
-        "targetAttribute" => ["product_id" => "id"],
-      ],
     ];
   }
 
@@ -97,7 +106,6 @@ class FeaturedOffer extends \yii\db\ActiveRecord
       "dicount_price" => "Dicount Price",
       "start_time" => "Start Time",
       "end_time" => "End Time",
-      "product_id" => "Product ID",
       "category_id" => "Category ID",
       "image_banner" => "Image Banner",
       "image_portrait" => "Image Portrait",
@@ -144,15 +152,18 @@ class FeaturedOffer extends \yii\db\ActiveRecord
     return $this->hasOne(Category::class, ["id" => "category_id"]);
   }
 
+
+  public function getProducts()
+  {
+    return $this->hasMany(Product::class, ['id' => 'product_id'])->viaTable('main_featuredoffer_main_products', ['featured_offer_id' => 'id']);
+  }
+
   /**
    * Gets query for [[Product]].
    *
    * @return \yii\db\ActiveQuery
    */
-  public function getProduct()
-  {
-    return $this->hasOne(Product::class, ["id" => "product_id"]);
-  }
+
 
   public function upload()
   {
@@ -174,11 +185,22 @@ class FeaturedOffer extends \yii\db\ActiveRecord
     return true;
   }
 
+  public function linkAll($relation, $ids_list, $relation_model)
+  {
+    if (!is_array($ids_list)) {
+      return;
+    }
+    foreach ($ids_list as $id) {
+      if ($id) {
+        $this->link($relation, $relation_model::findOne(["id" => $id]));
+      }
+    }
+  }
+
   public static function toOptionsList()
   {
     return ArrayHelper::map(
       self::find()
-        ->select(["id", "product_id"])
         ->all(),
       "id",
       function ($model) {
@@ -187,16 +209,43 @@ class FeaturedOffer extends \yii\db\ActiveRecord
     );
   }
 
+  public function startingFromPrice(): int | float | null
+  {
+    if (!$this->products || count($this->products) === 0) return null;
+
+    $minPriceProduct = PHP_INT_MAX;
+
+    foreach ($this->products as $product) {
+      $price = $product->cleanPrice();
+
+      if ($price === null) continue;
+
+      if ($price < $minPriceProduct) {
+        $minPriceProduct = $price;
+      }
+    }
+
+    return $minPriceProduct == PHP_INT_MAX ? null : $minPriceProduct;
+  }
+
+  public function startingFromPriceAsCurrency()
+  {
+    return Yii::$app->formatter->asCurrency($this->startingFromPrice());
+  }
+
   public function discountPriceAsCurrency()
   {
     if ($this->dicount_price) return Yii::$app->formatter->asCurrency($this->dicount_price);
 
     if ($this->category) {
       return $this->category->startingFromPriceAsCurrency();
-    } else if ($this->product) {
-      return $this->product->priceAsCurrency();
+    } else if ($this->products) {
+      if (count($this->products) === 1) {
+        return $this->getProducts()->one()->priceAsCurrency();
+      } else {
+        return $this->startingFromPriceAsCurrency();
+      }
     }
-
     return 0 . '$';
   }
 
@@ -205,14 +254,10 @@ class FeaturedOffer extends \yii\db\ActiveRecord
 
     $currentTime = new \DateTime(); // Get the current time
 
-    $asiaTimeZone = new DateTimeZone('Asia/Samarkand');
 
-    $_startTime = $this->start_time ? new \DateTime($this->start_time) : null;
-    $startTime = new DateTime($_startTime->format('Y-m-d H:i:s'), $asiaTimeZone);
+    $startTime = $this->start_time ? new \DateTime($this->start_time) : null;
 
-    $_endTime = $this->end_time ? new \DateTime($this->end_time) : null;
-    $endTime = new DateTime($_endTime->format('Y-m-d H:i:s'), $asiaTimeZone);
-
+    $endTime = $this->end_time ? new \DateTime($this->end_time) : null;
 
     // If neither start_time nor end_time is set, consider it always active
     if (!$startTime && !$endTime) {
@@ -237,22 +282,25 @@ class FeaturedOffer extends \yii\db\ActiveRecord
       return $currentTime >= $startTime && $currentTime <= $endTime;
     }
 
-
     return false; // Fallback, in case something unexpected happens
   }
 
-  public static function activeOffers()
+
+  public static function activeOffers(bool $onlyExpression = false)
   {
     $now = new Expression('NOW()');
+    $condition = [
+      'or',
+      ['and', ['IS NOT', 'start_time', null], ['IS NOT', 'end_time', null], ['<=', 'start_time', $now], ['>=', 'end_time', $now]],
+      ['and', ['IS', 'start_time', null], ['IS', 'end_time', null]],
+      ['and', ['IS', 'start_time', null], ['>=', 'end_time', $now]],
+      ['and', ['<=', 'start_time', $now], ['IS', 'end_time', null]]
+    ];
+
+    if ($onlyExpression) return $condition;
 
     return self::find()
-      ->where([
-        'or',
-        ['and', ['IS NOT', 'start_time', null], ['IS NOT', 'end_time', null], ['<=', 'start_time', $now], ['>=', 'end_time', $now]],
-        ['and', ['IS', 'start_time', null], ['IS', 'end_time', null]],
-        ['and', ['IS', 'start_time', null], ['>=', 'end_time', $now]],
-        ['and', ['<=', 'start_time', $now], ['IS', 'end_time', null]]
-      ]);
+      ->where($condition);
   }
 
   public function timeOffset()
@@ -279,8 +327,64 @@ class FeaturedOffer extends \yii\db\ActiveRecord
     return sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds);
   }
 
+  static public function _inconsisties()
+  {
+    $offers = FeaturedOffer::activeOffers()->all();
+    $inconsistent_products = [];
+    foreach ($offers as $offer) {
+
+      if ($offer->type === 'product' && $offer->products && count($offer->products)) {
+        foreach ($offer->products as $product) {
+          if (!in_array($product->status, Product::VISIBLE_STATUSES)) {
+            $inconsistent_products[] = $product;
+          }
+        }
+      }
+
+      $inconsisties = [];
+
+      if (count($inconsistent_products)) {
+        $inconsisties[] = [
+          'data' =>  $inconsistent_products,
+          'class' => FeaturedOffer::class,
+          'dataClass' => Product::class,
+          'list' => true,
+          'type' => self::INCONSISTY_INACTIVE_PRODUCT_INCLUDED
+        ];
+      }
+
+      $conflictingProducts = Yii::$app->db->createCommand("
+    SELECT product_id, COUNT(product_id) 
+FROM main_featuredoffer_main_products
+GROUP BY product_id
+HAVING COUNT (product_id) > 1
+
+")->queryAll();
+      $conflictingProductsIdsList = [];
+      if (count($conflictingProducts)) {
+        foreach ($conflictingProducts as $conflict) {
+          $conflictingProductsIdsList[] = $conflict['product_id'];
+        }
+      }
+      $conflictingProducts = Product::find()->where(['id' => $conflictingProductsIdsList])->all();
+
+      if (count($conflictingProducts)) {
+        $inconsisties[] = [
+          'data' => $conflictingProducts,
+          'class' => FeaturedOffer::class,
+          'dataClass' => Product::class,
+          'list' => true,
+          'type' => self::INCONSISTY_DUPLICATE_OFFER_FOR_A_PRODUCT
+        ];
+      }
+
+
+      return $inconsisties;
+    }
+  }
+
   public function __toString()
   {
-    return "Offered " . (string) $this->product;
+    return $this->title;
   }
 }

@@ -75,6 +75,12 @@ $this->params["breadcrumbs"][] = $this->title;
       </div>
       <p><?= Yii::t("app", "Published product that has no translations") ?></p>
     </div>
+    <div class="d-flex gap-3">
+      <div class="color-box" style="border: 1px solid black">
+        <div></div>
+      </div>
+      <p><?= Yii::t("app", "Not published yet") ?></p>
+    </div>
   </div>
 
   <?php
@@ -91,7 +97,7 @@ $this->params["breadcrumbs"][] = $this->title;
         $classList .= strlen($classList) ? " " : "";
         $classList .= 'published-row';
       }
-      if (!count($model->translations)) {
+      if (!($model->getProductTranslationForLanguage()->title)) {
         $classList .= strlen($classList) ? " " : "";
         $classList .= 'has-no-translations';
       }
@@ -106,6 +112,14 @@ $this->params["breadcrumbs"][] = $this->title;
         'attribute' => 'id',
         'label' => Yii::t('app', 'ID'),
         'filter' => false
+      ],
+      [
+        'attribute' => 'title',
+        'label' => Yii::t('app', 'Title'),
+        'filter' => false,
+        'value' => function ($model) {
+          return $model->getProductTranslationForLanguage()->title;
+        }
       ],
       [
         'attribute' => 'created_at',
