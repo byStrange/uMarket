@@ -6177,8 +6177,8 @@ body.offcanvas-open {
 
 .modal-dialog {
   margin: 0% auto;
-  max-width: 960px;
-  width: 960px;
+  max-width: 1200px;
+  width:1024px;
   padding: 35px;
   -webkit-transition: all 0.3s ease 0s;
   transition: all 0.3s ease 0s;

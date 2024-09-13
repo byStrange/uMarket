@@ -45,11 +45,17 @@ $user = Yii::$app->user->identity;
       <div class="product-details-img product-details-tab product-details-tab-2 product-details-tab-3 d-flex">
         <div class="swiper-container ml-15px zoom-thumbs-2 align-self-start slider-nav-style-1 small-nav">
           <div class="swiper-wrapper">
-            <?php foreach ($product->images as $image) : ?>
-              <div class="swiper-slide">
-                <img class="img-responsive m-auto" src="/<?= $image->image ?>" alt="">
-              </div>
-            <?php endforeach ?>
+
+            <?php if ($product->images && count($product->images)): ?>
+              <?php foreach ($product->images as $image) : ?>
+                <div class="swiper-slide">
+                  <img class="img-responsive m-auto" src="/<?= $image->image ?>" alt="">
+                </div>
+              <?php endforeach ?>
+            <?php else: ?>
+              <img class="img-responsive m-auto" src="https://placehold.co/485" alt="">
+            <?php endif ?>
+
           </div>
           <!-- Add Arrows -->
           <!-- <div class="swiper-buttons">
@@ -61,14 +67,15 @@ $user = Yii::$app->user->identity;
         <div class="swiper-container zoom-top-2 align-self-start">
           <div class="swiper-wrapper">
 
-            <?php foreach ($product->images as $image): ?>
-              <div class="swiper-slide">
-                <img class="img-responsive m-auto" src="/<?= $image->image ?>" alt="">
-                <a class="venobox full-preview" data-gall="myGallery" href="/<?= $image->image ?>">
-                  <i class="fa fa-arrows-alt" aria-hidden="true"></i>
-                </a>
-              </div>
-            <?php endforeach ?>
+            <?php if ($product->images && count($product->images)): ?>
+              <?php foreach ($product->images as $image) : ?>
+                <div class="swiper-slide">
+                  <img class="img-responsive m-auto" src="/<?= $image->image ?>" alt="">
+                </div>
+              <?php endforeach ?>
+            <?php else: ?>
+              <img class="img-responsive m-auto" src="https://placehold.co/485" alt="">
+            <?php endif ?>
 
           </div>
         </div>
@@ -95,16 +102,18 @@ $user = Yii::$app->user->identity;
                               20,
                               "..."
                             ) ?></p>
-        <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-          <span><?= Yii::t('app', 'Categories') ?>:</span>
-          <ul class="d-flex">
-            <?php foreach ($product->categories as $category): ?>
-              <li>
-                <a href="<?= Url::toRoute(['shop/category', 'id' => $category->id]) ?>"><?= $category ?> </a>
-              </li>
-            <?php endforeach ?>
-          </ul>
-        </div>
+        <?php if ($product->categories && count($product->categories)): ?>
+          <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
+            <span><?= Yii::t('app', 'Categories') ?>:</span>
+            <ul class="d-flex">
+              <?php foreach ($product->categories as $category): ?>
+                <li>
+                  <a href="<?= Url::toRoute(['shop/category', 'id' => $category->id]) ?>"><?= $category ?> </a>
+                </li>
+              <?php endforeach ?>
+            </ul>
+          </div>
+        <?php endif ?>
         <div class="pro-details-quality">
           <input type="hidden" value="<?= $product->id ?>" name="id" id="productIdInput" />
 

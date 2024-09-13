@@ -27,7 +27,7 @@ class RatingController extends Controller
           "delete" => ["POST"],
         ],
       ],
-      Utils::crudActionsDisableOnly(['create', 'update'])
+      Utils::crudActionsDisableOnly(['create'])
     ]);
   }
 
