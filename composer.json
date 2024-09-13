@@ -31,7 +31,7 @@
     "kartik-v/yii2-widget-fileinput": "dev-master",
     "firebase/php-jwt": "^6.10",
     "paragonie/sodium_compat": "^2.1",
-    "by-strange/datetime-picker": "0.1.1"
+    "by-strange/datetime-picker": "^0.1.1"
   },
   "require-dev": {
     "yiisoft/yii2-debug": "~2.1.0",

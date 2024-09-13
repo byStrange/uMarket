@@ -184,7 +184,6 @@ $this->registerJs($script)
           "display" => [
             "theme" => 'dark',
             "buttons" => ['today'],
-            "todayBtn" => true
           ]
         ],
         'icon' => '<i class="fa fa-calendar"></i>'

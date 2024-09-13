@@ -4,7 +4,7 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "af751b1f4b51cf113bda78f22bf288ba",
+  "content-hash": "e8df5397f2054a9989ff855baccf8489",
   "packages": [
     {
       "name": "bower-asset/bootstrap",
@@ -179,16 +179,16 @@
     },
     {
       "name": "by-strange/datetime-picker",
-      "version": "0.1.1",
+      "version": "0.1.6",
       "source": {
         "type": "git",
         "url": "https://github.com/byStrange/datetime-pick.git",
-        "reference": "59f807564b812da5e08241457a4255181313a5dc"
+        "reference": "1c85521b2210ca5ddc7440c5fe3d35fbb51f5029"
       },
       "dist": {
         "type": "zip",
-        "url": "https://api.github.com/repos/byStrange/datetime-pick/zipball/59f807564b812da5e08241457a4255181313a5dc",
-        "reference": "59f807564b812da5e08241457a4255181313a5dc",
+        "url": "https://api.github.com/repos/byStrange/datetime-pick/zipball/1c85521b2210ca5ddc7440c5fe3d35fbb51f5029",
+        "reference": "1c85521b2210ca5ddc7440c5fe3d35fbb51f5029",
         "shasum": ""
       },
       "require": {
@@ -236,9 +236,9 @@
         "yii2"
       ],
       "support": {
-        "source": "https://github.com/byStrange/datetime-pick/tree/0.1.1"
+        "source": "https://github.com/byStrange/datetime-pick/tree/0.1.6"
       },
-      "time": "2024-08-15T10:15:25+00:00"
+      "time": "2024-09-13T09:24:18+00:00"
     },
     {
       "name": "cebe/markdown",
