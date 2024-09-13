@@ -8,6 +8,7 @@ use app\module\admin\models\search\CategoryTranslationSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * CategoryTranslationController implements the CRUD actions for CategoryTranslation model.
@@ -69,8 +70,14 @@ class CategoryTranslationController extends Controller
     $model = new CategoryTranslation();
 
     if ($this->request->isPost) {
-      if ($model->load($this->request->post()) && $model->save()) {
-        return $this->redirect(["view", "id" => $model->id]);
+      if ($model->load($this->request->post())) {
+
+        $model->image_file = UploadedFile::getInstance($model, 'image');
+        $model->upload();
+
+        if ($model->save()) {
+          return $this->redirect(["view", "id" => $model->id]);
+        }
       }
     } else {
       $model->loadDefaultValues();
@@ -94,10 +101,13 @@ class CategoryTranslationController extends Controller
 
     if (
       $this->request->isPost &&
-      $model->load($this->request->post()) &&
-      $model->save()
+      $model->load($this->request->post())
     ) {
-      return $this->redirect(["view", "id" => $model->id]);
+      $model->image_file = UploadedFile::getInstance($model, 'image');
+      $model->upload();
+      if ($model->save()) {
+        return $this->redirect(["view", "id" => $model->id]);
+      }
     }
 
     return $this->render("update", [

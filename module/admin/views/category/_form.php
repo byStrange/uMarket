@@ -6,6 +6,7 @@ use yii\bootstrap5\Alert;
 
 use app\widgets\RadioItem;
 use yii\helpers\Html;
+use yii\jui\Accordion;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -39,6 +40,22 @@ $pinned_categories = Category::find()
   }) ?>
 
   <?= $form->field($model, "label")->textInput(['label' => Yii::t('app', 'Label')]) ?>
+
+  <?= $form->field($model, "image")->fileInput()->label($model->image ? Yii::t('app', 'Change Image') : Yii::t('app', 'Upload Image')) ?>
+
+  <?php if ($model->image): ?>
+    <?php echo Accordion::widget([
+      'items' => [
+        [
+          'header' => Yii::t('app', 'Show current image preview'),
+          'content' => Html::img("/" . $model->image, ["width" => 400]),
+        ],
+      ],
+      'clientOptions' => ['collapsible' => true, 'active' => false],
+      'options' => ['class' => 'mb-3']
+    ]); ?>
+  <?php endif ?>
+
 
   <?= $form->field($model, 'is_pinned')->checkbox(['label' => Yii::t('app', 'Is Pinned')]) ?>
 

@@ -4,6 +4,7 @@ use app\components\Utils;
 use app\models\Category;
 use app\models\Image;
 use yii\helpers\Html;
+use yii\jui\Accordion;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -24,6 +25,7 @@ use yii\widgets\ActiveForm;
       ->field($model, "category_id")
       ->hiddenInput(["value" => $category_id])
       ->label(Yii::t('app', "Category Id: $category_id")) ?>
+
   <?php else: ?>
     <?= Utils::popupField($form, $model, "category_id", function (
       $form,
@@ -35,13 +37,22 @@ use yii\widgets\ActiveForm;
         ->label(Yii::t('app', 'Category'));
     }) ?>
   <?php endif; ?>
+  <?= $form->field($model, "image")->fileInput()->label($model->image ? Yii::t('app', 'Change Image') : Yii::t('app', 'Upload Image')) ?>
 
-  <?= Utils::popupField($form, $model, "", function ($form, $model) {
-    return $form
-      ->field($model, "image_id")
-      ->dropDownList(Image::toOptionsList())
-      ->label(Yii::t('app', 'Image'));
-  }) ?>
+  <?php if ($model->image): ?>
+    <?php echo Accordion::widget([
+      'items' => [
+        [
+          'header' => Yii::t('app', 'Show current image preview'),
+          'content' => Html::img("/" . $model->image, ["width" => 400]),
+        ],
+      ],
+      'clientOptions' => ['collapsible' => true, 'active' => false],
+      'options' => ['class' => 'mb-3']
+    ]); ?>
+  <?php endif ?>
+
+
 
   <div class="form-group">
     <?= Html::submitButton(Yii::t('app', 'Save'), ["class" => "btn btn-success"]) ?>

@@ -136,6 +136,7 @@ class ProductController extends Controller
         } else {
           $model->save();
           $model->upload($submittedImages);
+          $this->linkAllProductRelations($this->request->post(), $model);
 
           $this->saveSpecifications($model->id, $this->request->post('ProductSpecification', []));
 

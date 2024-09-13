@@ -63,6 +63,7 @@ $this->params["breadcrumbs"][] = $this->title;
 
       [
         "class" => ActionColumn::className(),
+        "template" => "{delete} {view}",
         "urlCreator" => function (
           $action,
           Image $model,

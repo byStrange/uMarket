@@ -46,7 +46,7 @@ $this->params["breadcrumbs"][] = $this->title;
       "language_code",
       "name",
       "category_id",
-      "image_id",
+      "image",
     ],
   ]) ?>
 
