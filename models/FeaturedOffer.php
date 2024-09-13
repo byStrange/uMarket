@@ -5,6 +5,7 @@ namespace app\models;
 use app\components\Utils;
 use DateTime;
 use DateTimeZone;
+use ParagonIE\Sodium\Core\Util;
 use PhpOffice\PhpSpreadsheet\Shared\TimeZone;
 use PhpParser\Node\Stmt\Continue_;
 use Yii;
@@ -258,8 +259,9 @@ class FeaturedOffer extends \yii\db\ActiveRecord
     $startTime = $this->start_time ? new \DateTime($this->start_time) : null;
 
     $endTime = $this->end_time ? new \DateTime($this->end_time) : null;
-
+    /*Utils::printAsError($startTime);*/
     // If neither start_time nor end_time is set, consider it always active
+    //
     if (!$startTime && !$endTime) {
       return true;
     }
@@ -354,8 +356,9 @@ class FeaturedOffer extends \yii\db\ActiveRecord
 
   static public function _inconsisties()
   {
-    $offers = FeaturedOffer::activeOffers()->all();
+    $offers = FeaturedOffer::activeOffers()->all(); 
     $inconsistent_products = [];
+    $inconsisties = [];
     foreach ($offers as $offer) {
 
       if ($offer->type === 'product' && $offer->products && count($offer->products)) {
@@ -366,7 +369,9 @@ class FeaturedOffer extends \yii\db\ActiveRecord
         }
       }
 
-      $inconsisties = [];
+
+
+
 
       if (count($inconsistent_products)) {
         $inconsisties[] = [
@@ -404,8 +409,8 @@ HAVING COUNT (product_id) > 1
       }
 
 
-      return $inconsisties;
     }
+    return $inconsisties;
   }
 
   public function __toString()

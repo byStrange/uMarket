@@ -64,6 +64,12 @@ $this->params["breadcrumbs"][] = $this->title;
         "attribute" => "start_time",
         "label" => Yii::t('app', 'Start Time'),
       ],
+      [
+        "label" => Yii::t('app', 'Is Active'),
+        "value" => function ($model) {
+          return $model->isActive() ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
+        }
+      ],
       /*
         [
             "attribute" => "end_time",

@@ -25,7 +25,11 @@ class ShopController extends Controller
     $dataProvider->pagination->pageSize = 5;
 
     // Get the total count for all products (if needed)
-    $totalCount = Product::find()->active()->count();
+    $totalCount = Product::find()->active()->andWhere(
+      [
+        'status' => Product::VISIBLE_STATUSES
+      ]
+    )->count();
 
     // Fetch the products using the dataProvider
     $products = $dataProvider->getModels();

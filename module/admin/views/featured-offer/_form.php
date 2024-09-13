@@ -169,8 +169,7 @@ $this->registerJs($script)
         "config" => [
           "display" => [
             "theme" => 'dark',
-
-            "value" => Yii::$app->formatter->asDatetime($model->start_time)
+            "buttons" => ['today' => true]
           ]
         ],
         'icon' => '<i class="fa fa-calendar"></i>'
@@ -184,7 +183,8 @@ $this->registerJs($script)
         "config" => [
           "display" => [
             "theme" => 'dark',
-            "value" => Yii::$app->formatter->asDatetime($model->end_time)
+            "buttons" => ['today'],
+            "todayBtn" => true
           ]
         ],
         'icon' => '<i class="fa fa-calendar"></i>'

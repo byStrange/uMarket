@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?= $this->render('./_inconsistent_info_modals.php') ?>
 <div class="admin-dashboard">
   <h1><?= Html::encode($this->title) ?></h1>
-  <?php if (count($offer_inconsisties)): ?>
+  <?php if ( $offer_inconsisties && count($offer_inconsisties)): ?>
     <div class="alert alert-warning">
       <h4 class="alert-heading">
         Inconsistent data

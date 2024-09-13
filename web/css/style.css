@@ -2479,6 +2479,7 @@ body.offcanvas-open {
   line-height: 1;
   font-weight: 500;
   color: #666666;
+  text-align: center;
 }
 .product .content .price:not(:last-child) {
   margin-bottom: 20px;
