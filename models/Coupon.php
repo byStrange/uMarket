@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\components\Utils;
+use DateTime;
 use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
@@ -98,6 +99,8 @@ class Coupon extends \yii\db\ActiveRecord
       }
     );
   }
+
+  
 
   public function isActive()
   {

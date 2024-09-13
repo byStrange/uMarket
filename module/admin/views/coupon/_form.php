@@ -75,29 +75,31 @@ $this->registerJs($script)
 
   <?= $form->field($model, "label")->textInput()->label(Yii::t('app',  "Label")) ?>
 
+
   <?= $form->field($model, 'start_date')->widget(
     DateTimePicker::class,
     [
-      "id" => "start_time",
+      'id' => 'starttime',
       "config" => [
         "display" => [
           "theme" => 'light',
-          "value" => Yii::$app->formatter->asDatetime($model->start_date,)
+          "buttons" => ['today' => true],
         ],
       ],
+
       'icon' => '<i class="fa fa-calendar"></i>'
     ]
   )
-    ->label(Yii::t('app', 'Start time')) ?>
+    ->label(Yii::t('app', 'Start Time')) ?>
 
   <?= $form->field($model, 'end_date')->widget(
     DateTimePicker::class,
     [
-      "id" => "end_time",
+      'id' => 'endtime',
       "config" => [
         "display" => [
           "theme" => 'light',
-          "value" => Yii::$app->formatter->asDatetime($model->end_date)
+          "buttons" => ['today' => true],
         ],
       ],
 
