@@ -7,6 +7,7 @@ use Yii;
 use yii\db\Expression;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "main_category".
@@ -18,6 +19,8 @@ use yii\helpers\ArrayHelper;
  * @property string $type
  * @property string $label
  * @property string $is_pinned
+ * @property string $image
+ * @property UploadedFile $image_file
  *
  * @property Category[] $categories
  * @property CategoryTranslation[] $translations
@@ -30,6 +33,7 @@ class Category extends \yii\db\ActiveRecord
 {
   const TYPE_NORMAL = "normal";
   const TYPE_OFFER = "offer";
+  public $image_file;
 
   /**
    * {@inheritdoc}
@@ -61,7 +65,8 @@ class Category extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      [["label", "type"], "required"],
+      [["label", "type", "image"], "required"],
+      [["image"], "file", "skipOnEmpty" => true],
       [["created_at", "updated_at"], "safe"],
       [["parent_id"], "default", "value" => null],
       [["label", "type"], "string", "max" => 255],
@@ -129,7 +134,7 @@ class Category extends \yii\db\ActiveRecord
       "category_id" => $this->id,
       "language_code" => $lang ? $lang : Yii::$app->language,
     ]);
-    $empty = new CategoryTranslation([]);
+    $empty = new CategoryTranslation(["name" => $this->label, "image" => $this->image]);
     return $category ? $category : $empty;
   }
 
@@ -186,6 +191,14 @@ class Category extends \yii\db\ActiveRecord
         return (string) $model;
       }
     );
+  }
+
+
+  public function upload()
+  {
+    if (!$this->image_file) return;
+    $path = Utils::uploadImage($this->image_file);
+    $this->image = $path;
   }
 
   public function __toString()

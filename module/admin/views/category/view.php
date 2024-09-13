@@ -42,6 +42,7 @@ $this->params["breadcrumbs"][] = $this->title;
     "attributes" => [
       "id",
       "created_at",
+      "image",
       [
         'attribute' => 'label',
         'label' => Yii::t('app', 'Label'),
