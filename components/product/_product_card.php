@@ -5,8 +5,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 /** @var Product $product */
-$salePercentage = number_format($product->getProductSalePercentage(), 0);
-$thumbnailImage = count($product->images) ? $product->images[0] : null;
+$salePercentage = number_format(Product::_getSalesPercentage($product), 0);
+$thumbnailImage = isset($product->images) ? (count($product->images) ? $product->images[0] : null) : null;
 $wrappedInCol = isset($wrappedInCol) ? $wrappedInCol : true; ?> <?php if (isset($wrappedInCol) && $wrappedInCol): ?>
   <div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px">
   <?php endif ?>
@@ -28,23 +28,23 @@ $wrappedInCol = isset($wrappedInCol) ? $wrappedInCol : true; ?> <?php if (isset(
       </a>
     </div>
     <div class="content">
-      <?php if (count($product->categories)) : ?>
+      <?php if ($product->category) : ?>
         <span class="category mt-2"><a
-            href="<?= Url::toRoute(['shop/category', 'id' => $product->categories[0]->id]) ?>"><?= $product->categories[0] ?></a></span>
+            href="<?= Url::toRoute(['shop/category', 'id' => $product->category->id]) ?>"><?= $product->category->label ?></a></span>
       <?php endif ?>
       <h5 class="title">
         <?= Html::a(
-          $product->getProductTranslationForLanguage(Yii::$app->language)->title,
+          Product::_getTranslation($product)->title,
           Url::toRoute(["shop/product", "id" => $product->id])
         ) ?>
       </h5>
       <span class="price">
-        <?php if ($product->comparisonPrice()): ?>
-          <span class="old"> <?= $product->comparisonPrice()["price"] ?> </span>
+        <?php if (Product::_getComparisionPrice($product)): ?>
+          <span class="old"> <?= Product::_getComparisionPrice($product)["price"] ?> </span>
           <span class="new">
-            <?= $product->comparisonPrice()["discount_price"] ?>
+            <?= Product::_getComparisionPrice($product)["discount_price"] ?>
           </span>
-        <?php else: ?> <?= $product->priceAsCurrency() ?> <?php endif ?>
+        <?php else: ?> <?= (isset($product->asArray) && $product->asArray) ? Yii::$app->formatter->asCurrency($product->effective_price) : $product->priceAsCurrency() ?> <?php endif ?>
       </span>
     </div>
     <div class="actions">
@@ -68,7 +68,7 @@ $wrappedInCol = isset($wrappedInCol) ? $wrappedInCol : true; ?> <?php if (isset(
         title="Wishlist"
         data-bs-toggle="modal"
         data-bs-target="#cartModal">
-        <?php if ($product->isOnTheWishlist()): ?>
+        <?php if (isset($product->isOnTheWishlist) && $product->isOnTheWishlist()): ?>
           <svg
             class="wishlist-icon-<?= $product->id ?>"
             width="24"

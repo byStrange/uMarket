@@ -21,7 +21,7 @@ use yii\widgets\ActiveForm;
 
   <?= $form->field($model, "updated_at")->label('app', "Updated at") ?>
 
-  <?= $form->field($model, "dicount_price")->label('app', "Dicount price") ?>
+  <?= $form->field($model, "discount")->label('app', "Discount price") ?>
 
   <?= $form->field($model, "start_time")->label('app', "Start time") ?>
 

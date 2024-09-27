@@ -31,7 +31,7 @@ use yii\widgets\ActiveForm;
   <div class="row ratting-form-wrapper">
     <div class="col-md-12">
       <div class="rating-form-style form-submit">
-        <?= $form->field($review_model, 'comment')->textarea(['placeholder' => 'Message'])->label(false) ?>
+        <?= $form->field($review_model, 'comment')->textarea(['placeholder' => Yii::t("app",  'Message')])->label(false) ?>
         <?= Html::submitButton(Yii::t('app', 'Submit'), ['class' => 'btn btn-primary btn-hover-color-primary']) ?>
       </div>
     </div>

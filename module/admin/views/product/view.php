@@ -52,6 +52,10 @@ $this->params["breadcrumbs"][] = $this->title;
         }
       ],
       [
+        'attribute' => 'brand',
+        'label' => Yii::t("app",  'Brand'),
+      ],
+      [
         'attribute' => 'created_at',
         'label' => Yii::t('app', 'Created At'),
       ],
@@ -85,10 +89,10 @@ $this->params["breadcrumbs"][] = $this->title;
         }
       ],
       [
-        'attribute' => 'categories',
-        'label' => Yii::t('app', 'Categories'),
+        'attribute' => 'category',
+        'label' => Yii::t('app', 'Category'),
         'value' => function ($model) {
-          return implode(', ', $model->categories);
+          return $model->category;
         }
       ],
       [

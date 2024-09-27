@@ -26,7 +26,6 @@ class ProductTranslationController extends Controller
           "delete" => ["POST"],
         ],
       ],
-      Utils::crudActionsDisableOnly(['delete'])
     ]);
   }
 

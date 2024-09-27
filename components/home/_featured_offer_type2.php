@@ -2,11 +2,12 @@
 
 /** @var app\models\FeaturedOffer $offer */
 
+use app\models\FeaturedOffer;
 use yii\helpers\Html;
 ?>
 <div class="feature-right-content">
   <div class="image-side">
-    <?= Html::img('https://placehold.co/270x380', ['alt' => $offer->title]) ?>
+    <?= Html::img($offer->image_small_landscape ? '/' . $offer->image_small_landscape : 'https://placehold.co/270x380', ['alt' => $offer->title]) ?>
   </div>
   <div class="content-side">
     <div class="deal-timing">
@@ -30,7 +31,7 @@ use yii\helpers\Html;
         <?php if ($offer->type === 'category'): ?>
           <li>Category: <span><?= Html::encode($offer->category) ?></span></li>
         <?php else: ?>
-          <li>Discount: <span><?= $offer->discount_percentage ? (string)$offer->discount_percentage . '%' : Yii::$app->formatter->asCurrency($offer->dicount_price)  ?>&nbsp; OFF</span></li>
+          <li>Discount: <span><?= $offer->price_type == FeaturedOffer::PRICE_TYPE_PERCENTAGE ? (string)$offer->discount . '%' : Yii::$app->formatter->asCurrency($offer->discount)  ?>&nbsp; OFF</span></li>
         <?php endif; ?>
         <li>Available Until: <span><?= Yii::$app->formatter->asDate($offer->end_time, 'php:F j, Y') ?></span></li>
       </ul>

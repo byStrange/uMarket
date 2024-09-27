@@ -117,8 +117,6 @@ class FeaturedOfferController extends Controller
       $model->load($this->request->post())
     ) {
 
-      $price_type = ArrayHelper::getValue($this->request->post(), 'FeaturedOffer.price_type');
-
       $products = ArrayHelper::getValue($this->request->post(), 'FeaturedOffer.products');
 
       $model->unlinkAll('products', true);
@@ -129,14 +127,17 @@ class FeaturedOfferController extends Controller
         $model,
         "image_banner_file"
       );
+
       $model->image_portrait_file = UploadedFile::getInstance(
         $model,
         "image_portrait_file"
       );
+
       $model->image_small_landscape_file = UploadedFile::getInstance(
         $model,
         "image_small_landscape_file"
       );
+
       if (
         $model->image_banner_file
         || $model->image_portrait_file
@@ -147,12 +148,6 @@ class FeaturedOfferController extends Controller
         $model->unlinkAll('products', true);
       } else if ($model->type == 'product') {
         $model->category_id = null;
-      }
-
-      if ($price_type == 'raw') {
-        $model->discount_percentage = null;
-      } else if ($price_type == 'percentage') {
-        $model->dicount_price = null;
       }
 
       if ($model->save()) return $this->redirect(["view", "id" => $model->id]);

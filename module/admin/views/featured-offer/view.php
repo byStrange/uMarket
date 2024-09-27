@@ -49,7 +49,8 @@ $this->params["breadcrumbs"][] = $this->title;
       ["attribute" => "updated_at", "label" => Yii::t('app', 'Updated At'), "value" => function ($model) {
         return Yii::$app->formatter->asDatetime($model->updated_at);
       }],
-      ["attribute" => "dicount_price", "label" => Yii::t('app', 'Discount Price')],
+      ["attribute" => "discount", "label" => Yii::t('app', 'Discount Price')],
+      "price_type",
       ["attribute" => "start_time", "label" => Yii::t('app', 'Start Time'), "value" => function ($model) {
         return Yii::$app->formatter->asDatetime($model->start_time);
       }, "format" => 'raw'],
