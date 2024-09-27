@@ -12,34 +12,6 @@ use Yii2\Extensions\DateTimePicker\DateTimePicker;
 use yii\widgets\ActiveForm;
 
 
-$script = <<<JS
-$(function () {
-  var discountPercentageField = $('.field-featuredoffer-discount_percentage')
-  var discountPriceField = $('.field-featuredoffer-dicount_price')
-  var type = $('[name="FeaturedOffer[price_type]"]');
-
-  type.each(function () {
-   if ($(this).attr('checked')) toggleDiscountVal($(this).val(), 0) 
-  })
-
-  type.on('change', function () {
-      toggleDiscountVal($(this).val()) 
-  })
-
-  function toggleDiscountVal(value, speed) {
-    console.log(value)
-    if (value === 'raw') {
-      discountPercentageField.slideUp(speed);
-      discountPriceField.slideDown(speed)
-    }  else if (value === 'percentage') {
-      discountPercentageField.slideDown(speed);
-      discountPriceField.slideUp(speed);
-    }
-  }
-});
-JS;
-
-$this->registerJs($script)
 
 
 /** @var yii\web\View $this */
@@ -129,11 +101,8 @@ $this->registerJs($script)
 
   </div>
 
-  <?= $form->field($model, 'price_type')->radioList([
-    'percentage' => Yii::t('app', 'Percentage'),
-    'raw' => Yii::t('app', 'Discount price')
-  ], [
-    "value" => $model->dicount_price ? 'raw' : 'percentage',
+  <?= $form->field($model, 'price_type')->radioList(FeaturedOffer::priceTypesToOptionList(), [
+    "value" => $model->price_type,
     "item" => function ($index, $label, $name, $checked, $value) {
       return RadioItem::widget([
         "name" => $name,
@@ -145,16 +114,7 @@ $this->registerJs($script)
     }
   ]) ?>
 
-  <?= $form->field($model, 'discount_percentage', [
-    'template' => "{label}\n<div class='input-group'>{input}<span class='input-group-text'>%</span></div>\n{hint}\n{error}"
-  ])->textInput()->label(Yii::t('app', 'Discount Percentage')) ?>
-
-  <?= $form->field($model, "dicount_price", [
-    'template' => "{label}\n<div class='input-group'>{input}<span class='input-group-text'>$</span></div>\n{hint}\n{error}"
-  ])->textInput()->label(Yii::t('app', 'Discount Price'))->hint(Yii::t('app', 'Given price will be the price, it wont get discounted')) ?>
-
-
-
+  <?= $form->field($model, 'discount')->textInput()->label(Yii::t('app', 'Discount')) ?>
 
   <div class="form-check form-switch mb-3">
     <input class="form-check-input" type="checkbox" id="specifyTime">
@@ -183,7 +143,7 @@ $this->registerJs($script)
         "config" => [
           "display" => [
             "theme" => 'dark',
-            "buttons" => ['today'],
+            "buttons" => ['today' => true],
           ]
         ],
         'icon' => '<i class="fa fa-calendar"></i>'

@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
   <?php $form = ActiveForm::begin(); ?>
 
-  <?= $form->field($model, 'language_code')->textInput(['maxlength' => true, 'placeholder' => Yii::t("app", "for example uz-UZ")])->label(Yii::t('app', 'Language Code')) ?>
+  <?= $form->field($model, 'language_code')->dropDownList(["uz-UZ" => 'O\'zbek', 'en-US' => 'English', 'ru-RU' => 'Русский'], ['prompt' => Yii::t("app", "----- Choose language code -----")])->label(Yii::t('app', 'Language Code')) ?>
 
   <?= $form->field($model, 'title')->textInput(['maxlength' => true])->label(Yii::t('app', 'Title')) ?>
 

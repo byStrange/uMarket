@@ -53,8 +53,12 @@ $this->params["breadcrumbs"][] = $this->title;
         "label" => Yii::t('app', 'Updated At'),
       ],
       [
-        "attribute" => "dicount_price",
+        "attribute" => "discount",
         "label" => Yii::t('app', 'Discount Price'),
+      ],
+      [
+        "attribute" => "price_type",
+        "label" => Yii::t('app', 'Price type')
       ],
       [
         "attribute" => 'type',

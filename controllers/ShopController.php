@@ -9,6 +9,7 @@ use app\models\Product;
 use app\models\Rating;
 use app\models\User;
 use app\module\admin\models\search\ProductSearch;
+use ParagonIE\Sodium\Core\Util;
 use Yii;
 use yii\data\Pagination;
 use yii\web\Controller;
@@ -17,9 +18,10 @@ class ShopController extends Controller
 {
   public function actionIndex()
   {
+    /*Product::find()->effective_products_list();*/
     $searchModel = new ProductSearch();
 
-    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    $dataProvider = $searchModel->searchArray(Yii::$app->request->queryParams);
 
     // Set the page size
     $dataProvider->pagination->pageSize = 5;
@@ -33,13 +35,17 @@ class ShopController extends Controller
 
     // Fetch the products using the dataProvider
     $products = $dataProvider->getModels();
+    $categories = Category::find()->all();
+    $brands = Product::_getBrands();
 
     return $this->render("index", [
       'dataProvider' => $dataProvider,
       'products' => $products,
       'pagination' => $dataProvider->pagination,
       'totalCount' => $totalCount,
-      "searchModel" => $searchModel
+      'searchModel' => $searchModel,
+      'categories' => $categories,
+      'brands' => $brands,
     ]);
   }
 

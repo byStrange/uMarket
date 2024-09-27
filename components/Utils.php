@@ -58,7 +58,7 @@ class Utils extends Component
     return $filePath;
   }
 
-  public static function popupField($form, $model, $modelName = "", $field)
+  public static function popupField($form, $model, $modelName, $field)
   {
     echo "<div class='row'>";
     echo "<div class='col-9'>";
@@ -91,10 +91,8 @@ class Utils extends Component
       if ($sort->getAttributeOrder($attributeName) == $onlySort) {
         $pickName = null;
         if ($onlySort == SORT_ASC) {
-          global $pickName;
           $pickName = $ascendingName;
         } else if ($onlySort == SORT_DESC) {
-          global $pickName;
           $pickName = $descendingName;
         }
         echo Html::a($pickName, $sort->createUrl($attributeName), $linkOptions);
@@ -224,5 +222,40 @@ class Utils extends Component
         ]
       ]
     ];
+  }
+  public static function sortData(array $products, array $sortCriteria): array
+  {
+    // Check if the products array is empty
+    if (empty($products)) {
+      return $products; // Return an empty array if there are no products
+    }
+
+    // Prepare sorting arrays
+    $sortArrays = [];
+    foreach ($sortCriteria as $key => $direction) {
+      if (isset($products[0][$key])) {
+        $sortArrays[] = array_column($products, $key); // Extract the column values
+        $sortArrays[] = $direction; // Add the sort direction
+      } else {
+        throw new \InvalidArgumentException("Invalid key: $key");
+      }
+    }
+
+    // Use array_multisort to sort the data
+    $sortArrays[] = &$products; // Reference the original array at the end
+    call_user_func_array('array_multisort', $sortArrays);
+
+    return $products; // Return the sorted array
+  }
+  public static function find($array, $callback)
+  {
+    if (!$array || !count($array)) return null;
+
+    foreach ($array as $item) {
+      if ($callback($item)) {
+        return $item;
+      }
+    }
+    return null;
   }
 }

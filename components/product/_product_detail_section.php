@@ -98,19 +98,17 @@ $user = Yii::$app->user->identity;
           </ul>
         </div>
         <p class="mt-30px"><?= StringHelper::truncateWords(
-                              $translatedProduct->description,
+                              $translatedProduct->description ? $translatedProduct->description : "",
                               20,
                               "..."
                             ) ?></p>
-        <?php if ($product->categories && count($product->categories)): ?>
+        <?php if ($product->category): ?>
           <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-            <span><?= Yii::t('app', 'Categories') ?>:</span>
+            <span><?= Yii::t('app', 'Category') ?>:</span>
             <ul class="d-flex">
-              <?php foreach ($product->categories as $category): ?>
-                <li>
-                  <a href="<?= Url::toRoute(['shop/category', 'id' => $category->id]) ?>"><?= $category ?> </a>
-                </li>
-              <?php endforeach ?>
+              <li>
+                <a href="<?= Url::toRoute(['shop/category', 'id' => $product->category->id]) ?>"><?= $product->category ?> </a>
+              </li>
             </ul>
           </div>
         <?php endif ?>

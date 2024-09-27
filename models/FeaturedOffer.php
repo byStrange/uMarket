@@ -19,10 +19,10 @@ use yii\helpers\ArrayHelper;
  * @property int $id
  * @property string $created_at
  * @property string $updated_at
- * @property float $discount_percentage
- * @property float $dicount_price
+ * @property float $discount
  * @property string $start_time
  * @property string $end_time
+ * @property string $price_type
  * @property int $product_id
  * @property int|null $category_id
  * @property string|null $image_banner
@@ -42,10 +42,22 @@ class FeaturedOffer extends \yii\db\ActiveRecord
   const INCONSISTY_INACTIVE_PRODUCT_INCLUDED = 'inactive_product_included';
   const INCONSISTY_DUPLICATE_OFFER_FOR_A_PRODUCT = 'duplicate_offer_for_a_product';
 
+  const PRICE_TYPE_PERCENTAGE = 'percentage';
+  const PRICE_TYPE_AMOUNT = 'amount';
+  const PRICE_TYPE_FIXED = 'fixed';
+
   public $image_banner_file;
   public $image_portrait_file;
   public $image_small_landscape_file;
-  public $price_type;
+
+  public static function priceTypesToOptionList()
+  {
+    return [
+      self::PRICE_TYPE_FIXED => Yii::t('app', 'Fixed'),
+      self::PRICE_TYPE_AMOUNT => Yii::t('app', 'Amount'),
+      self::PRICE_TYPE_PERCENTAGE => Yii::t('app', 'Percentage'),
+    ];
+  }
   /**
    * {@inheritdoc}
    */
@@ -60,18 +72,12 @@ class FeaturedOffer extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      [["type", "title"], "required"],
+      [["type", "title", "discount", "price_type"], "required"],
       [["category_id"], "required", "when" => function ($model) {
         return $model->type === 'category';
       }, "whenClient" => "function(attribute, value) { return $('[name=\"FeaturedOffer[type]\"]:checked').val() === 'category' }"],
-      [["dicount_price"], "required", "when" => function ($model) {
-        return $model->price_type === 'raw';
-      },  "whenClient" => "(attribute, value) => $('[name=\"FeaturedOffer[price_type]\"]:checked').val() === 'raw'"],
-      [["discount_percentage"], "required", "when" => function ($model) {
-        return $model->price_type === 'percentage';
-      }, "whenClient" => "(attribute, value) => $('[name=\"FeaturedOffer[price_type]\"]:checked').val() === 'percentage'"],
       [["created_at", "updated_at", "start_time", "end_time"], "safe"],
-      [["dicount_price", "discount_percentage"], "number"],
+      [["discount"], "number"],
       [["category_id"], "default", "value" => null],
       [["category_id"], "integer"],
       [
@@ -79,7 +85,7 @@ class FeaturedOffer extends \yii\db\ActiveRecord
         "file",
         "skipOnEmpty" => true,
       ],
-      [["type", "title"], "string", "max" => 255],
+      [["type", "title", "price_type"], "string", "max" => 255],
       [
         ["type"],
         "in",
@@ -104,7 +110,7 @@ class FeaturedOffer extends \yii\db\ActiveRecord
       "id" => "ID",
       "created_at" => "Created At",
       "updated_at" => "Updated At",
-      "dicount_price" => "Dicount Price",
+      "discount" => "Discount Price",
       "start_time" => "Start Time",
       "end_time" => "End Time",
       "category_id" => "Category ID",
@@ -236,7 +242,7 @@ class FeaturedOffer extends \yii\db\ActiveRecord
 
   public function discountPriceAsCurrency()
   {
-    if ($this->dicount_price) return Yii::$app->formatter->asCurrency($this->dicount_price);
+    if ($this->discount) return Yii::$app->formatter->asCurrency($this->discount);
 
     if ($this->category) {
       return $this->category->startingFromPriceAsCurrency();
@@ -356,7 +362,7 @@ class FeaturedOffer extends \yii\db\ActiveRecord
 
   static public function _inconsisties()
   {
-    $offers = FeaturedOffer::activeOffers()->all(); 
+    $offers = FeaturedOffer::activeOffers()->all();
     $inconsistent_products = [];
     $inconsisties = [];
     foreach ($offers as $offer) {
@@ -407,8 +413,6 @@ HAVING COUNT (product_id) > 1
           'type' => self::INCONSISTY_DUPLICATE_OFFER_FOR_A_PRODUCT
         ];
       }
-
-
     }
     return $inconsisties;
   }

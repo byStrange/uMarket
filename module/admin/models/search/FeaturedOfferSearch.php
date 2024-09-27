@@ -31,7 +31,7 @@ class FeaturedOfferSearch extends FeaturedOffer
                 ["created_at", "updated_at", "start_time", "end_time", "type"],
                 "safe",
             ],
-            [["dicount_price"], "number"],
+            [["discount"], "number"],
         ];
     }
 
@@ -74,7 +74,7 @@ class FeaturedOfferSearch extends FeaturedOffer
             "id" => $this->id,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
-            "dicount_price" => $this->dicount_price,
+            "discount" => $this->discount,
             "start_time" => $this->start_time,
             "end_time" => $this->end_time,
             "category_id" => $this->category_id,

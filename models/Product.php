@@ -24,9 +24,12 @@ use yii\helpers\Url;
  * @property int $created_by_id
  * @property int $average_rating
  * @property int $total_ratings
+ * @property string $brand
+ * @property int $category_id
+ * 
  *
  *
- * @property Category[] $categories
+ * @property Category $category
  * @property User $createdBy
  * @property Product[] $fromProducts
  * @property Image[] $images
@@ -69,7 +72,7 @@ class Product extends \yii\db\ActiveRecord
   {
     return [
       [["price", "status", "title"], "required"],
-      [["title", "description"], "string", "max" => 255],
+      [["title", "description", "brand"], "string", "max" => 255],
       [["created_at", "updated_at"], "safe"],
       [
         ["price", "discount_price", "average_rating", "total_ratings"],
@@ -79,6 +82,13 @@ class Product extends \yii\db\ActiveRecord
       [["views", "created_by_id"], "integer"],
       [["views"], "default", "value" => 0],
       [["status"], "string", "max" => 20],
+      [
+        ["category_id"],
+        "exist",
+        "skipOnError" => true,
+        "targetClass" => Category::class,
+        "targetAttribute" => ["category_id" => "id"],
+      ],
       [
         ["created_by_id"],
         "exist",
@@ -100,6 +110,7 @@ class Product extends \yii\db\ActiveRecord
       "created_at" => Yii::t('app', "Created At"),
       "updated_at" => Yii::t('app', "Updated At"),
       "price" => Yii::t('app', "Price"),
+      "brand" => Yii::t('app', "Brand"),
       "discount_price" => Yii::t("app", "Discount Price"),
       "status" => Yii::t("app", "Status"),
       "views" => Yii::t("app", "Views"),
@@ -151,15 +162,15 @@ class Product extends \yii\db\ActiveRecord
   }
 
   /**
-   * Gets query for [[Categories]].
+   * Gets query for [[Category]].
    *
    * @return \yii\db\ActiveQuery
    */
-  public function getCategories()
+  public function getCategory()
   {
-    return $this->hasMany(Category::class, [
+    return $this->hasOne(Category::class, [
       "id" => "category_id",
-    ])->viaTable("main_product_categories", ["product_id" => "id"]);
+    ]);
   }
 
   public function getRatings()
@@ -214,7 +225,9 @@ class Product extends \yii\db\ActiveRecord
   }
   public function getProductTranslationForLanguage($lang = "")
   {
+    /*Utils::printAsError(Yii::$app->language);*/
     $translations = ProductTranslation::findOne([
+
       "product_id" => $this->id,
       "language_code" => $lang ? $lang : Yii::$app->language,
     ]);
@@ -237,9 +250,20 @@ class Product extends \yii\db\ActiveRecord
     $offer = count($offers) ? $offers[0] : null;
 
     if ($offer && $offer->isActive()) {
-      return $offer->dicount_price
-        ? ($offer->dicount_price / $this->price) * 100 - 100
-        : 0;
+      $perc = null;
+      switch ($offer->price_type) {
+        case 'percentage':
+          $perc = $offer->discount;
+          break;
+        case 'fixed':
+          $discount_amount = $this->price - $offer->discount;
+          $perc = ($discount_amount / $this->price) * 100;
+
+        case 'amount':
+          $perc = ($offer->discount / $this->price) * 100;
+      }
+
+      return $perc;
     }
     return $this->discount_price
       ? ($this->discount_price / $this->price) * 100 - 100
@@ -346,32 +370,47 @@ class Product extends \yii\db\ActiveRecord
       // handle the warning
     }
 
+    $cleanPrice = $this->price;
+
     $featuredOffer = count($offers) ? $offers[0] : null;
 
     if ($featuredOffer && $featuredOffer->isActive()) {
-      return $featuredOffer->dicount_price ? $featuredOffer->dicount_price : $this->price - (($this->price / 100) * $featuredOffer->discount_percentage);
+      switch ($featuredOffer->price_type) {
+        case 'percentage':
+          $cleanPrice =  $this->price - (($this->price / 100) * $featuredOffer->discount);
+          break;
+        case 'amount':
+          $cleanPrice = $this->price - $featuredOffer->discount;
+        case 'fixed':
+          $cleanPrice = $featuredOffer->discount;
+      }
+      return $cleanPrice;
     }
 
-    $categories = $this->getCategories()->orderBy(['created_at' => SORT_DESC])->all();
-    $discount_price_from_categories = 0;
+    $category = $this->category;
+    $discount_price_from_category = 0;
 
-    if (count($categories)) {
-      global $discount_price_from_categories;
-      /** @var Category $category */
-      foreach ($categories as $category) {
-        if ($category->featuredOffer && $category->featuredOffer->isActive()) {
-          $discount_price_from_categories = $category->featuredOffer->dicount_price ? $category->featuredOffer->dicount_price : $this->price - (($this->price / 100) * $category->featuredOffer->discount_percentage);
-        }
+    global $discount_price_from_category;
+    /** @var Category $category */
+    if ($category && $category->featuredOffer && $category->featuredOffer->isActive()) {
+
+      switch ($featuredOffer->price_type) {
+        case 'percentage':
+          $discount_price_from_category =  $this->price - (($this->price / 100) * $featuredOffer->discount);
+          break;
+        case 'amount':
+          $discount_price_from_category = $this->price - $featuredOffer->discount;
+        case 'fixed':
+          $discount_price_from_category = $featuredOffer->discount;
       }
     }
 
-    if ($discount_price_from_categories) {
-      return $discount_price_from_categories;
+    if ($discount_price_from_category) {
+      return $discount_price_from_category;
     }
 
     return $this->discount_price ? $this->discount_price : $this->price;
   }
-
   public function priceAsCurrency()
   {
     return Yii::$app->formatter->asCurrency((int)$this->cleanPrice());
@@ -501,21 +540,52 @@ class Product extends \yii\db\ActiveRecord
     ];
   }
 
-
-
-  public function categoriesListAsDisplay()
-  {
-    if (!$this->categories) return [];
-
-    return ArrayHelper::map($this->categories, 'id', function ($model) {
-      return (string)$model;
-    });
-  }
-
   public function __toString()
   {
     return $this->getProductTranslationForLanguage()->title
       ? $this->getProductTranslationForLanguage()->title
       : $this->createdBy->username . " -> " . $this->id;
+  }
+
+  public static function _getBrands()
+  {
+    return self::find()->active()->select(['brand'])->where('brand != \'\'')->asArray()->all();
+  }
+
+  public static function _getTranslation($product)
+  {
+    if (isset($product->asArray) && $product->asArray) {
+      $translation = Utils::find($product->translations, function ($translation) {
+        return $translation['language_code'] == Yii::$app->language;
+      });
+      if ($translation) {
+        return new ProductTranslation(['title' => $translation['title'], 'description' => $translation['description']]);
+      }
+      return new ProductTranslation(['title' => $product->title, 'description' => $product->description]);
+    }
+    return $product->getProductTranslationForLanguage();
+  }
+
+  public static function _getSalesPercentage($product)
+  {
+    if (isset($product->asArray) && $product->asArray) {
+      return $product->sale_percentage;
+    }
+    return $product->getProductSalePercentage();
+  }
+
+  public static function _getImages($product)
+  {
+    return $product->images;
+  }
+
+  public static function _getComparisionPrice($product)
+  {
+    if (isset($product->asArray) && $product->asArray) {
+      if ($product->effective_price >= $product->price) return null;
+
+      return ["discount_price" => Yii::$app->formatter->asCurrency($product->effective_price), "price" => Yii::$app->formatter->asCurrency($product->price)];
+    }
+    return $product->comparisonPrice();
   }
 }

@@ -2,14 +2,12 @@
 
 namespace app\module\admin\controllers;
 
-use app\components\Utils;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 
-use app\models\Category;
 use app\models\Image;
 use app\models\Product;
 use app\models\ProductSpecification;
@@ -82,11 +80,6 @@ class ProductController extends Controller
   public function linkAllProductRelations($post, $model)
   {
 
-    $submittedCategories = ArrayHelper::getValue(
-      $post,
-      "Product.categories"
-    );
-
 
     $submittedToProducts = ArrayHelper::getValue(
       $post,
@@ -100,7 +93,6 @@ class ProductController extends Controller
 
     $model->linkAll("viewers", $submittedViewers, User::class);
     $model->linkAll("likedUsers", $submittedLikedUsers, User::class);
-    $model->linkAll("categories", $submittedCategories, Category::class);
     $model->linkAll("toProducts", $submittedToProducts, Product::class);
   }
 
@@ -110,7 +102,6 @@ class ProductController extends Controller
    * */
   public function unlinkAllProductRelations($model)
   {
-    $model->unlinkAll("categories", true);
     $model->unlinkAll("toProducts", true);
     $model->unlinkAll("toProducts", true);
     $model->unlinkAll("viewers", true);

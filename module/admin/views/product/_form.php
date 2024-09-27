@@ -9,6 +9,7 @@ use app\widgets\CheckBoxItem;
 use kartik\file\FileInput;
 use yii\helpers\Html;
 use yii\jui\Accordion;
+use yii\jui\AutoComplete;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -41,11 +42,8 @@ $this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\Jq
     <div class="col-md-6">
       <?= Utils::popupField($form, $model, "category", function ($form, $model) use ($categoriesOptionList) {
         return $form
-          ->field($model, "categories[]")
-          ->dropDownList($categoriesOptionList, [
-            "multiple" => true,
-            "options" => Utils::preSelectOptions($model->categories),
-          ])->label(Yii::t('app', 'Categories'));
+          ->field($model, "category_id")
+          ->dropDownList($categoriesOptionList)->label(Yii::t('app', 'Category'));
       }) ?>
 
 
@@ -102,6 +100,16 @@ $this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\Jq
       <?php endif; ?>
     </div>
     <div class="col-md-6">
+      <?= $form->field($model, 'brand')->widget(AutoComplete::class, [
+        'clientOptions' => [
+          'source' => ['javascript', 'python3'],
+        ],
+        'options' => [
+          'class' => 'form-control',
+          'placeholder'
+        ]
+      ]) ?>
+
       <?= $form->field($model, 'price')->input('number', [
         'step' => '0.01',
         'id' => 'price-input',
