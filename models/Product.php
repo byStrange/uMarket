@@ -225,7 +225,6 @@ class Product extends \yii\db\ActiveRecord
   }
   public function getProductTranslationForLanguage($lang = "")
   {
-    /*Utils::printAsError(Yii::$app->language);*/
     $translations = ProductTranslation::findOne([
 
       "product_id" => $this->id,
@@ -511,7 +510,6 @@ class Product extends \yii\db\ActiveRecord
       $image->image = $path;
       $image->alt = "alt";
       $image->save();
-      /*Utils::printAsError($image->errors);*/
       $this->link('images', $image);
     }
   }

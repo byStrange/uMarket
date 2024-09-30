@@ -58,7 +58,6 @@ class ProductSearch extends Product
 
     if ($this->category_id) {
       $query->andWhere(['main_category.id' => $this->category_id]);
-      /*Utils::printAsError($query->all());*/
     }
 
     $this->load($params);
@@ -106,7 +105,6 @@ class ProductSearch extends Product
 
     if ($this->category_id) {
       $query->andWhere(['main_category.id' => $this->category_id]);
-      /*Utils::printAsError($query->all());*/
     }
 
     $this->load($params);

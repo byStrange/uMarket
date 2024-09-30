@@ -110,7 +110,6 @@ class ShopController extends Controller
     } else {
       $review_model->loadDefaultValues();
     }
-    /*utils::printAsError($review_model->errors);*/
 
     if ($d) {
       return $this->renderPartial('@app/components/product/_product_detail_section', ["product" => $product, "detailed" => false]);
@@ -131,7 +130,6 @@ class ShopController extends Controller
 
     $searchModel = new ProductSearch();
 
-    /*Utils::printAsError($category->id);*/
     $searchModel->category_id = $category->id;
 
 
