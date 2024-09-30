@@ -198,7 +198,6 @@ class Utils extends Component
 
       return $result;
     } catch (\Exception $e) {
-      Utils::printAsError($e);
       Yii::error("Error sending email to {$to}: " . $e->getMessage(), 'email');
       return false;
     }

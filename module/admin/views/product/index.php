@@ -85,7 +85,6 @@ $this->params["breadcrumbs"][] = $this->title;
 
   <?php
   // echo $this->render('_search', ['model' => $searchModel]);
-  var_dump(Product::_getBrands());
   ?>
 
 

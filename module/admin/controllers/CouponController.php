@@ -97,14 +97,12 @@ class CouponController extends Controller
   {
     $model = $this->findModel($id);
 
-    
+
     if (
       $this->request->isPost &&
       $model->load($this->request->post())
     ) {
       $type = $this->request->post("Coupon")['type'];
-      /*var_dump($this->request->post("Coupon")['type']);*/
-      /*die;*/
       if ($type == 'percentage') {
         $model->discount_price = null;
       } else if ($type == 'raw') {

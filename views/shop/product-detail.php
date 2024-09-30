@@ -16,7 +16,6 @@ if ($user) {
   $viewedProducts = $user->getViewedProducts([$product->id])->all();
 } else {
   $viewedProducts = User::getRecentlySeenProducts(5, [$product->id]);
-  /*Utils::printAsError($viewedProducts);*/
 }
 
 $this->title = Yii::t('app', 'Product detail');

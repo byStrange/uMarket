@@ -265,9 +265,7 @@ class FeaturedOffer extends \yii\db\ActiveRecord
     $startTime = $this->start_time ? new \DateTime($this->start_time) : null;
 
     $endTime = $this->end_time ? new \DateTime($this->end_time) : null;
-    /*Utils::printAsError($startTime);*/
     // If neither start_time nor end_time is set, consider it always active
-    //
     if (!$startTime && !$endTime) {
       return true;
     }

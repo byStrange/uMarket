@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use app\components\Utils;
-use ArrayObject;
 use Yii;
 use yii\db\ActiveQuery;
 
@@ -48,7 +46,6 @@ class ProductQuery extends ActiveQuery
         $product->category = (object)json_decode($product->category, true);
       }
     }
-    /*Utils::printAsError($data);*/
     return $data;
   }
 

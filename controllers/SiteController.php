@@ -153,7 +153,6 @@ class SiteController extends Controller
     ]);
 
     Yii::$app->response->cookies->add($languageCookie);
-    /*Utils::printAsError('Language: ' . $language);*/
 
     return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
   }
@@ -396,11 +395,9 @@ class SiteController extends Controller
   public function actionError()
   {
     $exception = Yii::$app->errorHandler->exception;
-    /*Utils::printAsError($exception->statusCode);*/
     if ($exception !== null && $exception->statusCode == 404) {
       return $this->render('404');
     } else {
-      Utils::printAsError($exception);
       return  $this->render('400');
     }
   }
