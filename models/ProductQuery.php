@@ -18,8 +18,12 @@ class ProductQuery extends ActiveQuery
     $maxPrice = isset($params["maxPrice"]) ? $params['maxPrice'] : null;
     $minPrice = isset($params['minPrice']) ? $params['minPrice'] : null;
 
-    if ($maxPrice || $minPrice) {
-      $extra_sql = "WHERE effective_price > $minPrice AND effective_price < $maxPrice";
+    if ($minPrice) {
+      $extra_sql = "WHERE effective_price > $minPrice";
+    } else if ($maxPrice) {
+      $extra_sql = "WHERE effective_price < $maxPrice";
+    } else if ($minPrice && $maxPrice) {
+      $extra_sql = "WHERE effective_price < $maxPrice AND effective_price > $minPrice";
     }
 
     $sql = str_replace("{{order_direction}}", $order, $sql);
@@ -41,6 +45,9 @@ class ProductQuery extends ActiveQuery
         foreach ($product->images as &$image) {
           $image = (object)$image;
         }
+        $ids = array_column($product->images, 'id');
+
+        array_multisort($ids, SORT_ASC, $product->images);
       }
       if (isset($product->category) && !empty($product->category)) {
         $product->category = (object)json_decode($product->category, true);

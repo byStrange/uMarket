@@ -99,10 +99,13 @@ $this->registerJsFile('@web/js/realtime-dataload.js', ['depends' => [\yii\web\Jq
 
       <?php endif; ?>
     </div>
+
     <div class="col-md-6">
       <?= $form->field($model, 'brand')->widget(AutoComplete::class, [
         'clientOptions' => [
-          'source' => ['javascript', 'python3'],
+          'source' => array_map(function ($item) {
+            return $item['brand'];
+          }, Product::_getBrands()),
         ],
         'options' => [
           'class' => 'form-control',

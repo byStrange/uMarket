@@ -64,6 +64,7 @@ WITH active_offers AS
           )) FILTER (WHERE ct.name IS NOT NULL) AS category_translations,
 
           json_agg(json_build_object(
+              'id', pi.id,
               'image', pi.image,
               'alt', pi.alt
           )) FILTER (WHERE pi.image IS NOT NULL) as images,
@@ -139,6 +140,7 @@ WITH active_offers AS
           )) FILTER (WHERE ct.name IS NOT NULL) AS category_translations,
 
           json_agg(json_build_object(
+              'id', pi.id,
               'image', pi.image,
               'alt', pi.alt
           )) FILTER (WHERE pi.image IS NOT NULL) as images,

@@ -5,7 +5,6 @@ use app\models\Product;
 use yii\data\Pagination;
 use yii\data\Sort;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\LinkPager;
 
@@ -26,6 +25,21 @@ $css = <<<CSS
 
 .pagination :is(.next,.prev).disabled {
   display: none;
+}
+
+a.active {
+  position: relative;
+}
+a.active::after {
+  content : '';
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: var(--bs-primary);
+  border-radius: 9999px;
+  top: 50%;
+  right: -1rem;
+  transform: translateY(-50%);
 }
 CSS;
 $view->registerCss($css);
@@ -115,12 +129,16 @@ if (isset($sort)) {
           </div>
         <?php else: ?>
           <div class="row mb-n-30px">
-            <?php foreach ($products as $product) {
-                if (in_array($product->status, Product::VISIBLE_STATUSES))
-                  echo
-                  $this->render("@app/components/product/_product_card", ["product" =>
-                  $product]);
-              } ?>
+            <?php if (count($products)): ?>
+              <?php foreach ($products as $product) {
+                  if (in_array($product->status, Product::VISIBLE_STATUSES))
+                    echo
+                    $this->render("@app/components/product/_product_card", ["product" =>
+                    $product]);
+                } ?>
+            <?php else: ?>
+              <h2><?= Yii::t('app', 'Nothing found') ?></h2>
+            <?Php endif ?>
           </div>
         <?php endif ?>
         </div>
@@ -157,11 +175,18 @@ if (isset($sort)) {
           <h4 class="sidebar-title"><?= Yii::t("app", "Brands") ?></h4>
           <div class="sidebar-widget-brand">
             <ul>
+              <?php $paramBrand = Yii::$app->request->get('ProductSearch');
+              $paramBrand = isset($paramBrand['brand']) ? $paramBrand['brand'] : ''; ?>
               <?php foreach ($leftSidebar["brands"] as $brand): ?>
                 <li>
-                  <?= Html::a($brand["brand"], ['/shop', 'ProductSearch[brand]' => $brand["brand"]]) ?>
+                  <?php if ($brand["brand"]): ?>
+                    <?= Html::a($brand["brand"], ['/shop', 'ProductSearch[brand]' => $brand["brand"]], ['class' => $brand["brand"] === $paramBrand ? 'active' : '']) ?>
+                  <?php endif ?>
                 </li>
               <?php endforeach ?>
+              <li>
+                <?= Html::a(Yii::t('app', 'Clear filter'), '/shop', ['style' => 'color: var(--bs-primary) !important']) ?>
+              </li>
             </ul>
           </div>
         </div>

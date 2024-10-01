@@ -547,7 +547,8 @@ class Product extends \yii\db\ActiveRecord
 
   public static function _getBrands()
   {
-    return self::find()->active()->select(['brand'])->where('brand != \'\'')->asArray()->all();
+    return self::find()->active()->select(['brand'])->where(['!=', 'brand', '']) // Exclude empty strings
+      ->andWhere(['is not', 'brand', null])->distinct()->asArray()->all();
   }
 
   public static function _getTranslation($product)
